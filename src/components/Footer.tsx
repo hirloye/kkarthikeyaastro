@@ -22,9 +22,9 @@ export default function Footer() {
         {/* Branding Col */}
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <img 
-              src="/assets/KK_Logo.png?v=2" 
-              alt="Kkarthikeya Astrological Centre Logo" 
+            <img
+              src="/assets/KK_Logo.png?v=2"
+              alt="Kkarthikeya Astrological Centre Logo"
               className="w-14 h-14 object-contain"
             />
             <div className="flex flex-col">
@@ -57,11 +57,11 @@ export default function Footer() {
           <ul className="text-xs space-y-2 text-slate-400 font-medium">
             <li><Link href="/" className="hover:text-amber-300 transition-colors">Home Portal</Link></li>
             <li><Link href="/about" className="hover:text-amber-300 transition-colors">About Astrologer</Link></li>
-            <li><Link href="/services" className="hover:text-amber-300 transition-colors">Stellar Offerings</Link></li>
+            <li><Link href="/services" className="hover:text-amber-300 transition-colors">Services</Link></li>
             <li><Link href="/horoscope" className="hover:text-amber-300 transition-colors">Daily Horoscope</Link></li>
             <li><Link href="/panchangam" className="hover:text-amber-300 transition-colors">Daily Panchangam</Link></li>
             <li><Link href="/booking" className="hover:text-amber-300 transition-colors">Book Consultation</Link></li>
-            <li><Link href="/about#contact" className="hover:text-amber-300 transition-colors">Office Alignment</Link></li>
+            <li><Link href="/about#contact" className="hover:text-amber-300 transition-colors">Conatct</Link></li>
           </ul>
         </div>
 
@@ -109,7 +109,7 @@ export default function Footer() {
         <div>
           © 2026 Kkarthikeya Astrological Centre. Locked in Cosmic Alignment.
         </div>
-        
+
         {/* Social Icons matching Instagram, FB */}
         <div className="flex items-center gap-4">
           <a href="https://www.instagram.com/kkarthikeyaastro" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition-colors">
