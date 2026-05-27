@@ -61,7 +61,7 @@ export default function Footer() {
             <li><Link href="/horoscope" className="hover:text-amber-300 transition-colors">Daily Horoscope</Link></li>
             <li><Link href="/panchangam" className="hover:text-amber-300 transition-colors">Daily Panchangam</Link></li>
             <li><Link href="/booking" className="hover:text-amber-300 transition-colors">Book Consultation</Link></li>
-            <li><Link href="/about#contact" className="hover:text-amber-300 transition-colors">Conatct</Link></li>
+            <li><Link href="/about#contact" className="hover:text-amber-300 transition-colors">Contact</Link></li>
           </ul>
         </div>
 

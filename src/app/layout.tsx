@@ -23,6 +23,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://astro-kkarthikeya.com"),
   title: "Kkarthikeya Astrological Centre | Best Astrologer in Chennai, Tamilnadu",
   description: "Get highly accurate and personalized Vedic astrology consultation, Marriage Matching, Kadikara Prasannam, and Muhurtham auspicious timing consultation by expert astrologer Kkarthikeya in Chennai, Tamilnadu.",
   keywords: [
