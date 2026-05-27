@@ -221,7 +221,7 @@ export default function BirthChartPage() {
         <CosmicBackground />
 
         {/* 🌌 Title section */}
-        <section className="pt-24 pb-6 px-6 max-w-6xl mx-auto relative z-10 text-center space-y-4">
+        <section className="pt-10 pb-6 px-6 max-w-6xl mx-auto relative z-10 text-center space-y-4">
           <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-amber-500/20 bg-amber-950/20 text-amber-300 text-[9px] uppercase tracking-widest font-black">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Natal Calculations
           </div>

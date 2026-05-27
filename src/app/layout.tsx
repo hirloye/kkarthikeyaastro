@@ -4,8 +4,7 @@ import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import FloatingWhatsApp from "@/components/FloatingWhatsApp";
-import FloatingChat from "@/components/FloatingChat";
+import FloatingActions from "@/components/FloatingActions";
 import { Toaster } from "react-hot-toast";
 import GlobalScrollObserver from "@/components/GlobalScrollObserver";
 
@@ -125,8 +124,7 @@ export default function RootLayout({
           <Footer />
 
           {/* Floating Action Elements */}
-          <FloatingWhatsApp />
-          <FloatingChat />
+          <FloatingActions />
           
           <Toaster position="top-center" toastOptions={{ style: { background: '#1e293b', color: '#fff' } }} />
         </AppProvider>

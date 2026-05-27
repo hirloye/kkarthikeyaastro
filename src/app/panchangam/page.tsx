@@ -402,7 +402,7 @@ export default function PanchangamPage() {
         <CosmicBackground />
 
         {/* 🌌 Title section */}
-        <section className="pt-24 pb-4 px-6 max-w-6xl mx-auto relative z-10 text-center space-y-4">
+        <section className="pt-10 pb-4 px-6 max-w-6xl mx-auto relative z-10 text-center space-y-4">
           <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-indigo-500/20 bg-indigo-950/20 text-indigo-300 text-[9px] uppercase tracking-widest font-black">
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> Vedic Astrology Calendar
           </div>
@@ -415,28 +415,7 @@ export default function PanchangamPage() {
           <div className="w-12 h-1 bg-gradient-to-r from-amber-500 to-indigo-500 mx-auto rounded-full mt-3" />
         </section>
 
-        {/* 📅 Day Selector Bar */}
-        <section className="py-2 px-4 sm:px-6 max-w-6xl mx-auto relative z-10">
-          <div className="rounded-2xl sm:rounded-3xl border border-white/10 bg-slate-900/30 backdrop-blur-xl p-1.5 sm:p-2.5 grid grid-cols-5 gap-1 sm:gap-2 shadow-antigravity">
-            {weekDays.map((day) => {
-              const isSelected = selectedDayKey === day.key;
-              return (
-                <button
-                  key={day.key}
-                  onClick={() => setSelectedDayKey(day.key)}
-                  className={`py-2.5 sm:py-3.5 px-1 rounded-xl sm:rounded-2xl border text-center transition-all active:scale-95 flex flex-col items-center justify-center gap-0.5 sm:gap-1 ${
-                    isSelected
-                      ? 'border-amber-500 bg-amber-950/20 text-amber-300 shadow-glow'
-                      : 'border-white/5 bg-white/2 hover:border-white/10 text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <span className="text-[10px] font-black uppercase tracking-widest">{day.label}</span>
-                  <span className="text-[8px] font-extrabold opacity-75">{day.date}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
+
 
         {/* 🔮 Dashboard layout */}
         <section className="py-6 px-6 max-w-6xl mx-auto relative z-10 grid lg:grid-cols-12 gap-8 items-start">

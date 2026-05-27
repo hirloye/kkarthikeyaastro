@@ -114,7 +114,7 @@ export default function AboutPage() {
       <CosmicBackground />
 
       {/* 🌌 Page Header / Hero Area */}
-      <section className="pt-24 pb-12 px-6 max-w-6xl mx-auto relative z-10">
+      <section className="pt-10 pb-12 px-6 max-w-6xl mx-auto relative z-10">
         <div className="text-center space-y-4 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-amber-500/20 bg-amber-950/20 text-amber-300 text-[9px] uppercase tracking-widest font-black">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Vedic Master & Scholar
@@ -264,7 +264,7 @@ export default function AboutPage() {
       </section>
 
       {/* 📜 Certificates & Credentials Section */}
-      <section className="py-20 bg-slate-950/40 border-y border-white/5 relative z-10">
+      <section className="py-20 bg-slate-500 border-y border-white/5 relative z-10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-2">Credentials</div>
@@ -282,11 +282,11 @@ export default function AboutPage() {
               >
                 <div>
                   {/* Certificate Image Frame */}
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/5 bg-slate-950/60 mb-4 flex items-center justify-center group-hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] transition-shadow">
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/5 bg-slate-900/50 p-2 mb-4 flex items-center justify-center group-hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] transition-shadow">
                     <img
                       src={cert.src}
                       alt={cert.title}
-                      className="w-full h-full object-cover filter brightness-[0.8] group-hover:brightness-100 group-hover:scale-105 transition-all duration-500"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-all duration-500"
                     />
                     <button
                       onClick={() => setActiveCert(cert.src)}

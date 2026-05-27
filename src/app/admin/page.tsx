@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Orbit, Shield, ArrowLeft, Users, Activity, Server,
   Compass, Calendar, MessageSquare, Phone, Sparkles,
-  Lock, Key, Send, CheckCircle2, RefreshCw, Mail, DollarSign, LogOut, Trash2, FileText
+  Lock, Key, Send, CheckCircle2, RefreshCw, Mail, DollarSign, LogOut, Trash2, FileText, Menu, X
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import { useApp, UserData } from '@/context/AppContext';
@@ -33,7 +33,9 @@ const getClientStatus = (user: UserData) => {
 
 export default function AdminDashboard() {
   const { allUsers, isOfflineMode, deleteUser, setAllUsers } = useApp();
-  const [activeTab, setActiveTab] = useState<'users' | 'chat' | 'pricing' | 'blog'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'chat' | 'pricing' | 'blog-list' | 'blog-upload'>('users');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showChatSidebar, setShowChatSidebar] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   // Auth state
@@ -201,7 +203,7 @@ export default function AdminDashboard() {
         (payload) => {
           const newUser = payload.new;
           const msg = `New client registered: ${newUser.name || 'Unknown'}`;
-          
+
           // Native Browser Notification
           if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('New Registration', {
@@ -212,7 +214,7 @@ export default function AdminDashboard() {
             // Fallback
             toast.success(msg);
           }
-          
+
           // Optionally, add to allUsers list so it shows up instantly without refresh
           setAllUsers((prev) => {
             if (prev.some(u => u.id === newUser.id)) return prev;
@@ -250,7 +252,7 @@ export default function AdminDashboard() {
       (payload) => {
         const user = payload.payload.user;
         const msg = `${user.username || 'A client'} just entered the chat.`;
-        
+
         // Native Browser Notification
         if ('Notification' in window && Notification.permission === 'granted') {
           new Notification('Client Active', {
@@ -290,7 +292,7 @@ export default function AdminDashboard() {
         },
         (payload) => {
           const newMsg = payload.new;
-          
+
           // Don't notify if the admin is currently chatting with this user
           if (selectedClient && selectedClient.id === newMsg.user_id) return;
 
@@ -438,7 +440,7 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    if (activeTab === 'blog') {
+    if (activeTab === 'blog-list') {
       fetchExistingBlogs();
     }
   }, [activeTab, isOfflineMode]);
@@ -453,6 +455,7 @@ export default function AdminDashboard() {
     setBlogMetaDescription(blog.meta_description || '');
     setBlogContent(blog.content || '');
     setBlogImageFile(null);
+    setActiveTab('blog-upload');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -688,61 +691,68 @@ export default function AdminDashboard() {
 
   // RENDER DYNAMIC DASHBOARD PORTAL
   return (
-    <main className="relative min-h-screen w-full text-slate-100 flex flex-col">
+    <main className="relative min-h-screen w-full text-slate-100 flex flex-col -mt-20">
 
-      {/* Dynamic Header */}
-      <header className="w-full border-b border-white/5 bg-slate-950/30 backdrop-blur-xl px-6 py-4.5 z-10 flex items-center justify-between mt-(-50)">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-slate-800/50 border border-white/10 flex items-center justify-center text-indigo-300 shadow-inner animate-float-slow">
-            <Shield className="w-5 h-5 fill-current opacity-80" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold tracking-wide text-white drop-shadow-md flex items-center gap-2">
-              Kkarthikeya Admin Terminal
-              <span className="text-[8px] py-0.5 px-2 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 tracking-widest uppercase font-black">Authorized</span>
-            </h1>
-            <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block -mt-0.5">Control Panel</span>
-          </div>
-        </div>
+      {/* Admin Global Header (Sticky Top) */}
+      <header className="sticky top-0 z-50 w-full bg-slate-500 backdrop-blur-2xl border-b border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleAdminLogout}
-            className="flex items-center gap-2 py-2 px-4 rounded-full border border-white/10 bg-white/5 hover:bg-red-500/10 hover:border-red-500/30 text-xs font-semibold text-slate-300 hover:text-red-400 transition-all active:scale-95"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
+          {/* Brand & Mobile Toggle Row */}
+          <div className="flex items-center justify-between w-full md:w-auto px-1 md:px-0">
+            <div className="flex items-center gap-2.5">
+              <span className="text-sm font-bold text-white uppercase tracking-widest font-serif">Admin Portal</span>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden text-slate-400 hover:text-white bg-white/5 p-1.5 rounded-lg border border-white/10 transition-colors"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+
+          {/* Desktop & Mobile Dropdown Tabs */}
+          <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row gap-2 mt-2 md:mt-0 w-full md:w-auto flex-1 md:justify-center`}>
+            {[
+              { id: 'users', label: 'Client Logs', icon: Users },
+              { id: 'chat', label: 'Realtime Chat', icon: MessageSquare },
+              { id: 'pricing', label: 'Fee Charges', icon: DollarSign },
+              { id: 'blog-list', label: 'List of blogs', icon: FileText },
+              { id: 'blog-upload', label: 'Upload Blog', icon: Sparkles }
+            ].map((tab) => {
+              const isTabActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => { setActiveTab(tab.id as any); setIsMobileMenuOpen(false); }}
+                  className={`flex items-center justify-center gap-2.5 py-3 md:py-2 px-4 rounded-xl transition-all text-[11px] md:text-xs font-black uppercase tracking-widest ${isTabActive
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-glow border border-amber-400/50'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent'
+                    }`}
+                >
+                  <tab.icon className={`w-4 h-4 ${isTabActive ? 'text-slate-950' : 'text-slate-400'}`} />
+                  <span className="whitespace-nowrap">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Logout Button */}
+          <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex mt-2 md:mt-0 pt-3 md:pt-0 border-t border-white/10 md:border-none w-full md:w-auto justify-center`}>
+            <button
+              onClick={handleAdminLogout}
+              className="flex items-center justify-center gap-2 py-2.5 md:py-2 px-4 md:px-5 rounded-xl border border-white/10 md:border-transparent bg-white/5 md:bg-red-500/10 md:hover:bg-red-500/20 md:text-red-400 text-slate-300 hover:text-white md:hover:text-red-300 transition-all active:scale-95 text-xs font-bold uppercase tracking-widest w-full"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Main Tab Controller Grid */}
-      <div className="flex-1 w-full max-w-6xl mx-auto px-6 py-8 flex flex-col gap-6">
-
-        {/* Navigation Tabs */}
-        <div className="flex gap-2 p-1 bg-slate-950/60 border border-white/5 rounded-2xl text-xs font-black uppercase tracking-widest self-start">
-          {[
-            { id: 'users', label: 'Client Logs', icon: Users },
-            { id: 'chat', label: 'Realtime Chat', icon: MessageSquare },
-            { id: 'pricing', label: 'Consultation Fees', icon: DollarSign },
-            { id: 'blog', label: 'Blog Manager', icon: FileText }
-          ].map((tab) => {
-            const isTabActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 py-2.5 px-5 rounded-xl transition-all ${isTabActive
-                  ? 'bg-amber-500 text-slate-950 font-black shadow-glow'
-                  : 'text-slate-400 hover:text-white'
-                  }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+      {/* Main Content Controller Grid */}
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col gap-6">
 
         {/* Tab Display Area */}
         <div>
@@ -878,13 +888,20 @@ export default function AdminDashboard() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="h-[650px] flex gap-6 overflow-hidden"
+                className="h-[650px] flex gap-6 overflow-hidden relative"
               >
                 {/* Client List Sidebar */}
-                <div className="w-1/3 rounded-3rem border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-5 flex flex-col overflow-hidden max-h-full">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-300 font-serif border-b border-white/5 pb-2.5 mb-3 shrink-0">
-                    Active Client Channels
-                  </h3>
+                <div className={`${showChatSidebar ? 'flex' : 'hidden'} w-full md:w-1/3 ${selectedClient ? 'absolute md:relative z-20 h-full' : ''} rounded-3rem border border-white/10 bg-slate-900/95 md:bg-slate-900/35 backdrop-blur-2xl p-5 flex-col overflow-hidden max-h-full shadow-[0_0_50px_rgba(0,0,0,0.5)] md:shadow-none`}>
+                  <div className="flex justify-between items-center border-b border-white/5 pb-2.5 mb-3 shrink-0">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-300 font-serif">
+                      Active Channels
+                    </h3>
+                    {selectedClient && (
+                      <button onClick={() => setShowChatSidebar(false)} className="md:hidden p-1.5 rounded-full bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-all">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
 
                   <div className="flex-1 overflow-y-auto space-y-2 pr-1.5 scrollbar-thin">
                     {allUsers.map((user) => {
@@ -892,7 +909,7 @@ export default function AdminDashboard() {
                       return (
                         <button
                           key={user.id}
-                          onClick={() => setSelectedClient(user)}
+                          onClick={() => { setSelectedClient(user); setShowChatSidebar(false); }}
                           className={`w-full p-3.5 rounded-2xl text-left border flex items-center gap-3 transition-all ${isSelected
                             ? 'border-indigo-500 bg-indigo-950/20 text-indigo-300 shadow-glow'
                             : 'border-white/5 bg-white/2 hover:border-white/10 text-slate-300'
@@ -917,16 +934,28 @@ export default function AdminDashboard() {
                   {selectedClient ? (
                     <>
                       {/* Active header bar */}
-                      <div className="px-6 py-4.5 border-b border-white/5 bg-white/2 backdrop-blur-sm flex justify-between items-center shrink-0">
-                        <div>
-                          <h4 className="text-xs font-black uppercase tracking-widest text-white">
-                            Channelling {selectedClient.username}
-                          </h4>
-                          <span className="text-[9px] text-indigo-300 font-semibold block mt-0.5">
-                            Frequency: {selectedClient.mobile} | {selectedClient.email}
-                          </span>
+                      <div className="px-4 md:px-6 py-4.5 border-b border-white/5 bg-white/2 backdrop-blur-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-0 shrink-0">
+                        <div className="flex items-center gap-3 w-full md:w-auto">
+                          {!showChatSidebar && (
+                            <button
+                              onClick={() => { setSelectedClient(null); setShowChatSidebar(true); }}
+                              className="flex items-center gap-1.5 p-2 md:py-1.5 md:px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shrink-0 active:scale-95 shadow-glow"
+                              title="Back to List"
+                            >
+                              <ArrowLeft className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                              <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">Back</span>
+                            </button>
+                          )}
+                          <div className="min-w-0">
+                            <h4 className="text-xs font-black uppercase tracking-widest text-white truncate">
+                              {selectedClient.username}
+                            </h4>
+                            <span className="text-[9px] text-indigo-300 font-semibold block mt-0.5 truncate">
+                              {selectedClient.mobile}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 self-end md:self-auto">
                           <button
                             onClick={() => handleToggleChatUnlock(selectedClient)}
                             className={`py-1.5 px-3 rounded-xl border text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all ${getClientStatus(selectedClient).isLocked
@@ -953,11 +982,11 @@ export default function AdminDashboard() {
                               className={`flex ${isAdmin ? 'justify-end' : 'justify-start'}`}
                             >
                               <div className={`max-w-[70%] rounded-2xl p-4.5 text-xs leading-relaxed space-y-1 ${isAdmin
-                                ? 'bg-indigo-600 text-white rounded-tr-none'
+                                ? 'bg-amber-500 text-slate-950 rounded-tr-none shadow-glow'
                                 : 'bg-white/5 border border-white/10 text-slate-200 rounded-tl-none'
                                 }`}>
                                 <p>{msg.content}</p>
-                                <span className={`text-[8px] uppercase tracking-widest block text-right ${isAdmin ? 'text-indigo-200' : 'text-slate-500'
+                                <span className={`text-[8px] uppercase tracking-widest block text-right ${isAdmin ? 'text-amber-900/70' : 'text-slate-500'
                                   }`}>
                                   {msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}
                                 </span>
@@ -969,20 +998,20 @@ export default function AdminDashboard() {
                       </div>
 
                       {/* Input Reply capsule bar */}
-                      <form onSubmit={handleSendReply} className="p-4 border-t border-white/5 bg-slate-950/30 flex gap-2 shrink-0">
+                      <form onSubmit={handleSendReply} className="p-4 border-t border-white/5 bg-slate-500 backdrop-blur-md flex gap-2 shrink-0">
                         <input
                           type="text"
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
                           placeholder="Type cosmic guidance reply..."
-                          className="flex-1 bg-white/5 border border-white/10 rounded-2xl py-3 px-4.5 text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500/50 transition-all"
+                          className="flex-1 bg-white/5 border border-white/10 rounded-2xl py-3 px-4.5 text-xs text-white placeholder-slate-500 outline-none focus:border-amber-500/50 transition-all"
                           disabled={isSending}
                           required
                         />
                         <button
                           type="submit"
                           disabled={isSending}
-                          className="p-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-glow border border-indigo-400/20 active:scale-95 transition-all flex items-center justify-center shrink-0 disabled:opacity-50"
+                          className="p-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-glow border border-amber-400/20 active:scale-95 transition-all flex items-center justify-center shrink-0 disabled:opacity-50"
                         >
                           <Send className="w-4 h-4" />
                         </button>
@@ -1103,10 +1132,10 @@ export default function AdminDashboard() {
               </motion.div>
             )}
 
-            {/* 4. BLOG MANAGER */}
-            {activeTab === 'blog' && (
+            {/* 4. BLOG UPLOAD */}
+            {activeTab === 'blog-upload' && (
               <motion.div
-                key="blog-tab"
+                key="blog-upload-tab"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -1259,9 +1288,20 @@ export default function AdminDashboard() {
                     </div>
                   </form>
                 </div>
+              </motion.div>
+            )}
 
+            {/* 5. BLOG LIST */}
+            {activeTab === 'blog-list' && (
+              <motion.div
+                key="blog-list-tab"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="max-w-4xl mx-auto w-full"
+              >
                 {/* Published Blogs List */}
-                <div className="mt-12 rounded-3rem border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 md:p-8 shadow-antigravity">
+                <div className="rounded-3rem border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 md:p-8 shadow-antigravity">
                   <div className="mb-6 border-b border-white/5 pb-4">
                     <h2 className="text-lg font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
                       <FileText className="w-5 h-5 text-indigo-400" />
