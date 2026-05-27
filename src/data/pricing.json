@@ -1,0 +1,32 @@
+{
+  "quick": {
+    "id": "quick",
+    "title": "Quick Chat Consultation",
+    "price": "₹199"
+  },
+  "bronze": {
+    "id": "bronze",
+    "title": "Bronze Consultation (15 Mins)",
+    "price": "₹399"
+  },
+  "silver": {
+    "id": "silver",
+    "title": "Silver Consultation (30 Mins)",
+    "price": "₹599"
+  },
+  "gold": {
+    "id": "gold",
+    "title": "Gold Deep Analysis (60 Mins)",
+    "price": "₹799"
+  },
+  "marriage": {
+    "id": "marriage",
+    "title": "Marriage Matching",
+    "price": "₹499"
+  },
+  "muhurtham": {
+    "id": "muhurtham",
+    "title": "Muhurtham & Auspicious Timing",
+    "price": "₹499"
+  }
+}

@@ -1,26 +1,523 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --color-background: #D4AF37;
+  --color-foreground: #f3f4f6;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-serif: var(--font-cinzel), serif;
+  --font-sans: var(--font-inter), sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --shadow-antigravity: 0 20px 50px rgba(99, 102, 241, 0.08), 0 4px 20px rgba(0, 0, 0, 0.2);
+  --shadow-antigravity-hover: 0 30px 60px rgba(99, 102, 241, 0.15), 0 10px 30px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 30px rgba(245, 158, 11, 0.15);
+
+  /* Warm gold glow */
+
+  --animate-float-slow: float-slow 6s ease-in-out infinite;
+  --animate-float-medium: float-slow 4.5s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.1);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
+      transform: scale(1.03);
+    }
   }
 }
 
+:root {
+  color-scheme: light;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #FFF8E7 !important;
+  background-image: 
+    url("/assets/zodiac_pattern.png"), 
+    linear-gradient(135deg, rgba(255, 248, 231, 0.95) 0%, rgba(244, 228, 188, 0.4) 50%, rgba(212, 175, 55, 0.1) 100%) !important;
+  background-size: 400px, auto !important; /* Adjust size of pattern as needed */
+  background-repeat: repeat, no-repeat !important;
+  background-blend-mode: multiply, normal !important;
+  background-attachment: fixed;
+  color: #1b102e !important;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Globally style primary buttons to match dark theme gradient (Indigo/Purple to Deep Red) */
+.bg-indigo-600 {
+  background-image: linear-gradient(135deg, #6366f1 0%, #b91c1c 100%) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  background-color: transparent !important;
+}
+
+.bg-indigo-600:hover {
+  background-image: linear-gradient(135deg, #4f46e5 0%, #991b1b 100%) !important;
+}
+
+/* Globally style inputs, selects, and textareas focus state in dark mode */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(185, 28, 28, 0.5) !important;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.25) !important;
+  outline: none !important;
+}
+
+/* Customized Glassmorphic Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Waveform animation */
+@keyframes wave {
+
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.waveform-bar {
+  transform-origin: bottom;
+  animation: wave 1.2s ease-in-out infinite;
+}
+
+/* ☁️ SKY CLOUD LIGHT THEME SYSTEM (Enforced Globally) */
+:root {
+  --color-background: #FFF8E7;
+  --color-foreground: #1b102e;
+  --shadow-glow: 0 0 35px rgba(212, 175, 55, 0.18);
+  --shadow-antigravity: 0 20px 50px rgba(212, 175, 55, 0.08), 0 4px 20px rgba(212, 175, 55, 0.04);
+}
+
+  /* 🏛️ 1. GLOBAL LIGHT-MODE TYPOGRAPHY OVERRIDES (Adapts all white texts inside main element to beautiful Dark Gold-Brown) */
+  main h1,
+  main h2,
+  main h3,
+  main h4,
+  main h5,
+  main h6,
+  main .text-white,
+  main .text-slate-100,
+  main .text-slate-200 {
+    color: #1b102e !important;
+    /* Elegant Dark Gold-Brown */
+  }
+
+  main p,
+  main span,
+  main div,
+  main li,
+  main strong,
+  main .text-slate-300,
+  main .text-slate-300\/90,
+  main .text-slate-400 {
+    color: #433215 !important;
+    /* Mid-Gold Charcoal */
+  }
+
+  main .text-slate-500 {
+    color: #7a6239 !important;
+    /* Muted Ochre */
+  }
+
+  /* Rich saffron gradients for key heading accents */
+  .bg-gradient-to-r.from-amber-400.via-amber-200.to-white {
+    background-image: linear-gradient(to right, #b45309, #d97706, #1b102e) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+  }
+
+  .bg-gradient-to-r.from-amber-200.to-white {
+    background-image: linear-gradient(to right, #b45309, #1b102e) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+  }
+
+  /* ☁️ 2. GLOBAL LIGHT-MODE CONTAINER PANELS (Uses robust attribute substring selectors!) */
+  main div[class*="rounded-"],
+  main div.backdrop-blur-xl,
+  main div.backdrop-blur-md,
+  main div.border-white\/10,
+  main div[class*="bg-slate-900/35"],
+  main div[class*="bg-slate-900/75"],
+  main div[class*="bg-slate-950/65"],
+  main div[class*="bg-slate-950/60"],
+  main div[class*="bg-slate-950/90"],
+  main div[class*="bg-white/2"],
+  main div[class*="bg-white/5"] {
+    background-color: rgba(255, 255, 255, 0.76) !important;
+    backdrop-filter: blur(25px) !important;
+    border-color: rgba(212, 175, 55, 0.22) !important;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.05) !important;
+  }
+
+  main div[class*="bg-slate-950"] {
+    background-color: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(20px) !important;
+    border-color: rgba(212, 175, 55, 0.25) !important;
+  }
+
+  /* Soften general border lines */
+  main .border-white\/10,
+  main .border-white\/15,
+  main .border-white\/5,
+  main .border-amber-400\/20,
+  main .border-amber-400\/30,
+  main .border-indigo-500\/20 {
+    border-color: rgba(212, 175, 55, 0.22) !important;
+  }
+
+  /* Lighten block backdrops inside cards */
+  main div[class*="bg-white/2"],
+  main div[class*="bg-white/5"] {
+    background-color: rgba(212, 175, 55, 0.06) !important;
+  }
+
+  main div[class*="bg-white/10"] {
+    background-color: rgba(212, 175, 55, 0.12) !important;
+  }
+
+  /* 🌌 3. PREMIUM THEMATIC/METALLIC PRICING CARD OVERRIDES */
+  /* Bronze Plan - Warm Copper Saffron Tint */
+  main div[class*="border-amber-700"] {
+    background-image: linear-gradient(to bottom, rgba(251, 146, 60, 0.08), rgba(251, 146, 60, 0.02)) !important;
+    border-color: rgba(251, 146, 60, 0.35) !important;
+  }
+
+  main div[class*="border-amber-700"] h3,
+  main div[class*="border-amber-700"] div.text-3xl {
+    color: #b45309 !important;
+    /* Bronze ochre */
+  }
+
+  /* Silver Plan - Premium Slate Silver Tint */
+  main div[class*="border-slate-400"] {
+    background-image: linear-gradient(to bottom, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.02)) !important;
+    border-color: rgba(212, 175, 55, 0.25) !important;
+  }
+
+  main div[class*="border-slate-400"] h3,
+  main div[class*="border-slate-400"] div.text-3xl {
+    color: #433215 !important;
+  }
+
+  /* Gold Plan - Glowing Solar Gold Tint */
+  main div[class*="border-yellow-500"] {
+    background-image: linear-gradient(to bottom, rgba(254, 240, 138, 0.18), rgba(254, 240, 138, 0.05)) !important;
+    border-color: rgba(234, 179, 8, 0.35) !important;
+  }
+
+  main div[class*="border-yellow-500"] h3,
+  main div[class*="border-yellow-500"] div.text-3xl {
+    color: #b45309 !important;
+    /* Gold ochre */
+  }
+
+  /* Marriage Plan - Romantic Soft Rose Tint */
+  main div[class*="border-rose-500"] {
+    background-image: linear-gradient(to bottom, rgba(251, 113, 133, 0.08), rgba(251, 113, 133, 0.03)) !important;
+    border-color: rgba(244, 63, 94, 0.25) !important;
+  }
+
+  main div[class*="border-rose-500"] h3,
+  main div[class*="border-rose-500"] div.text-3xl {
+    color: #e11d48 !important;
+    /* Rose active */
+  }
+
+  /* ☁️ 4. CUSTOM PAGE COMPONENT CLOUD BACKDROPS */
+  /* Milestone Stats Highlights cards in Light Mode (uses bg-slate-900/20) */
+  main div[class*="bg-slate-900/20"] {
+    background-color: rgba(244, 230, 200, 0.45) !important;
+    /* Soft Gold Tint */
+    border-color: rgba(212, 175, 55, 0.25) !important;
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.05) !important;
+  }
+
+  /* Services Overview cards in Light Mode (uses bg-slate-900/30) */
+  main div[class*="bg-slate-900/30"] {
+    background-color: rgba(244, 230, 200, 0.55) !important;
+    /* Soft Amber Cloud Tint */
+    border-color: rgba(212, 175, 55, 0.25) !important;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.04) !important;
+  }
+
+  /* Muhurtham & Auspicious Timings sub-services section in Light Mode */
+  main section#muhurtham,
+  main section[class*="bg-slate-950/20"] {
+    background-color: rgba(244, 230, 200, 0.22) !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.15) !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
+  }
+
+  main section#muhurtham div[class*="bg-slate-900/30"],
+  main section[class*="bg-slate-950/20"] div[class*="bg-slate-900/30"] {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(212, 175, 55, 0.2) !important;
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.03) !important;
+  }
+
+  /* 🏆 5. TARGETED LIGHT-MODE GHOST BUTTONS & EXPLORE CARDS */
+  main a.border-white\/10.bg-white\/5,
+  main button.border-white\/10.bg-white\/5 {
+    background-color: rgba(212, 175, 55, 0.1) !important;
+    border-color: rgba(212, 175, 55, 0.3) !important;
+    color: #b45309 !important;
+  }
+
+  main a.border-white\/10.bg-white\/5:hover,
+  main button.border-white\/10.bg-white\/5:hover {
+    background-color: rgba(212, 175, 55, 0.18) !important;
+  }
+
+  /* Live Chat button override in light mode */
+  header.fixed a[href="/chat"],
+  header a[href="/chat"],
+  header div.fixed.bg-slate-950\/90 a[href="/chat"] {
+    background-image: linear-gradient(135deg, #d4af37 0%, #b45309 100%) !important;
+    border-color: rgba(212, 175, 55, 0.4) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(180, 83, 9, 0.2) !important;
+  }
+
+  header.fixed a[href="/chat"]:hover,
+  header a[href="/chat"]:hover,
+  header div.fixed.bg-slate-950\/90 a[href="/chat"]:hover {
+    background-image: linear-gradient(135deg, #c5a028 0%, #9a4707 100%) !important;
+    color: #ffffff !important;
+  }
+
+  /* 🎨 6. ASTROLOGICAL ACCENTS AND METADATA LABELS */
+  main .text-indigo-300,
+  main .text-indigo-400,
+  main .text-indigo-400\/80 {
+    color: #b45309 !important;
+    /* Gold Accent */
+  }
+
+  main .text-amber-300,
+  main .text-amber-400,
+  main label.text-amber-300 {
+    color: #b45309 !important;
+  }
+
+  main .bg-amber-950\/20,
+  main .bg-amber-950\/30,
+  main .bg-amber-500\/10 {
+    background-color: rgba(212, 175, 55, 0.08) !important;
+    border-color: rgba(212, 175, 55, 0.2) !important;
+  }
+
+  main .bg-indigo-950\/20,
+  main .bg-indigo-950\/30,
+  main .bg-indigo-500\/10 {
+    background-color: rgba(212, 175, 55, 0.06) !important;
+    border-color: rgba(212, 175, 55, 0.18) !important;
+  }
+
+  /* 🖼️ 7. DECORATION ASSETS FRAME OVERRIDES */
+  /* Gold rotating zodiac circles */
+  main .border-dashed.border-amber-500\/20,
+  main .border-dashed.border-amber-500\/10 {
+    border-color: rgba(212, 175, 55, 0.2) !important;
+  }
+
+  /* Astrologer portrait frame */
+  main div[class*="from-indigo-955"],
+  main div[class*="from-indigo-950"] {
+    background-image: linear-gradient(to bottom, rgba(212, 175, 55, 0.05), rgba(212, 175, 55, 0.12)) !important;
+    border-color: rgba(212, 175, 55, 0.18) !important;
+  }
+
+  /* 🛡️ 8. SYSTEM DUAL-THEME CTA PRESERVATIONS */
+  /* Amber buttons keep crisp dark-slate text */
+  main a.bg-gradient-to-r.from-amber-500,
+  main button.bg-amber-500 {
+    color: #1b102e !important;
+    text-shadow: none !important;
+  }
+
+  /* Indigo primary button gets gold background with white text */
+  main a.bg-indigo-600,
+  main button.bg-indigo-600 {
+    background-image: linear-gradient(135deg, #d4af37 0%, #b45309 100%) !important;
+    border-color: rgba(212, 175, 55, 0.4) !important;
+    background-color: transparent !important;
+    color: #ffffff !important;
+  }
+
+  main a.bg-indigo-600:hover,
+  main button.bg-indigo-600:hover {
+    background-image: linear-gradient(135deg, #c5a028 0%, #9a4707 100%) !important;
+    color: #ffffff !important;
+  }
+
+  /* Active day highlights in horoscope readings should keep dark text on amber buttons */
+  main button.bg-amber-500 {
+    color: #1b102e !important;
+  }
+
+  /* Header adjustments: Light theme nav capsule */
+  header.fixed {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(212, 175, 55, 0.2) !important;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.06) !important;
+  }
+
+  header.fixed a.text-slate-300\/80 {
+    color: #5c4015 !important;
+  }
+
+  header.fixed a.text-slate-300\/80:hover {
+    color: #b45309 !important;
+  }
+
+  header.fixed a.text-amber-400 {
+    color: #b45309 !important;
+  }
+
+  header.fixed a.bg-white\/5,
+  header.fixed button.bg-white\/5 {
+    background-color: rgba(212, 175, 55, 0.1) !important;
+    border-color: rgba(212, 175, 55, 0.25) !important;
+    color: #b45309 !important;
+  }
+
+  header.fixed a.bg-white\/5:hover,
+  header.fixed button.bg-white\/5:hover {
+    background-color: rgba(212, 175, 55, 0.22) !important;
+    border-color: rgba(212, 175, 55, 0.45) !important;
+    color: #853c03 !important;
+  }
+
+  header.fixed a.bg-gradient-to-r.from-amber-500 {
+    color: #1b102e !important;
+  }
+
+  /* Mobile hamburger drawer panel adjustments */
+  header div.fixed.bg-slate-950\/90 {
+    background-color: rgba(255, 255, 255, 0.96) !important;
+    border-color: rgba(212, 175, 55, 0.22) !important;
+  }
+
+  header div.fixed.bg-slate-950\/90 a {
+    color: #1b102e !important;
+  }
+
+  header div.fixed.bg-slate-950\/90 a.text-amber-300 {
+    color: #b45309 !important;
+    background-color: rgba(212, 175, 55, 0.08) !important;
+  }
+
+  /* 🌌 9. INTEGRATED FOOTER LIGHT-MODE SYSTEM OVERRIDES */
+  footer,
+  footer[class*="bg-slate-950"] {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    background-image: radial-gradient(circle at 50% 100%, #FFF8E7 0%, #ffffff 80%) !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.18) !important;
+    box-shadow: 0 -10px 40px rgba(212, 175, 55, 0.04) !important;
+  }
+
+  footer h3,
+  footer h4,
+  footer span,
+  footer p,
+  footer a,
+  footer div,
+  footer li,
+  footer strong {
+    color: #433215 !important;
+  }
+
+  footer h3.font-serif,
+  footer span.font-serif,
+  footer h4 {
+    color: #1b102e !important;
+  }
+
+  footer a:hover {
+    color: #b45309 !important;
+  }
+
+  footer div[class*="border-t"] {
+    border-color: rgba(212, 175, 55, 0.12) !important;
+  }
+
+  /* Input fields and selects inside forms */
+  main select,
+  main input {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: #1b102e !important;
+    border-color: rgba(212, 175, 55, 0.25) !important;
+  }
+
+  main select option {
+    background-color: #ffffff !important;
+    color: #1b102e !important;
+  }
+
+  main input::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  /* Inputs, selects, and textareas focus override in light mode */
+  main input:focus,
+  main select:focus,
+  main textarea:focus {
+    border-color: rgba(212, 175, 55, 0.7) !important;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.2) !important;
+  }
+
+/* 🌟 SCROLL-DRIVEN SLIDE-UP ANIMATIONS FOR TEXTS, IMAGES & ASSETS */
+.animate-on-scroll-hidden {
+  opacity: 0 !important;
+  transform: translateY(30px) !important;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: opacity, transform;
+}
+
+.animate-on-scroll-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: opacity, transform;
 }

@@ -1,0 +1,47 @@
+{
+  "rating": 4.8,
+  "totalReviews": 142,
+  "googleSearchUrl": "https://www.google.com/search?q=karthikeya+astrological+centre&oq=&gs_lcrp=EgZjaHJvbWUqBggCEEUYOzIHCAAQABiPAjISCAEQLhhDGIMBGLEDGIAEGIoFMgYIAhBFGDsyDQgDEC4YgwEYsQMYgAQyBwgEEC4YgAQyBggFEEUYPTIGCAYQRRg9MgYIBxBFGD3SAQgyNzU0ajBqN6gCALACAA&sourceid=chrome&ie=UTF-8#sv=CAwStAIKBmxjbF9wdhJOCgNwdnESR0NnMHZaeTh4TVhoNVl6RjVhblpmSWlRS0htdGhjblJvYVd0bGVXRWdZWE4wY205c2IyZHBZMkZzSUdObGJuUnlaUkFDR0FNEowBCgNscWkShAFDaDVyWVhKMGFHbHJaWGxoSUdGemRISnZiRzluYVdOaGJDQmpaVzUwY21WSTM0YjdzUFc4Z0lBSVdpb1FBQkFCRUFJWUFSZ0NJaDVyWVhKMGFHbHJaWGxoSUdGemRISnZiRzluYVdOaGJDQmpaVzUwY21WU0FRcGhjM1J5YjJ4dloyVnkSEgoDdGJzEgtscmY6ITNzSUFFPRIjCgFxEh5rYXJ0aGlrZXlhIGFzdHJvbG9naWNhbCBjZW50cmUaEmxvY2FsLXBsYWNlLXZpZXdlchgKIO-GjpUN",
+  "reviews": [
+    {
+      "id": 1,
+      "author": "Ramesh Kumar",
+      "location": "Chennai",
+      "rating": 5,
+      "text": "Highly accurate predictions and practical advice. His calculation of planetary transits was 100% correct, and the suggested remedies brought immediate relief. Very professional astrologer in Chennai.",
+      "time": "1 week ago"
+    },
+    {
+      "id": 2,
+      "author": "Meenakshi Sundaram",
+      "location": "Singaperumalkoil",
+      "rating": 5,
+      "text": "Best vastu and Muhurtham calculations in Chengalpattu area. We approached him for selecting an auspicious time for our new family showroom inauguration. The auspicious timing chosen has brought positive growth.",
+      "time": "2 weeks ago"
+    },
+    {
+      "id": 3,
+      "author": "Suresh & Priya",
+      "location": "Tambaram",
+      "rating": 5,
+      "text": "We consulted Karthikeya Astrological Centre for marriage compatibility checking. He patiently evaluated all aspect calculations, dosha matching, and nakshatra alignment. Highly recommended!",
+      "time": "1 month ago"
+    },
+    {
+      "id": 4,
+      "author": "Rajesh Kannan",
+      "location": "Chennai",
+      "rating": 5,
+      "text": "Kadikara Prasannam predictions were extremely detailed and accurate. Answered all my immediate career queries clearly and gave simple remedial guidelines. The consultation was very reassuring.",
+      "time": "2 months ago"
+    },
+    {
+      "id": 5,
+      "author": "Aishwarya Raghavan",
+      "location": "Chengalpattu",
+      "rating": 5,
+      "text": "Very patient and scientific approach. His horoscope reading provided a clear insight into my planetary positions and career transitions. Highly recommend his services.",
+      "time": "2 months ago"
+    }
+  ]
+}
