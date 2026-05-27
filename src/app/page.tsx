@@ -392,7 +392,7 @@ export default function HomePage() {
                 <span className="text-[8px] text-indigo-400 font-black tracking-widest uppercase">Verified</span>
               </div>
               <div>
-                <div className="text-2xl font-black text-white font-serif">{stat.val}</div>
+                <div className="text-lg md:text-2xl font-black text-white font-serif tracking-tight leading-tight break-words">{stat.val}</div>
                 <div className="text-[9px] uppercase tracking-widest text-slate-300 font-extrabold mt-1">{stat.label}</div>
                 <div className="text-[10px] text-slate-500 mt-1 leading-snug">{stat.desc}</div>
               </div>
