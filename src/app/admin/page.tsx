@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Orbit, Shield, ArrowLeft, Users, Activity, Server,
   Compass, Calendar, MessageSquare, Phone, Sparkles,
-  Lock, Key, Send, CheckCircle2, RefreshCw, Mail, DollarSign, LogOut, Trash2, FileText, Menu, X
+  Lock, Key, Send, CheckCircle2, RefreshCw, Mail, DollarSign, LogOut, Trash2, FileText, Menu, X, Eye, EyeOff
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import { useApp, UserData } from '@/context/AppContext';
@@ -41,6 +41,7 @@ export default function AdminDashboard() {
   // Auth state
   const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loginError, setLoginError] = useState('');
 
@@ -71,6 +72,7 @@ export default function AdminDashboard() {
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [replyText, setReplyText] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [adminTimeRemaining, setAdminTimeRemaining] = useState<number | null>(null);
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
   const handleDeleteUser = async (userId: string, name: string) => {
@@ -251,7 +253,7 @@ export default function AdminDashboard() {
       { event: 'user_entered_chat' },
       (payload) => {
         const user = payload.payload.user;
-        const msg = `${user.username || 'A client'} just entered the chat.`;
+        const msg = `${user.username || 'A client'} entered the chat.\nDOB: ${user.dob || 'N/A'} | TOB: ${user.tob || 'N/A'} | Place: ${user.pob || 'N/A'}`;
 
         // Native Browser Notification
         if ('Notification' in window && Notification.permission === 'granted') {
@@ -269,6 +271,65 @@ export default function AdminDashboard() {
       supabase.removeChannel(channel);
     };
   }, [isAuthorized, isOfflineMode]);
+
+  // Track Astrologer Presence
+  useEffect(() => {
+    if (!isAuthorized) return;
+
+    const channel = supabase.channel('astrologer_status');
+
+    channel
+      .on('presence', { event: 'sync' }, () => {})
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({
+            role: 'admin',
+            isOffline: isOfflineMode,
+            talkingTo: selectedClient?.id || null
+          });
+        }
+      });
+
+    // Update presence when dependencies change
+    const updatePresence = async () => {
+      if (channel.state === 'joined') {
+        await channel.track({
+          role: 'admin',
+          isOffline: isOfflineMode,
+          talkingTo: selectedClient?.id || null
+        });
+      }
+    };
+    updatePresence();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAuthorized, isOfflineMode, selectedClient?.id]);
+
+  // Admin Countdown Timer for Selected Client
+  useEffect(() => {
+    if (!selectedClient || !selectedClient.chatUnlocked || !selectedClient.unlockedAt) {
+      setAdminTimeRemaining(null);
+      return;
+    }
+    const unlockedTimeMs = new Date(selectedClient.unlockedAt).getTime();
+    // Default to 10 minutes
+    const expiryTime = unlockedTimeMs + 10 * 60 * 1000;
+
+    const interval = setInterval(() => {
+      const remaining = Math.max(0, Math.floor((expiryTime - Date.now()) / 1000));
+      setAdminTimeRemaining(remaining);
+      if (remaining === 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    // Initial set
+    setAdminTimeRemaining(Math.max(0, Math.floor((expiryTime - Date.now()) / 1000)));
+
+    return () => clearInterval(interval);
+  }, [selectedClient?.id, selectedClient?.chatUnlocked, selectedClient?.unlockedAt]);
 
   // Keep a ref to allUsers for the message listener to avoid constant re-subscriptions
   const allUsersRef = useRef<UserData[]>(allUsers);
@@ -620,7 +681,7 @@ export default function AdminDashboard() {
   // RENDER GATEWAY LOGIN IF NOT LOGGED IN
   if (!isAuthorized) {
     return (
-      <main className="relative min-h-screen w-full flex flex-col items-center justify-center text-slate-100 overflow-hidden py-12 px-6">
+      <main className="fixed inset-0 w-full h-full flex flex-col items-center justify-center text-slate-100 overflow-hidden bg-slate-950 z-[100] px-6">
         <CosmicBackground />
 
         <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/5 blur-[120px] rounded-full pointer-events-none" />
@@ -655,16 +716,25 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div className="space-y-1.5 text-left">
+            <div className="space-y-1.5 text-left relative">
               <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Secure Password</label>
-              <input
-                type="password"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="••••••••••••••"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-xs text-white placeholder-slate-600 outline-none focus:border-amber-500/35 transition-all shadow-inner font-mono"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="••••••••••••••"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-4 pr-12 text-xs text-white placeholder-slate-600 outline-none focus:border-amber-500/35 transition-all shadow-inner font-mono"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 transition-colors focus:outline-none"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
             {loginError && (
@@ -694,7 +764,7 @@ export default function AdminDashboard() {
     <main className="relative min-h-screen w-full text-slate-100 flex flex-col -mt-20">
 
       {/* Admin Global Header (Sticky Top) */}
-      <header className="sticky top-0 z-50 w-full bg-slate-500 backdrop-blur-2xl border-b border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+      <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-2xl border-b border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
         <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
 
           {/* Brand & Mobile Toggle Row */}
@@ -947,11 +1017,20 @@ export default function AdminDashboard() {
                             </button>
                           )}
                           <div className="min-w-0">
-                            <h4 className="text-xs font-black uppercase tracking-widest text-white truncate">
+                            <h4 className="text-sm font-black uppercase tracking-widest text-white truncate flex items-center gap-2">
                               {selectedClient.username}
+                              {selectedClient.gender && (
+                                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-900/30 px-2 py-1 rounded-full border border-emerald-500/20">{selectedClient.gender}</span>
+                              )}
                             </h4>
-                            <span className="text-[9px] text-indigo-300 font-semibold block mt-0.5 truncate">
-                              {selectedClient.mobile}
+                            <span className="text-[11px] text-indigo-300 font-bold block mt-1 truncate flex flex-wrap items-center gap-2">
+                              <span>{selectedClient.mobile}</span>
+                              <span className="opacity-50">•</span>
+                              <span>DOB: {selectedClient.dob || 'N/A'}</span>
+                              <span className="opacity-50">•</span>
+                              <span>TOB: {selectedClient.tob || 'N/A'}</span>
+                              <span className="opacity-50">•</span>
+                              <span>Place: {selectedClient.pob || 'N/A'}</span>
                             </span>
                           </div>
                         </div>
@@ -971,6 +1050,19 @@ export default function AdminDashboard() {
                           </span>
                         </div>
                       </div>
+
+                      {/* Paid session active countdown banner */}
+                      {selectedClient.chatUnlocked && adminTimeRemaining !== null && adminTimeRemaining > 0 && (
+                        <div className="border-b text-xs px-6 py-2.5 flex items-center justify-between shrink-0 font-mono bg-emerald-500/10 border-emerald-500/20 text-emerald-300">
+                          <span className="flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full animate-ping bg-emerald-400" />
+                            Paid consultation session active. Remaining time:
+                          </span>
+                          <span className="font-bold px-2 py-0.5 rounded border text-emerald-400 bg-emerald-950/40 border-emerald-500/25">
+                            {Math.floor(adminTimeRemaining / 60)}m {adminTimeRemaining % 60}s
+                          </span>
+                        </div>
+                      )}
 
                       {/* Chat Messages */}
                       <div className="flex-1 p-6 overflow-y-auto space-y-4.5 scrollbar-thin">
@@ -998,7 +1090,7 @@ export default function AdminDashboard() {
                       </div>
 
                       {/* Input Reply capsule bar */}
-                      <form onSubmit={handleSendReply} className="p-4 border-t border-white/5 bg-slate-500 backdrop-blur-md flex gap-2 shrink-0">
+                      <form onSubmit={handleSendReply} className="p-4 border-t border-white/5 bg-transparent backdrop-blur-md flex gap-2 shrink-0">
                         <input
                           type="text"
                           value={replyText}

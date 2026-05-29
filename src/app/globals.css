@@ -47,7 +47,7 @@
 body {
   background-color: #FFF8E7 !important;
   background-image: 
-    url("/assets/zodiac_pattern.png"), 
+    url("/assets/zodiac_pattern.webp"), 
     linear-gradient(135deg, rgba(255, 248, 231, 0.95) 0%, rgba(244, 228, 188, 0.4) 50%, rgba(212, 175, 55, 0.1) 100%) !important;
   background-size: 400px, auto !important; /* Adjust size of pattern as needed */
   background-repeat: repeat, no-repeat !important;

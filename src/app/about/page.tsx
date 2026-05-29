@@ -53,18 +53,27 @@ export default function AboutPage() {
       issuer: "Akhila Bharatiya Saraswata Parishad",
       src: "/assets/Cert/c1.webp",
       desc: "Accredited credentials in Vedic Horoscope Calculations and planetary transit analysis."
+    }
+  ];
+
+  const gallery = [
+    {
+      title: "Master's Initiation & Certification",
+      issuer: "Traditional Lineage",
+      src: "/assets/Cert/g0.webp",
+      desc: "Sacred initiation and certification received directly from the revered Master."
     },
     {
-      title: "Advanced Muhurtham Expert",
-      issuer: "Astro Research Academy",
-      src: "/assets/Cert/c2.webp",
-      desc: "Certified specialization in calculating optimal astronomical moments (electional astrology) for vital events."
+      title: "Vedic Heritage Certification",
+      issuer: "Traditional Lineage",
+      src: "/assets/Cert/g1.webp",
+      desc: "Authentic authorizations validating ancient Vedic studies from the Guru parampara."
     },
     {
-      title: "Kadikara Prasannam Specialist",
-      issuer: "Kkarthikeya Astrological Centre",
-      src: "/assets/Cert/c3.webp",
-      desc: "Validation of expertise in clock-based Prasannam predictions and horary question analysis."
+      title: "Advanced Prasannam Mastery",
+      issuer: "Traditional Lineage",
+      src: "/assets/Cert/g2.webp",
+      desc: "Validation of expertise in advanced traditional techniques passed down through generations."
     }
   ];
 
@@ -107,7 +116,7 @@ export default function AboutPage() {
     }
   };
 
-  const mapEmbedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.4828114620864!2d80.24075197593257!3d13.060424013444455!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a526642d99d1469%3A0x6b1d4c82c9e782e1!2sNungambakkam%2C%20Chennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1716035000000!5m2!1sen!2sin";
+  const mapEmbedUrl = "https://maps.google.com/maps?q=Singaperumal+Koil,+Tamil+Nadu+603204&t=&z=13&ie=UTF8&iwloc=&output=embed";
 
   return (
     <main className="relative min-h-screen w-full text-slate-100 overflow-x-hidden pb-16 selection:bg-amber-500/30">
@@ -264,7 +273,7 @@ export default function AboutPage() {
       </section>
 
       {/* 📜 Certificates & Credentials Section */}
-      <section className="py-20 bg-slate-500 border-y border-white/5 relative z-10">
+      <section className="py-20 bg-transparent border-y border-white/5 relative z-10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-2">Credentials</div>
@@ -274,11 +283,11 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {certificates.map((cert, idx) => (
               <div
                 key={idx}
-                className="group rounded-3xl border border-white/10 bg-slate-900/20 backdrop-blur-md p-5 shadow-inner hover:border-amber-500/30 transition-all duration-300 flex flex-col justify-between"
+                className="group w-full max-w-sm rounded-3xl border border-white/10 bg-slate-900/20 backdrop-blur-md p-5 shadow-inner hover:border-amber-500/30 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   {/* Certificate Image Frame */}
@@ -298,6 +307,48 @@ export default function AboutPage() {
                   <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-100 font-serif leading-snug">{cert.title}</h3>
                   <p className="text-[10px] text-amber-400 uppercase tracking-wider font-bold mt-1.5">{cert.issuer}</p>
                   <p className="text-xs text-slate-400 mt-2 leading-relaxed">{cert.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 🖼️ Gallery Section */}
+      <section className="py-20 bg-transparent border-t border-white/5 relative z-10">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-2">Heritage</div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white font-serif">Guru Parampara Gallery</h2>
+            <p className="text-slate-400 text-xs md:text-sm mt-3 max-w-xl mx-auto">
+              Glimpses of sacred initiation and blessings received from the revered lineage.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {gallery.map((item, idx) => (
+              <div
+                key={idx}
+                className="group rounded-3xl border border-white/10 bg-slate-900/20 backdrop-blur-md p-5 shadow-inner hover:border-amber-500/30 transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  {/* Gallery Image Frame */}
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/5 bg-slate-900/50 p-2 mb-4 flex items-center justify-center group-hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] transition-shadow">
+                    <img
+                      src={item.src}
+                      alt={item.title}
+                      className="w-full h-full object-contain group-hover:scale-105 transition-all duration-500"
+                    />
+                    <button
+                      onClick={() => setActiveCert(item.src)}
+                      className="absolute inset-0 bg-slate-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-300"
+                    >
+                      <Eye className="w-4 h-4 text-amber-400" /> View Image
+                    </button>
+                  </div>
+                  <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-100 font-serif leading-snug">{item.title}</h3>
+                  <p className="text-[10px] text-amber-400 uppercase tracking-wider font-bold mt-1.5">{item.issuer}</p>
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -333,7 +384,7 @@ export default function AboutPage() {
               <div className="space-y-4.5 text-xs text-slate-300 font-medium">
                 {/* WhatsApp Button */}
                 <a
-                  href="https://wa.me/918344874681?text=Hello%20Kkarthikeya%20Astrological%20Centre%2C%20I%20have%20a%20consultation%20query."
+                  href="https://wa.me/917845369302?text=Hello%20Kkarthikeya%20Astrological%20Centre%2C%20I%20have%20a%20consultation%20query."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-3 rounded-2xl border border-emerald-500/20 bg-emerald-950/15 hover:bg-emerald-950/30 text-emerald-300 transition-all duration-300 active:scale-95 group"
@@ -349,7 +400,7 @@ export default function AboutPage() {
 
                 {/* Phone Line */}
                 <a
-                  href="tel:+918344874681"
+                  href="tel:+917845369302"
                   className="flex items-center gap-4 p-3 rounded-2xl border border-white/5 bg-white/2 hover:border-amber-500/20 transition-all duration-300 active:scale-95 group"
                 >
                   <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
@@ -357,13 +408,13 @@ export default function AboutPage() {
                   </div>
                   <div>
                     <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">Mobile Line</span>
-                    <span className="font-bold text-sm text-slate-100">+91 83448 74681</span>
+                    <span className="font-bold text-sm text-slate-100">+91 78453 69302</span>
                   </div>
                 </a>
 
                 {/* Email Box */}
                 <a
-                  href="mailto:kkarthikeya.astro@gmail.com"
+                  href="mailto:kkarthikeyaastro@gmail.com"
                   className="flex items-center gap-4 p-3 rounded-2xl border border-white/5 bg-white/2 hover:border-indigo-500/20 transition-all duration-300 active:scale-95 group"
                 >
                   <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
@@ -371,7 +422,7 @@ export default function AboutPage() {
                   </div>
                   <div>
                     <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">Stellar Mail</span>
-                    <span className="font-bold text-sm text-slate-100">kkarthikeya.astro@gmail.com</span>
+                    <span className="font-bold text-sm text-slate-100">kkarthikeyaastro@gmail.com</span>
                   </div>
                 </a>
 
@@ -382,8 +433,8 @@ export default function AboutPage() {
                   </div>
                   <div>
                     <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">Centre Coordinates</span>
-                    <span className="font-bold text-sm text-slate-100 leading-normal">
-                      Nungambakkam, Chennai, Tamilnadu
+                    <span className="font-bold text-xs text-slate-100 leading-normal">
+                      5/121A, GST Rd, near Sri Nidhi mahal, Viniyambakkam, Singaperumal Koil, Tamil Nadu 603204
                     </span>
                   </div>
                 </div>
@@ -396,7 +447,7 @@ export default function AboutPage() {
                 <span className="text-[9px] uppercase tracking-widest text-slate-400 font-bold flex items-center gap-1">
                   <Compass className="w-3.5 h-3.5 text-amber-500" /> Google Map Location
                 </span>
-                <span className="text-[8px] py-0.5 px-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-300 font-extrabold uppercase">Chennai</span>
+                <span className="text-[8px] py-0.5 px-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-300 font-extrabold uppercase">Singaperumal Koil</span>
               </div>
 
               <div className="relative w-full aspect-square rounded-2xl overflow-hidden border border-white/10 bg-slate-950">

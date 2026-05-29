@@ -82,7 +82,7 @@ export default function BlogsPage() {
             <div className="w-10 h-10 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin"></div>
           </div>
         ) : blogs.length === 0 ? (
-          <div className="text-center py-20 border border-white/5 rounded-3xl bg-slate-500 backdrop-blur-md shadow-inner">
+          <div className="text-center py-20 border border-white/5 rounded-3xl bg-transparent backdrop-blur-md shadow-inner">
             <BookOpen className="w-12 h-12 text-slate-500 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-white">No Articles Yet</h3>
             <p className="text-slate-400 mt-2">Check back soon for cosmic insights and updates.</p>
@@ -95,7 +95,7 @@ export default function BlogsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className="group flex flex-col bg-white backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-inner hover:bg-slate-500 hover:border-amber-500 transition-all duration-300"
+                className="group flex flex-col bg-white backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-inner hover:bg-transparent hover:border-amber-500 transition-all duration-300"
               >
                 <Link href={`/blogs/${blog.slug}`} className="block relative h-56 overflow-hidden bg-white p-2 border border-white/5">
                   <img

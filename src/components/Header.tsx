@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Orbit, Menu, X, ChevronRight, LogOut } from 'lucide-react';
+import { Menu, X, ChevronRight, LogOut } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export default function Header() {
@@ -35,12 +35,13 @@ export default function Header() {
         {/* Logo Branding */}
         <Link href="/" className="flex items-center gap-3 group">
           <Image
-            src="/assets/KK_Logo.webp?v=2"
+            src="/assets/KK_Logo.webp"
             alt="Kkarthikeya Astrological Centre Logo"
             width={56}
             height={56}
             className="w-14 h-14 object-contain group-hover:scale-105 transition-transform duration-300"
             priority
+            loading="eager"
           />
           <div className="flex flex-col">
             <span className="text-xs font-black tracking-widest bg-gradient-to-r from-amber-200 via-amber-100 to-white bg-clip-text text-transparent uppercase font-serif">
@@ -80,7 +81,7 @@ export default function Header() {
         <div className="hidden lg:flex items-center gap-2.5">
           {currentUser ? (
             <div className="flex items-center gap-2">
-              <span className="text-[9px] tracking-widest text-emerald-400 font-extrabold uppercase border border-emerald-500/20 bg-emerald-950/20 py-1.5 px-3 rounded-full">
+              <span className="text-[9px] tracking-widest text-emerald-900 font-extrabold uppercase bg-white py-1.5 px-3 rounded-full shadow-sm">
                 {currentUser.username}
               </span>
               <Link
@@ -149,7 +150,7 @@ export default function Header() {
           >
             <div className="flex flex-col gap-4">
               <div className="text-[9px] uppercase tracking-widest text-slate-500 font-bold border-b border-white/5 pb-1.5 flex justify-between items-center">
-                <span>Stellar Navigation</span>
+                <span>Navigation</span>
                 {currentUser && (
                   <span className="text-[8px] text-emerald-400 font-semibold uppercase">User: {currentUser.username}</span>
                 )}
@@ -182,7 +183,7 @@ export default function Header() {
                       onClick={() => setMobileMenuOpen(false)}
                       className="w-full py-2 rounded-full border border-indigo-500/30 text-center text-xs font-semibold uppercase tracking-wider text-white bg-indigo-600 flex items-center justify-center gap-2"
                     >
-                      Open Quick Chat Channel
+                      Quick Chat
                     </Link>
                     <button
                       onClick={() => {
@@ -192,7 +193,7 @@ export default function Header() {
                       className="w-full py-2.5 rounded-full border border-red-500/20 text-center text-xs font-semibold uppercase tracking-wider text-red-400 bg-red-950/20 flex items-center justify-center gap-2"
                     >
                       <LogOut className="w-4 h-4" />
-                      Disconnect Portal
+                      Logout
                     </button>
                   </>
                 ) : (

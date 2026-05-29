@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { supabase } from '@/lib/supabaseClient';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder');
 
@@ -20,6 +21,24 @@ export async function POST(request: Request) {
 
     if (!seekerName || !bookingId || !selectedDate || !selectedSlot) {
       return NextResponse.json({ success: false, error: 'Required booking parameters are missing.' }, { status: 400 });
+    }
+
+    // Save booking to Supabase (ignore 42P01 if table doesn't exist yet)
+    const { error: dbError } = await supabase
+      .from('bookings')
+      .insert([
+        {
+          booking_id: bookingId,
+          seeker_name: seekerName,
+          mobile: mobileNum,
+          plan_title: planTitle,
+          selected_date: selectedDate,
+          selected_slot: selectedSlot
+        }
+      ]);
+
+    if (dbError && dbError.code !== '42P01') {
+      console.error('Failed to save booking to database:', dbError);
     }
 
     const { data, error } = await resend.emails.send({

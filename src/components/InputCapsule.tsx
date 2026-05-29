@@ -3,15 +3,15 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Paperclip, Mic, Send, X, CheckCircle2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
 
 interface InputCapsuleProps {
-  onSendMessage: (text: string) => void;
-  onSendAudio: (duration: string) => void;
-  onUploadClick: () => void;
+  onSendMessageAction: (text: string) => void;
+  onSendAudioAction: (duration: string) => void;
+  onUploadClickAction: () => void;
 }
 
-export default function InputCapsule({ onSendMessage, onSendAudio, onUploadClick }: InputCapsuleProps) {
+export default function InputCapsule({ onSendMessageAction, onSendAudioAction, onUploadClickAction }: InputCapsuleProps) {
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [recordDuration, setRecordDuration] = useState(0);
@@ -19,7 +19,7 @@ export default function InputCapsule({ onSendMessage, onSendAudio, onUploadClick
 
   const handleSend = () => {
     if (message.trim()) {
-      onSendMessage(message.trim());
+      onSendMessageAction(message.trim());
       setMessage('');
     }
   };
@@ -45,7 +45,7 @@ export default function InputCapsule({ onSendMessage, onSendAudio, onUploadClick
     const mins = Math.floor(recordDuration / 60);
     const secs = recordDuration % 60;
     const formattedDuration = `${mins}:${secs.toString().padStart(2, '0')}`;
-    onSendAudio(formattedDuration === "0:00" ? "0:05" : formattedDuration);
+    onSendAudioAction(formattedDuration === "0:00" ? "0:05" : formattedDuration);
   };
 
   const cancelRecording = () => {
@@ -58,7 +58,7 @@ export default function InputCapsule({ onSendMessage, onSendAudio, onUploadClick
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative flex items-center w-full p-2 rounded-full border border-white/15 bg-slate-900/50 backdrop-blur-2xl shadow-antigravity transition-all hover:shadow-antigravity-hover"
+        className="relative flex items-end w-full p-2 rounded-[28px] border border-white/15 bg-slate-900/50 backdrop-blur-2xl transition-all"
       >
         <AnimatePresence mode="wait">
           {!isRecording ? (
@@ -68,24 +68,29 @@ export default function InputCapsule({ onSendMessage, onSendAudio, onUploadClick
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex w-full items-center"
+              className="flex w-full items-end pb-0.5"
             >
               {/* File Attachment */}
               <button
-                onClick={onUploadClick}
+                onClick={onUploadClickAction}
                 className="p-3.5 ml-1 text-slate-400 hover:text-indigo-300 hover:bg-white/5 rounded-full transition-all duration-300 focus:outline-none active:scale-95"
               >
                 <Paperclip className="w-5 h-5" />
               </button>
 
               {/* Text Input Field */}
-              <input
-                type="text"
+              <textarea
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                  setMessage(e.target.value);
+                  e.target.style.height = 'auto';
+                  e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+                }}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about your celestial configuration..."
-                className="flex-1 bg-transparent text-slate-100 placeholder:text-slate-500 text-sm px-4 outline-none focus:ring-0 placeholder-indigo-300/30"
+                rows={1}
+                className="flex-1 bg-transparent text-slate-100 placeholder:text-slate-500 text-sm px-4 py-3 outline-none focus:ring-0 placeholder-indigo-300/30 resize-none overflow-y-auto scrollbar-thin min-h-[44px]"
+                style={{ height: 'auto' }}
               />
 
               {/* Dynamic Action Buttons */}

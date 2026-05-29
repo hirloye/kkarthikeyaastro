@@ -13,7 +13,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   // Mode: Existing User (false) vs New User (true)
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(true);
 
   // Form fields
   const [name, setName] = useState('');
@@ -23,6 +23,7 @@ export default function LoginPage() {
   const [tob, setTob] = useState('');
   const [tobPeriod, setTobPeriod] = useState('AM');
   const [pob, setPob] = useState('');
+  const [gender, setGender] = useState('');
   
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -47,9 +48,10 @@ export default function LoginPage() {
     if (isRegister) {
       if (!name.trim()) return setError('Please enter your full name.');
       const trimmedEmail = email.trim().toLowerCase();
-      if (!trimmedEmail || !trimmedEmail.includes('@')) {
+      if (trimmedEmail && !trimmedEmail.includes('@')) {
         return setError('Please enter a valid email address.');
       }
+      if (!gender) return setError('Please select your gender.');
       if (!dob) return setError('Please enter your date of birth.');
       if (!tob) return setError('Please enter your time of birth.');
       if (!pob.trim()) return setError('Please enter your place of birth.');
@@ -74,7 +76,7 @@ export default function LoginPage() {
         }
 
         const formattedTob = `${tob} ${tobPeriod}`;
-        await registerUser(name.trim(), phone.trim(), email.trim().toLowerCase(), dob, formattedTob, pob.trim());
+        await registerUser(name.trim(), phone.trim(), email.trim().toLowerCase(), dob, formattedTob, pob.trim(), gender);
       } else {
         // Login flow: Check if user exists via phone number
         await loginUser(phone.trim());
@@ -165,25 +167,27 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Email Field (Only visible in Register mode) */}
+          {/* Gender Field (Only visible in Register mode) */}
           {isRegister && (
             <motion.div 
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               className="space-y-1.5 overflow-hidden"
             >
-              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Mail Identification (Email)</label>
+              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Gender</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="user@cosmos.com"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-11 pr-4 text-xs text-slate-100 placeholder-slate-500 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner"
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="w-full bg-slate-900 border border-white/10 rounded-2xl py-3.5 pl-11 pr-4 text-xs text-slate-100 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner"
                   disabled={isLoading}
                   required={isRegister}
-                />
+                >
+                  <option value="" disabled>Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
               </div>
             </motion.div>
           )}
@@ -257,6 +261,28 @@ export default function LoginPage() {
                 disabled={isLoading}
                 required={isRegister}
               />
+            </motion.div>
+          )}
+
+          {/* Email Field (Optional, Only visible in Register mode) */}
+          {isRegister && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="space-y-1.5 overflow-hidden"
+            >
+              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Mail Identification (Email) - Optional</label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="user@cosmos.com"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-11 pr-4 text-xs text-slate-100 placeholder-slate-500 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner"
+                  disabled={isLoading}
+                />
+              </div>
             </motion.div>
           )}
 

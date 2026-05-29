@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Orbit, Phone, Mail, Compass, Star, Sparkles } from 'lucide-react';
+import { Phone, Mail, Compass, Star, Sparkles } from 'lucide-react';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -24,7 +24,7 @@ export default function Footer() {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <Image
-              src="/assets/KK_Logo.webp?v=2"
+              src="/assets/KK_Logo.webp"
               alt="Kkarthikeya Astrological Centre Logo"
               width={56}
               height={56}
@@ -95,13 +95,13 @@ export default function Footer() {
               Online Consultations globally.
             </p>
             <div className="space-y-1">
-              <a href="tel:+918344874681" className="flex items-center gap-2 hover:text-white transition-colors">
+              <a href="tel:+917845369302" className="flex items-center gap-2 hover:text-white transition-colors">
                 <Phone className="w-3.5 h-3.5 text-amber-500" />
-                <span>+91 83448 74681</span>
+                <span>+91 78453 69302</span>
               </a>
-              <a href="mailto:kkarthikeya.astro@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors">
+              <a href="mailto:kkarthikeyaastro@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors">
                 <Mail className="w-3.5 h-3.5 text-amber-500" />
-                <span>kkarthikeya.astro@gmail.com</span>
+                <span>kkarthikeyaastro@gmail.com</span>
               </a>
             </div>
           </div>

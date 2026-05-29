@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  Sparkles, ShieldCheck, Star, Clock, Orbit, Sun, Moon, Compass,
-  PhoneCall, Shield, HelpCircle, Calendar, ChevronRight, CheckCircle2
+  Sparkles, ShieldCheck, Star, Clock, Orbit, Sun
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import AuthGuard from '@/components/AuthGuard';
@@ -32,70 +31,7 @@ export default function ServicesPage() {
       .catch(err => console.error("Failed to fetch dynamic prices:", err));
   }, []);
 
-  const pricingPlans = [
-    {
-      id: "bronze",
-      title: "BRONZE",
-      subtitle: "CONSULTATION",
-      price: dynamicPrices.bronze,
-      duration: "15 Minutes Consultation",
-      colorClass: "border-amber-700/50 bg-gradient-to-b from-amber-950/20 to-slate-900/40 text-amber-300",
-      btnClass: "bg-gradient-to-r from-amber-700 to-amber-800 text-white hover:from-amber-600 hover:to-amber-700 shadow-[0_4px_15px_rgba(180,83,9,0.3)]",
-      benefits: [
-        "Phone / Chat Support",
-        "Basic Horoscope Analysis",
-        "Simple Remedies Included",
-        "1 Key Life Focus Query"
-      ]
-    },
-    {
-      id: "silver",
-      title: "SILVER",
-      subtitle: "CONSULTATION",
-      price: dynamicPrices.silver,
-      duration: "30 Minutes Consultation",
-      popular: true,
-      colorClass: "border-slate-400/50 bg-gradient-to-b from-slate-800/20 to-slate-900/40 text-slate-200 shadow-[0_0_30px_rgba(148,163,184,0.1)]",
-      btnClass: "bg-gradient-to-r from-slate-600 to-slate-700 text-white hover:from-slate-500 hover:to-slate-600 shadow-[0_4px_15px_rgba(71,85,105,0.3)]",
-      benefits: [
-        "Detailed Horoscope Reading",
-        "Career / Marriage / Finance Focus",
-        "Personalized Vedic Remedies",
-        "Priority Response Window"
-      ]
-    },
-    {
-      id: "gold",
-      title: "GOLD",
-      subtitle: "CONSULTATION",
-      price: dynamicPrices.gold,
-      duration: "45-60 Minutes Deep Analysis",
-      colorClass: "border-yellow-500/50 bg-gradient-to-b from-yellow-950/20 to-slate-900/40 text-yellow-400 shadow-[0_0_30px_rgba(234,179,8,0.15)]",
-      btnClass: "bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-950 hover:from-yellow-400 hover:to-yellow-500 shadow-[0_4px_20px_rgba(234,179,8,0.3)] font-black",
-      benefits: [
-        "Full Detailed Horoscope Study",
-        "Multiple Life Areas Covered",
-        "Advanced Remedies & Predictions",
-        "Priority Booking & Next-day Consultation",
-        "1-Month Follow-Up Support"
-      ]
-    },
-    {
-      id: "marriage",
-      title: "MARRIAGE",
-      subtitle: "MATCHING",
-      price: dynamicPrices.marriage,
-      duration: "Kundli Matching",
-      colorClass: "border-rose-500/50 bg-gradient-to-b from-rose-950/20 to-slate-900/40 text-rose-300",
-      btnClass: "bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-400 hover:to-rose-500 shadow-[0_4px_15px_rgba(244,63,94,0.3)]",
-      benefits: [
-        "Detailed Compatibility Analysis",
-        "10-Koota Scorecard Check",
-        "Manglik & Dosh Check",
-        "Remedies & Guidance Included"
-      ]
-    }
-  ];
+
 
   const muhurthams = [
     {

@@ -15,15 +15,7 @@ import AuthGuard from '@/components/AuthGuard';
 import { supabase } from '@/lib/supabaseClient';
 import { toast } from 'react-hot-toast';
 
-const INITIAL_MESSAGES: Message[] = [
-  {
-    id: 'init-1',
-    sender: 'astrologer',
-    type: 'text',
-    content: "Greetings, user. The cosmos has aligned perfectly for our connection today. Please write your query below, and let the planetary insights guide you.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 5),
-  }
-];
+
 
 const RESPONSES = [
   "Ah, I see. Mercury resides in your 10th house, suggesting that during the retrograde, you should reflect and reorganize rather than launch new initiatives.",
@@ -55,6 +47,9 @@ function AstrologyChatPage() {
   // New state for claim bonus submission
   const [isSubmittingBonus, setIsSubmittingBonus] = useState(false);
 
+  // Astrologer presence status
+  const [astrologerStatus, setAstrologerStatus] = useState<'offline' | 'online' | 'busy'>('offline');
+
   // Sync claimed review bonus status from localStorage on mount/user load
   useEffect(() => {
     if (currentUser) {
@@ -68,7 +63,7 @@ function AstrologyChatPage() {
     if (!currentUser || isOfflineMode) return;
 
     const channel = supabase.channel('admin_notifications');
-    
+
     channel.subscribe((status) => {
       if (status === 'SUBSCRIBED') {
         channel.send({
@@ -83,6 +78,45 @@ function AstrologyChatPage() {
       supabase.removeChannel(channel);
     };
   }, [currentUser, isOfflineMode]);
+
+  // Track Astrologer Status
+  useEffect(() => {
+    if (isOfflineMode) return;
+
+    const channel = supabase.channel('astrologer_status');
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        let isAdminOnline = false;
+        let isBusy = false;
+
+        for (const id in state) {
+          const presences = state[id] as any[];
+          for (const p of presences) {
+            if (p.role === 'admin' && !p.isOffline) {
+              isAdminOnline = true;
+              if (p.talkingTo && p.talkingTo !== currentUser?.id) {
+                isBusy = true;
+              }
+            }
+          }
+        }
+
+        if (!isAdminOnline) {
+          setAstrologerStatus('offline');
+        } else if (isBusy) {
+          setAstrologerStatus('busy');
+        } else {
+          setAstrologerStatus('online');
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isOfflineMode, currentUser]);
 
   // Sync bonus session flag from current timer state
   useEffect(() => {
@@ -314,8 +348,35 @@ function AstrologyChatPage() {
   useEffect(() => {
     if (!currentUser) return;
 
+    const userDetailsMessage = `Here are my details for the consultation:\n` +
+      `Name: ${currentUser.username}\n` +
+      `Gender: ${currentUser.gender || 'Not specified'}\n` +
+      `Date of Birth: ${currentUser.dob || 'Not specified'}\n` +
+      `Time of Birth: ${currentUser.tob || 'Not specified'}\n` +
+      `Place of Birth: ${currentUser.pob || 'Not specified'}`;
+
+    const astrologerGreeting = `Hello ${currentUser.username}! Welcome to your quick chat.\n\n` +
+      `I have received your birth details. Please tell me what you would like to know today.`;
+
+    const initialMsgs: Message[] = [
+      {
+        id: 'init-1',
+        sender: 'user',
+        type: 'text',
+        content: userDetailsMessage,
+        timestamp: new Date(Date.now() - 1000 * 60 * 6),
+      },
+      {
+        id: 'init-2',
+        sender: 'astrologer',
+        type: 'text',
+        content: astrologerGreeting,
+        timestamp: new Date(Date.now() - 1000 * 60 * 5),
+      }
+    ];
+
     if (isOfflineMode) {
-      setMessages(INITIAL_MESSAGES);
+      setMessages(initialMsgs);
     } else {
       const fetchHistory = async () => {
         try {
@@ -339,10 +400,11 @@ function AstrologyChatPage() {
             }));
             setMessages(mapped);
           } else {
-            setMessages(INITIAL_MESSAGES);
+            setMessages(initialMsgs);
 
             await supabase.from('messages').insert([
-              { user_id: currentUser.id, sender: 'astrologer', content: INITIAL_MESSAGES[0].content }
+              { user_id: currentUser.id, sender: 'user', content: initialMsgs[0].content },
+              { user_id: currentUser.id, sender: 'astrologer', content: initialMsgs[1].content }
             ]);
           }
         } catch (err) {
@@ -569,7 +631,17 @@ function AstrologyChatPage() {
               <h3 className="text-sm font-semibold text-white flex items-center gap-1">
                 Kkarthikeya<Sparkles className="w-3.5 h-3.5 text-amber-300" />
               </h3>
-              <span className="text-[10px] text-emerald-400">● Active Guide</span>
+              <span className="text-[10px] flex items-center gap-1 font-medium tracking-wider">
+                {astrologerStatus === 'online' && (
+                  <><span className="text-emerald-400 animate-pulse">●</span> <span className="text-emerald-400">Online</span></>
+                )}
+                {astrologerStatus === 'busy' && (
+                  <><span className="text-amber-400 animate-pulse">●</span> <span className="text-amber-400">Busy • Talking to someone</span></>
+                )}
+                {astrologerStatus === 'offline' && (
+                  <><span className="text-slate-500">●</span> <span className="text-slate-400">Offline</span></>
+                )}
+              </span>
             </div>
           </div>
 
@@ -602,91 +674,69 @@ function AstrologyChatPage() {
             <MessageList messages={messages} isTyping={isTyping} />
 
             {isLocked ? (
-              <div className="border-t border-white/10 bg-slate-950/70 backdrop-blur-xl p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-6 shrink-0 relative">
+              <div className="border-t border-white/10 bg-slate-950/70 backdrop-blur-xl p-4 md:p-5 flex flex-col items-center text-center gap-4 shrink-0 relative overflow-y-auto max-h-[80vh] scrollbar-thin">
                 <div className="absolute inset-0 bg-red-500/[0.02] pointer-events-none" />
 
-                <div className="flex-1 space-y-3 text-center md:text-left">
-                  <div className="flex items-center justify-center md:justify-start gap-2 text-xs font-bold text-red-400 uppercase tracking-wider">
-                    <Lock className="w-3.5 h-3.5 animate-pulse" />
-                    <span>Celestial Session Sealed</span>
-                  </div>
-                  <p className="text-[11px] text-slate-300 max-w-md leading-relaxed">
-                    Your 10-minute session has expired. Scan the QR code or send payment to the UPI ID. Chat input will automatically restore once approved.
-                  </p>
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-1">
-                    <span className="text-xs text-slate-400 font-bold">FEE: <span className="text-amber-400 font-serif text-sm font-black">{pricingPlans?.quick?.price || "₹99"}</span></span>
-                    <span className="text-[10px] text-slate-500">|</span>
-                    <div className="flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1 rounded-xl border border-white/5">
-                      <span className="text-[9px] text-slate-400 uppercase tracking-wider font-mono">UPI:</span>
-                      <span className="text-[10px] font-mono text-indigo-300 font-bold select-all">princekarthi111-2@okaxis</span>
-                    </div>
-                  </div>
+                {/* 1. Header */}
+                <div className="flex items-center justify-center gap-2 text-sm font-bold text-red-400 uppercase tracking-wider mt-1">
+                  <Lock className="w-4 h-4 animate-pulse" />
+                  <span>Celestial Session Sealed</span>
+                </div>
 
-                  {/* Rating / Review Buttons */}
-                  <div className="flex flex-col items-center md:items-start gap-2">
-                    {/* Rating button appears only on first lock */}
-                    {(!localStorage.getItem(`astro_rating_shown_${currentUser?.id}`) && ratingExpiresAt) && (
-                      <button
-                        onClick={() => {
-                          localStorage.setItem(`astro_rating_shown_${currentUser?.id}`, 'true');
-                          setShowRatingModal(true);
-                        }}
-                        className="px-4 py-2 rounded-full bg-amber-500 text-slate-900 font-semibold hover:bg-amber-600 transition text-[10px]"
-                      >
-                        Give Feedback ({Math.max(0, Math.ceil((ratingExpiresAt - Date.now()) / 1000))}s)
-                      </button>
-                    )}
-                    {/* Review button appears after rating has been submitted */}
-                    {localStorage.getItem(`astro_rating_shown_${currentUser?.id}`) && (
-                      <button
-                        onClick={() => window.open('https://g.page/r/CUMI2zFm_hJiEBM/review', '_blank')}
-                        className="px-4 py-2 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition text-[10px]"
-                      >
-                        Review
-                      </button>
-                    )}
+                {/* 2. Description */}
+                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed mx-auto w-full">
+                  Know about your Future please scan the QR or click this button to pay directly via Payment Apps (GPay, PhonePe, Paytm...). Chat input will automatically restore once approved.
+                </p>
+
+                {/* 3. Fee */}
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-sm text-slate-400 font-bold">FEE: <span className="text-amber-400 font-serif text-lg font-black">{pricingPlans?.quick?.price || "₹99"}</span></span>
+                </div>
+
+                {/* 4. QR Code & Pay Button */}
+                <div className="flex flex-col items-center gap-3 w-full max-w-[160px] bg-white/5 p-4 rounded-3xl border border-white/10 shadow-xl relative z-10">
+                  <div className="bg-white p-2 rounded-2xl shadow-inner w-full flex justify-center">
+                    <img src="/assets/qr.jpeg" alt="Payment QR Code" className="w-24 h-24 rounded-xl object-contain" />
                   </div>
+                  <a
+                    href={`upi://pay?pa=princekarthi111-2@okaxis&pn=Astrologer&am=${(pricingPlans?.quick?.price || "99").replace(/[^0-9.]/g, '')}&cu=INR`}
+                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-[0_0_15px_rgba(16,185,129,0.3)] flex flex-col items-center justify-center text-center gap-1 active:scale-95"
+                  >
+                    <span>Pay</span>
+                  </a>
+                  <div className="flex items-center gap-1.5 text-[9px] text-amber-300 font-mono tracking-widest uppercase animate-pulse mt-1">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                    Awaiting Approval...
+                  </div>
+                </div>
 
-                  {/* Warm gold glow */}
-                  {showRatingModal && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-                      <div className="bg-slate-900 rounded-2xl p-6 w-96 shadow-lg border border-white/10">
-                        <h3 className="text-lg font-bold text-white mb-4">Thank you for your feedback</h3>
-                        <p className="text-sm text-slate-300 mb-4">Your rating has been recorded.</p>
-                        <button
-                          onClick={() => setShowRatingModal(false)}
-                          className="mt-2 w-full py-2 rounded bg-emerald-600 text-white hover:bg-emerald-500 transition"
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Google Review Bonus Section */}
+                {/* 5. Google Review / Bonus Section */}
+                <div className="flex flex-col items-center gap-3 w-full max-w-md relative z-10 pb-4">
+                  
+                  {/* Review Bonus Ad */}
                   {!claimedBonus && (
-                    <div className="mt-4 p-3 rounded-2xl border border-amber-500/20 bg-amber-950/20 text-left max-w-md">
-                      <div className="text-[10px] text-amber-300 font-bold flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                    <div className="w-full p-4 rounded-2xl border border-amber-500/20 bg-amber-950/20 text-center mt-2 shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
+                      <div className="text-xs text-amber-300 font-black flex items-center justify-center gap-2 uppercase tracking-widest mb-1.5">
+                        <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
                         Claim 2 Minutes Free Chat!
                       </div>
-                      <p className="text-[9.5px] text-slate-300 leading-normal mt-1">
+                      <p className="text-[10px] text-slate-300 leading-relaxed mb-4 px-2">
                         Submit a review and rating on our Google Business Profile to unlock a one-time 2-minute free extension instantly.
                       </p>
 
-                      <div className="mt-2.5">
+                      <div className="flex justify-center w-full">
                         {showConfirmBonus ? (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <button
                               onClick={handleClaimBonus}
                               disabled={isSubmittingBonus}
-                              className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider transition-colors duration-200"
+                              className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider transition-colors duration-200 shadow-glow"
                             >
                               {isSubmittingBonus ? 'Unlocking...' : 'Yes, I submitted review'}
                             </button>
                             <button
                               onClick={() => setShowConfirmBonus(false)}
-                              className="px-2.5 py-1.5 rounded-lg border border-white/10 hover:bg-white/5 text-slate-300 text-[10px] font-bold uppercase transition-colors duration-200"
+                              className="px-3 py-2 rounded-xl border border-white/10 hover:bg-white/5 text-slate-300 text-[10px] font-bold uppercase transition-colors duration-200"
                             >
                               Cancel
                             </button>
@@ -694,7 +744,7 @@ function AstrologyChatPage() {
                         ) : (
                           <button
                             onClick={handleWriteReviewAndPrompt}
-                            className="w-full py-1.5 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-[9.5px] font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-1"
+                            className="w-full sm:w-auto py-2.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-1.5 shadow-glow"
                           >
                             Write Google Review & Claim Bonus
                           </button>
@@ -702,28 +752,29 @@ function AstrologyChatPage() {
                       </div>
                     </div>
                   )}
-                </div>
 
-                <div className="flex flex-col items-center gap-2 shrink-0">
-                  {/* QR Code */}
-                  <div className="w-28 h-28 bg-white p-1.5 rounded-xl border border-white/10 shadow-inner flex items-center justify-center overflow-hidden">
-                    <img
-                      src="/assets/qr.jpeg"
-                      alt="UPI QR Code"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[8px] text-amber-300 font-mono tracking-widest uppercase animate-pulse">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                    Awaiting Approval...
-                  </div>
+                  {/* Rating Success Modal */}
+                  {showRatingModal && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50">
+                      <div className="bg-slate-900/90 rounded-3xl p-8 w-[90%] max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 text-center">
+                        <h3 className="text-xl font-bold text-white mb-2 font-serif">Thank you!</h3>
+                        <p className="text-xs text-slate-300 mb-6 uppercase tracking-wider">Your rating has been recorded.</p>
+                        <button
+                          onClick={() => setShowRatingModal(false)}
+                          className="w-full py-3 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition shadow-glow uppercase tracking-wider text-xs"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
               <InputCapsule
-                onSendMessage={handleSendMessage}
-                onSendAudio={handleSendAudio}
-                onUploadClick={handleUploadSimulate}
+                onSendMessageAction={handleSendMessage}
+                onSendAudioAction={handleSendAudio}
+                onUploadClickAction={handleUploadSimulate}
               />
             )}
           </>

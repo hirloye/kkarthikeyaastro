@@ -14,7 +14,7 @@ export default function FloatingActions() {
     return null;
   }
 
-  const phoneNumber = "918344874681";
+  const phoneNumber = "917845369302";
   const message = encodeURIComponent("Welcome to Kkarthikeya Astrological Centre. I would like to book a Vedic astrology consultation.");
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 

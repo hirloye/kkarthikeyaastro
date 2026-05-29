@@ -11,6 +11,7 @@ export interface UserData {
   dob?: string;
   tob?: string;
   pob?: string;
+  gender?: string;
   registeredAt: string;
   firstMessageAt?: string | null;
   chatUnlocked?: boolean;
@@ -20,7 +21,7 @@ export interface UserData {
 interface AppContextType {
   currentUser: UserData | null;
   allUsers: UserData[];
-  registerUser: (username: string, mobile: string, email?: string, dob?: string, tob?: string, pob?: string) => Promise<UserData>;
+  registerUser: (username: string, mobile: string, email?: string, dob?: string, tob?: string, pob?: string, gender?: string) => Promise<UserData>;
   loginUser: (mobile: string) => Promise<UserData>;
   logoutUser: () => void;
   deleteUser: (userId: string) => Promise<void>;
@@ -55,6 +56,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
               const dobVal = parts[1] || '';
               const tobVal = parts[2] || '';
               const pobVal = parts[3] || '';
+              const genderVal = parts[4] || '';
               return {
                 id: u.id,
                 username: u.name,
@@ -63,6 +65,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 dob: dobVal,
                 tob: tobVal,
                 pob: pobVal,
+                gender: genderVal,
                 registeredAt: u.registered_at,
                 firstMessageAt: u.first_message_at,
                 chatUnlocked: u.chat_unlocked || false,
@@ -99,6 +102,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
               const dobVal = parts[1] || '';
               const tobVal = parts[2] || '';
               const pobVal = parts[3] || '';
+              const genderVal = parts[4] || '';
               const freshUser = {
                 id: data.id,
                 username: data.name,
@@ -107,6 +111,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 dob: dobVal,
                 tob: tobVal,
                 pob: pobVal,
+                gender: genderVal,
                 registeredAt: data.registered_at,
                 firstMessageAt: data.first_message_at,
                 chatUnlocked: data.chat_unlocked || false,
@@ -133,9 +138,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     loadData();
   }, []);
 
-  const registerUser = async (username: string, mobile: string, email: string = '', dob: string = '', tob: string = '', pob: string = '') => {
+  const registerUser = async (username: string, mobile: string, email: string = '', dob: string = '', tob: string = '', pob: string = '', gender: string = '') => {
     const cleanEmail = email.trim().toLowerCase() || `${username.toLowerCase().replace(/\s+/g, '')}_${Date.now()}@offline.com`;
-    const dbEmail = `${cleanEmail}|${dob}|${tob}|${pob}`;
+    const dbEmail = `${cleanEmail}|${dob}|${tob}|${pob}|${gender}`;
     const newUser: UserData = {
       id: '',
       username,
@@ -144,6 +149,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       dob,
       tob,
       pob,
+      gender,
       registeredAt: new Date().toISOString(),
       firstMessageAt: null,
       chatUnlocked: false,
@@ -205,6 +211,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const dobVal = parts[1] || '';
     const tobVal = parts[2] || '';
     const pobVal = parts[3] || '';
+    const genderVal = parts[4] || '';
 
     const user: UserData = {
       id: data.id,
@@ -214,6 +221,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       dob: dobVal,
       tob: tobVal,
       pob: pobVal,
+      gender: genderVal,
       registeredAt: data.registered_at,
       firstMessageAt: data.first_message_at,
       chatUnlocked: data.chat_unlocked || false,

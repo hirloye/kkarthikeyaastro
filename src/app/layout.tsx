@@ -62,14 +62,14 @@ export default function RootLayout({
     "image": "https://astro-kkarthikeya.com/assets/astrologer.png?v=2",
     "@id": "https://astro-kkarthikeya.com/#website",
     "url": "https://astro-kkarthikeya.com",
-    "telephone": "+918344874681",
+    "telephone": "+917845369302",
     "priceRange": "INR",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Nungambakkam",
-      "addressLocality": "Chennai",
+      "streetAddress": "5/121A, GST Rd, near Sri Nidhi mahal, Viniyambakkam",
+      "addressLocality": "Singaperumal Koil",
       "addressRegion": "Tamil Nadu",
-      "postalCode": "600034",
+      "postalCode": "603204",
       "addressCountry": "IN"
     },
     "geo": {

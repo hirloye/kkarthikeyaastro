@@ -9,10 +9,12 @@ import {
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import AuthGuard from '@/components/AuthGuard';
+import { useApp } from '@/context/AppContext';
 
 function BookingFormContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { currentUser } = useApp();
   
   const planParam = searchParams.get('plan') || 'silver';
   const serviceParam = searchParams.get('service') || '';
@@ -29,16 +31,45 @@ function BookingFormContent() {
 
   // Form States
   const [selectedPlan, setSelectedPlan] = useState(planParam);
-  const [userName, setUserName] = useState('');
-  const [mobileNum, setMobileNum] = useState('');
-  const [dob, setDob] = useState('');
-  const [tob, setTob] = useState('');
-  const [pob, setPob] = useState('');
+  const [userName, setUserName] = useState(currentUser?.username || '');
+  const [mobileNum, setMobileNum] = useState(currentUser?.mobile || '');
+  const [gender, setGender] = useState(currentUser?.gender || '');
+  const [dob, setDob] = useState(currentUser?.dob || '');
+
+  // Helper to parse stored "HH:MM AM" into "HH:MM" (24h) for input type="time"
+  const parseTobForInput = (raw: string) => {
+    if (!raw) return '';
+    const parts = raw.split(' ');
+    let time = parts[0];
+    if (parts[1]) {
+      let [hours, mins] = time.split(':');
+      let h = parseInt(hours, 10);
+      if (parts[1].toUpperCase() === 'PM' && h < 12) h += 12;
+      if (parts[1].toUpperCase() === 'AM' && h === 12) h = 0;
+      time = `${h.toString().padStart(2, '0')}:${mins}`;
+    }
+    return time;
+  };
+
+  const [tob, setTob] = useState(parseTobForInput(currentUser?.tob || ''));
+  const [pob, setPob] = useState(currentUser?.pob || '');
   
+  useEffect(() => {
+    if (currentUser) {
+      if (!userName) setUserName(currentUser.username || '');
+      if (!mobileNum) setMobileNum(currentUser.mobile || '');
+      if (!gender) setGender(currentUser.gender || '');
+      if (!dob) setDob(currentUser.dob || '');
+      if (!tob) setTob(parseTobForInput(currentUser.tob || ''));
+      if (!pob) setPob(currentUser.pob || '');
+    }
+  }, [currentUser]);
+
   // Custom Date Picker Grid States
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
 
   // Flow control states
   const [isProcessing, setIsProcessing] = useState(false);
@@ -85,6 +116,24 @@ function BookingFormContent() {
     { time: "06:30 PM", label: "Pradosha Hora" }
   ];
 
+  useEffect(() => {
+    if (selectedDate) {
+      const formattedDate = `${selectedDate} ${monthName} ${currentDate.getFullYear()}`;
+      fetch(`/api/booking/availability?date=${encodeURIComponent(formattedDate)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setBookedSlots(data.bookedSlots || []);
+          } else {
+            setBookedSlots([]);
+          }
+        })
+        .catch(err => console.error("Failed to load availability:", err));
+    } else {
+      setBookedSlots([]);
+    }
+  }, [selectedDate, monthName, currentDate]);
+
   const handleNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
     setSelectedDate(null);
@@ -107,33 +156,31 @@ function BookingFormContent() {
     }
     
     setIsProcessing(true);
-    const generatedId = "KK" + Math.floor(100000 + Math.random() * 900000);
-    const formattedDate = `${selectedDate} ${monthName} ${currentDate.getFullYear()}`;
-
+    const newBookingId = "KK" + Math.floor(100000 + Math.random() * 900000);
+    
     try {
       const response = await fetch('/api/booking', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          bookingId: generatedId,
+          bookingId: newBookingId,
           seekerName: userName,
           mobileNum,
+          gender,
           dob,
           tob,
           pob,
           planTitle: activePlanInfo.title,
           planPrice: activePlanInfo.price,
-          selectedDate: formattedDate,
-          selectedSlot,
-        }),
+          selectedDate: `${selectedDate} ${monthName} ${currentDate.getFullYear()}`,
+          selectedSlot
+        })
       });
 
       const data = await response.json();
 
       if (data.success) {
-        setBookingId(generatedId);
+        setBookingId(newBookingId);
         setIsBooked(true);
       } else {
         alert(data.error || 'Failed to submit booking. Please try again.');
@@ -148,9 +195,9 @@ function BookingFormContent() {
 
   const handleWhatsAppConfirmation = () => {
     const formattedDate = `${selectedDate} ${monthName} ${currentDate.getFullYear()}`;
-    const textMsg = `Namaste Kkarthikeya Astrological Centre. I have successfully scheduled a consultation appointment.\n\n*Booking ID:* ${bookingId}\n*Service:* ${activePlanInfo.title}\n*Date:* ${formattedDate}\n*Time:* ${selectedSlot}\n*User:* ${userName}\n*Birth Details:* ${dob} @ ${tob}, ${pob}\n*Status:* Confirmed (Pay on Consultation)\n\nPlease confirm my spiritual consultation details.`;
+    const textMsg = `Namaste Kkarthikeya Astrological Centre. I have successfully scheduled a consultation appointment.\n\n*Booking ID:* ${bookingId}\n*Service:* ${activePlanInfo.title}\n*Date:* ${formattedDate}\n*Time:* ${selectedSlot}\n*User:* ${userName}\n*Gender:* ${gender || 'N/A'}\n*Birth Details:* ${dob} @ ${tob}, ${pob}\n*Status:* Confirmed (Pay on Consultation)\n\nPlease confirm my spiritual consultation details.`;
     
-    const phoneNumber = "918344874681";
+    const phoneNumber = "917845369302";
     const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(textMsg)}`;
     window.open(waUrl, "_blank");
   };
@@ -161,25 +208,25 @@ function BookingFormContent() {
       <AnimatePresence mode="wait">
         {!isBooked ? (
           /* 📅 STEP 1: FILL BOOKING DETAILS & CALENDAR */
-          <motion.div 
+          <motion.form 
             key="booking-form"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
-            className="grid lg:grid-cols-12 gap-8 items-start"
+            className="max-w-4xl mx-auto space-y-8"
           >
-            {/* Form Details Side (Left) */}
-            <div className="lg:col-span-7 rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 md:p-8 shadow-antigravity space-y-6">
+            {/* Main Form Container */}
+            <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 md:p-8 shadow-antigravity space-y-8">
               <div className="border-b border-white/5 pb-4">
                 <h2 className="text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-400" /> User Chart Specifications
+                  <Sparkles className="w-5 h-5 text-amber-400" /> Astrological Plan & User Details
                 </h2>
                 <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">
-                  Fill in birth coordinates for high-accuracy horoscope chart mapping.
+                  Select your desired consultation service and verify your details.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmitBooking} className="space-y-5">
+              <div className="space-y-5">
                 {/* Plan Dropdown */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest font-black text-amber-300">
@@ -199,8 +246,8 @@ function BookingFormContent() {
                   </select>
                 </div>
 
-                {/* Name & Phone */}
-                <div className="grid sm:grid-cols-2 gap-4">
+                {/* Name, Phone, Gender */}
+                <div className="grid sm:grid-cols-3 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] uppercase tracking-widest font-black text-slate-400">
                       User Name
@@ -225,7 +272,7 @@ function BookingFormContent() {
                       <PhoneCall className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                       <input 
                         type="tel" 
-                        placeholder="Eg: +91 83448 74681" 
+                        placeholder="Eg: +91 78453 69302" 
                         value={mobileNum}
                         onChange={(e) => setMobileNum(e.target.value)}
                         className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 outline-none focus:border-indigo-500/50 transition-all shadow-inner"
@@ -233,9 +280,35 @@ function BookingFormContent() {
                       />
                     </div>
                   </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] uppercase tracking-widest font-black text-slate-400">
+                      Gender
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <select 
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-full bg-slate-900 border border-white/10 rounded-2xl py-3 pl-10 pr-4 text-xs text-white outline-none focus:border-indigo-500/50 transition-all shadow-inner"
+                        required
+                      >
+                        <option value="" disabled>Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
                 </div>
 
-                {/* Birth Coordinates (DOB, TOB, POB) */}
+                <div className="border-t border-white/5 pt-5 mt-5">
+                  <h2 className="text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
+                    <Compass className="w-5 h-5 text-indigo-400" /> Birth Coordinates
+                  </h2>
+                  <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest mb-4">
+                    Fill in birth coordinates for high-accuracy horoscope chart mapping.
+                  </p>
+
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] uppercase tracking-widest font-black text-slate-400">
@@ -245,7 +318,7 @@ function BookingFormContent() {
                       type="date" 
                       value={dob}
                       onChange={(e) => setDob(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 text-xs text-slate-200 outline-none focus:border-indigo-500/50 transition-all"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 text-xs text-slate-200 outline-none focus:border-indigo-500/50 transition-all [color-scheme:dark]"
                       required
                     />
                   </div>
@@ -257,7 +330,7 @@ function BookingFormContent() {
                       type="time" 
                       value={tob}
                       onChange={(e) => setTob(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 text-xs text-slate-200 outline-none focus:border-indigo-500/50 transition-all"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 text-xs text-slate-200 outline-none focus:border-indigo-500/50 transition-all [color-scheme:dark]"
                       required
                     />
                   </div>
@@ -275,49 +348,18 @@ function BookingFormContent() {
                     />
                   </div>
                 </div>
+              </div>
 
-                {/* Selected slots summary display */}
-                <div className="pt-2">
-                  <div className="rounded-2xl border border-dashed border-white/10 p-4 bg-slate-950/20 text-xs text-slate-400 space-y-2">
-                    <div className="flex justify-between">
-                      <span>Plan Selection:</span>
-                      <strong className="text-white font-bold">{activePlanInfo.title}</strong>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Rate Fee:</span>
-                      <strong className="text-amber-400 font-serif font-black">₹{activePlanInfo.price}</strong>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Chosen Coordinate:</span>
-                      <strong className="text-indigo-300">
-                        {selectedDate ? `${selectedDate} ${monthName} ${currentDate.getFullYear()}` : "Not Selected"} @ {selectedSlot || "Time Slot Not Selected"}
-                      </strong>
-                    </div>
+              {/* Date & Time Picker Section */}
+                <div className="border-t border-white/5 pt-6 mt-6 space-y-6">
+                  <div className="border-b border-white/5 pb-4">
+                    <h2 className="text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-indigo-400" /> Schedule Appointment
+                    </h2>
+                    <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">
+                      Select your preferred date and available auspicious time slot.
+                    </p>
                   </div>
-                </div>
-
-                <button 
-                  type="submit"
-                  disabled={isProcessing}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 text-white text-xs font-black uppercase tracking-widest shadow-glow active:scale-95 transition-all border border-amber-500/20 flex items-center justify-center gap-1.5 disabled:opacity-50"
-                >
-                  {isProcessing ? (
-                    <>
-                      <Orbit className="w-4 h-4 animate-spin" />
-                      Running Vedic Algorithms...
-                    </>
-                  ) : (
-                    <>
-                      Secure Consultation Slot
-                      <ChevronRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-
-            {/* Calendar & Slot Picker (Right) */}
-            <div className="lg:col-span-5 space-y-6">
               
               {/* Calendar card */}
               <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-5 shadow-antigravity space-y-4">
@@ -348,14 +390,22 @@ function BookingFormContent() {
                   {Array.from({ length: daysInMonth }).map((_, idx) => {
                     const dayNum = idx + 1;
                     const isSelected = selectedDate === dayNum;
+                    const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayNum);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const isPast = dayDate < today;
+
                     return (
                       <button
                         key={`day-${dayNum}`}
-                        onClick={() => setSelectedDate(dayNum)}
+                        onClick={() => { if (!isPast) setSelectedDate(dayNum); }}
+                        disabled={isPast}
                         className={`py-2 rounded-xl border text-[10px] font-mono transition-all ${
-                          isSelected
-                            ? 'bg-amber-500 border-amber-400 text-slate-950 font-black shadow-glow'
-                            : 'border-transparent bg-white/2 hover:bg-white/5 text-slate-300 hover:text-white'
+                          isPast 
+                            ? 'opacity-30 cursor-not-allowed border-transparent bg-white/2'
+                            : isSelected
+                              ? 'bg-amber-500 border-amber-400 text-slate-950 font-black shadow-glow'
+                              : 'border-transparent bg-white/2 hover:bg-white/5 text-slate-300 hover:text-white'
                         }`}
                       >
                         {dayNum}
@@ -371,25 +421,33 @@ function BookingFormContent() {
                   Select Auspicious Hora (Time)
                 </h3>
 
-                <div className="space-y-2">
+                <div className="flex flex-col lg:flex-row lg:overflow-x-auto gap-2 lg:pb-2 scrollbar-hide">
                   {timeSlots.map((slot, idx) => {
                     const isSelected = selectedSlot === slot.time;
+                    const isBooked = bookedSlots.includes(slot.time);
                     return (
                       <button
                         key={idx}
-                        onClick={() => setSelectedSlot(slot.time)}
-                        className={`w-full p-3 rounded-xl border text-left flex items-center justify-between transition-all active:scale-95 ${
-                          isSelected
-                            ? 'border-indigo-500 bg-indigo-950/20 text-indigo-300'
-                            : 'border-white/5 bg-white/2 hover:border-white/10 text-slate-300 hover:text-white'
+                        onClick={() => { if (!isBooked) setSelectedSlot(slot.time); }}
+                        disabled={isBooked}
+                        className={`w-full lg:w-max lg:shrink-0 p-3 rounded-xl border text-left flex items-center justify-between gap-6 transition-all active:scale-95 ${
+                          isBooked
+                            ? 'border-red-500/20 bg-red-950/20 text-red-400/50 cursor-not-allowed'
+                            : isSelected
+                              ? 'border-indigo-500 bg-indigo-950/20 text-indigo-300'
+                              : 'border-white/5 bg-white/2 hover:border-white/10 text-slate-300 hover:text-white'
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
-                          <Clock className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-slate-500'}`} />
-                          <span className="text-xs font-bold font-mono">{slot.time}</span>
+                          <Clock className={`w-4 h-4 ${isBooked ? 'text-red-500/30' : isSelected ? 'text-indigo-400' : 'text-slate-500'}`} />
+                          <span className={`text-xs font-bold font-mono ${isBooked ? 'line-through decoration-red-500/50' : ''}`}>{slot.time}</span>
                         </div>
-                        <span className="text-[8px] uppercase tracking-widest font-black text-indigo-400 bg-indigo-500/10 py-0.5 px-2 rounded-full">
-                          {slot.label}
+                        <span className={`text-[8px] uppercase tracking-widest font-black py-0.5 px-2 rounded-full ${
+                          isBooked
+                            ? 'text-red-400/50 bg-red-500/10'
+                            : 'text-indigo-400 bg-indigo-500/10'
+                        }`}>
+                          {isBooked ? 'Slot Booked' : slot.label}
                         </span>
                       </button>
                     );
@@ -403,8 +461,51 @@ function BookingFormContent() {
                 <span>Your birth details are encrypted and strictly confidential.</span>
               </div>
 
+              </div>
             </div>
-          </motion.div>
+
+            {/* Form Footer / Submit */}
+            <div className="space-y-4">
+              {/* Selected slots summary display */}
+              <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 shadow-antigravity text-xs text-slate-400">
+                <div className="grid sm:grid-cols-3 gap-4 text-center">
+                  <div className="space-y-1">
+                    <span className="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Plan Selection</span>
+                    <strong className="text-white font-bold block">{activePlanInfo.title}</strong>
+                  </div>
+                  <div className="space-y-1 border-x border-white/5">
+                    <span className="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Rate Fee</span>
+                    <strong className="text-amber-400 font-serif font-black text-sm block">₹{activePlanInfo.price}</strong>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Chosen Coordinate</span>
+                    <strong className="text-indigo-300 font-medium block">
+                      {selectedDate ? `${selectedDate} ${monthName} ${currentDate.getFullYear()}` : "Not Selected"} <br/> 
+                      {selectedSlot || "Time Slot Not Selected"}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                type="submit"
+                disabled={isProcessing}
+                className="w-full py-5 rounded-[2rem] bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white text-sm font-black uppercase tracking-widest shadow-glow active:scale-95 transition-all border border-amber-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isProcessing ? (
+                  <>
+                    <Orbit className="w-5 h-5 animate-spin" />
+                    Running Vedic Algorithms...
+                  </>
+                ) : (
+                  <>
+                    Book Appointment
+                    <ChevronRight className="w-5 h-5" />
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.form>
         ) : (
           /* 🏆 STEP 2: CONFIRMATION & RECEIPT SCREEN */
           <motion.div
