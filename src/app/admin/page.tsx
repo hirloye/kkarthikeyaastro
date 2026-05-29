@@ -208,7 +208,7 @@ export default function AdminDashboard() {
           if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('New Registration', {
               body: msg,
-              icon: '/assets/KK_Logo.png'
+              icon: '/assets/KK_Logo.webp'
             });
           } else {
             // Fallback
@@ -257,7 +257,7 @@ export default function AdminDashboard() {
         if ('Notification' in window && Notification.permission === 'granted') {
           new Notification('Client Active', {
             body: msg,
-            icon: '/assets/KK_Logo.png'
+            icon: '/assets/KK_Logo.webp'
           });
         } else {
           toast(msg, { icon: '👀' });
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
           if ('Notification' in window && Notification.permission === 'granted') {
             new Notification(`New message from ${name}`, {
               body: msgText,
-              icon: '/assets/KK_Logo.png'
+              icon: '/assets/KK_Logo.webp'
             });
           } else {
             toast(`New message from ${name}`, { icon: '💬' });

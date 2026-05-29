@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Orbit, Menu, X, ChevronRight, LogOut } from 'lucide-react';
@@ -33,10 +34,13 @@ export default function Header() {
       <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-40 border border-white/10 bg-slate-950/65 backdrop-blur-xl rounded-full px-5 py-2.5 flex items-center justify-between shadow-[0_10px_40px_rgba(0,0,0,0.6)]">
         {/* Logo Branding */}
         <Link href="/" className="flex items-center gap-3 group">
-          <img
-            src="/assets/KK_Logo.png?v=2"
+          <Image
+            src="/assets/KK_Logo.webp?v=2"
             alt="Kkarthikeya Astrological Centre Logo"
+            width={56}
+            height={56}
             className="w-14 h-14 object-contain group-hover:scale-105 transition-transform duration-300"
+            priority
           />
           <div className="flex flex-col">
             <span className="text-xs font-black tracking-widest bg-gradient-to-r from-amber-200 via-amber-100 to-white bg-clip-text text-transparent uppercase font-serif">

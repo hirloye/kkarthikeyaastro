@@ -38,9 +38,9 @@ export const metadata: Metadata = {
     "C-Section delivery timing"
   ],
   icons: {
-    icon: "/assets/KK_Logo.png",
-    shortcut: "/assets/KK_Logo.png",
-    apple: "/assets/KK_Logo.png",
+    icon: "/assets/KK_Logo.webp",
+    shortcut: "/assets/KK_Logo.webp",
+    apple: "/assets/KK_Logo.webp",
   },
   openGraph: {
     title: "Kkarthikeya Astrological Centre",
@@ -108,6 +108,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        
+        {/* Preconnect to Supabase for faster API requests */}
+        <link rel="preconnect" href="https://cjdttgljmnlitcqvrbgt.supabase.co" crossOrigin="anonymous" />
 
         <AppProvider>
           {/* Global Scroll Animation Observer */}

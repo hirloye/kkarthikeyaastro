@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Orbit, Phone, Mail, Compass, Star, Sparkles } from 'lucide-react';
 
@@ -22,10 +23,13 @@ export default function Footer() {
         {/* Branding Col */}
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <img
-              src="/assets/KK_Logo.png?v=2"
+            <Image
+              src="/assets/KK_Logo.webp?v=2"
               alt="Kkarthikeya Astrological Centre Logo"
+              width={56}
+              height={56}
               className="w-14 h-14 object-contain"
+              loading="lazy"
             />
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-widest bg-gradient-to-r from-amber-200 to-white bg-clip-text text-transparent font-serif uppercase">
