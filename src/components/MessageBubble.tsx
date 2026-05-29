@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { Play, Pause, Volume2 } from 'lucide-react';
 import { Message } from '@/types';
 import { cn } from '@/lib/utils';
+import SouthIndianChart from './SouthIndianChart';
+import { useApp } from '@/context/AppContext';
 
 interface MessageBubbleProps {
   message: Message;
@@ -14,6 +16,7 @@ interface MessageBubbleProps {
 export default function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.sender === 'user';
   const [isPlaying, setIsPlaying] = useState(false);
+  const { currentUser } = useApp();
 
   // Render content based on message type
   const renderContent = () => {
@@ -76,6 +79,18 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
                 <span className="text-xs font-medium text-white drop-shadow-md tracking-wide">View Natal Configuration</span>
               </div>
             </div>
+          </div>
+        );
+
+      case 'chart':
+        return (
+          <div className="group/img flex flex-col gap-3 min-w-[280px]">
+            {message.content && message.content !== '[CHART]' && <p className="text-sm text-slate-100 mb-1">{message.content}</p>}
+            <SouthIndianChart 
+              dob={currentUser?.dob} 
+              tob={currentUser?.tob} 
+              pob={currentUser?.pob} 
+            />
           </div>
         );
 

@@ -142,42 +142,26 @@ function AstrologyChatPage() {
     if (!currentUser) return;
     setIsSubmittingBonus(true);
     try {
-      const nowStr = new Date().toISOString();
-      const expiryKey = `astro_session_expiry_${currentUser.id}`;
-      const expiryTime = Date.now() + 2 * 60 * 1000; // 2 minutes (120s)
-
-      // Store expiry time specifically as a bonus session
-      localStorage.setItem(expiryKey, JSON.stringify({ unlockedAt: nowStr, expiryTime, isBonus: true }));
       localStorage.setItem(`astro_claimed_review_bonus_${currentUser.id}`, 'true');
       setClaimedBonus(true);
       setShowConfirmBonus(false);
 
-      if (isOfflineMode) {
-        setChatUnlocked(true);
-        setUnlockedAt(nowStr);
+      if (!isOfflineMode) {
+        // Send a system message to notify admin instead of auto-unlocking
+        await supabase
+          .from('messages')
+          .insert([{
+            user_id: currentUser.id,
+            sender: 'user',
+            content: "SYSTEM: I have submitted a Google Review. Please verify and approve my bonus session extension."
+          }]);
       } else {
-        // Update Supabase database
-        const updatesUnlocked = { chat_unlocked: true, unlocked_at: nowStr };
-        let { error } = await supabase
-          .from('seekers')
-          .update(updatesUnlocked)
-          .eq('id', currentUser.id);
-
-        if (error && (error.code === '42703' || error.message.includes('column') || error.message.includes('chat_unlocked'))) {
-          const updatesUnblocked = { chat_unlocked: true, unlocked_at: nowStr };
-          await supabase
-            .from('seekers')
-            .update(updatesUnblocked)
-            .eq('id', currentUser.id);
-        }
-
-        // Optimistically set states
-        setChatUnlocked(true);
-        setUnlockedAt(nowStr);
+        // Offline demo mode
+        toast.success("Review recorded! (Admin approval required in live mode)");
       }
     } catch (err) {
       console.error("Failed to claim review bonus:", err);
-      alert("Failed to activate bonus session. Please try again.");
+      alert("Failed to submit claim. Please try again.");
     } finally {
       setIsSubmittingBonus(false);
     }
@@ -392,7 +376,7 @@ function AstrologyChatPage() {
             const mapped: Message[] = data.map((msg: any) => ({
               id: msg.id,
               sender: msg.sender,
-              type: msg.image_url ? 'image' : (msg.audio_duration ? 'audio' : 'text'),
+              type: msg.content === '[CHART]' ? 'chart' : (msg.image_url ? 'image' : (msg.audio_duration ? 'audio' : 'text')),
               content: msg.content,
               imageUrl: msg.image_url,
               audioDuration: msg.audio_duration,
@@ -432,7 +416,7 @@ function AstrologyChatPage() {
               return [...prev, {
                 id: newMsg.id,
                 sender: newMsg.sender,
-                type: newMsg.image_url ? 'image' : (newMsg.audio_duration ? 'audio' : 'text'),
+                type: newMsg.content === '[CHART]' ? 'chart' : (newMsg.image_url ? 'image' : (newMsg.audio_duration ? 'audio' : 'text')),
                 content: newMsg.content,
                 imageUrl: newMsg.image_url,
                 audioDuration: newMsg.audio_duration,
@@ -533,15 +517,14 @@ function AstrologyChatPage() {
     if (isLocked) return;
 
     if (isOfflineMode) {
-      const imageMessage: Message = {
-        id: `img-${Date.now()}`,
+      const chartMessage: Message = {
+        id: `chart-${Date.now()}`,
         sender: 'user',
-        type: 'image',
-        content: "Here are my details for a natal forecast:",
-        imageUrl: '/assets/birth_chart.png',
+        type: 'chart',
+        content: "[CHART]",
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, imageMessage]);
+      setMessages((prev) => [...prev, chartMessage]);
 
       setIsTyping(true);
       setTimeout(() => {
@@ -561,8 +544,7 @@ function AstrologyChatPage() {
           .insert([{
             user_id: currentUser.id,
             sender: 'user',
-            content: "Consultation Chart Uploaded",
-            image_url: '/assets/birth_chart.png'
+            content: "[CHART]"
           }]);
         if (error) throw error;
       } catch (err) {
@@ -685,7 +667,9 @@ function AstrologyChatPage() {
 
                 {/* 2. Description */}
                 <p className="text-xs text-slate-300 max-w-2xl leading-relaxed mx-auto w-full">
-                  Know about your Future please scan the QR or click this button to pay directly via Payment Apps (GPay, PhonePe, Paytm...). Chat input will automatically restore once approved.
+                  {(!unlockedAt || unlockedAt.startsWith('1970-01-01'))
+                    ? "Know about your Future please scan the QR or click this button to pay directly via Payment Apps (GPay, PhonePe, Paytm...). Chat input will automatically restore once approved."
+                    : "Your session has expired. Please make the payment to continue and chat input will automatically restore once approved."}
                 </p>
 
                 {/* 3. Fee */}

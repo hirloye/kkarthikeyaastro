@@ -1,6 +1,6 @@
 export type SenderRole = 'user' | 'astrologer';
 
-export type MessageType = 'text' | 'audio' | 'image';
+export type MessageType = 'text' | 'audio' | 'image' | 'chart';
 
 export interface Message {
   id: string;
