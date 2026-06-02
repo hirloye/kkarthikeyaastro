@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  Sparkles, ShieldCheck, Star, Clock, Orbit, Sun
+  Sparkles
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import AuthGuard from '@/components/AuthGuard';

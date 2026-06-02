@@ -4,14 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  Sparkles, Orbit, Sun, Moon, Star, Compass, ShieldCheck,
-  ChevronRight, MessageSquare, Phone, ArrowRight, Award, CheckCircle, ExternalLink,
+  Sparkles, Orbit, Sun, Moon, Star, Compass,
+  ChevronRight, MessageSquare, Award,
   PhoneCall, CheckCircle2
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'specialization'>('overview');
   const [reviewsData, setReviewsData] = useState<{
     rating: number;
     totalReviews: number;
@@ -148,10 +147,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto grid md:grid-cols-12 gap-8 items-center pt-8">
 
           {/* Copy Side (Left) */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+          <div
             className="md:col-span-7 text-left space-y-6 z-10"
           >
             <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-amber-500/20 bg-amber-950/30 text-amber-300 text-[10px] uppercase tracking-widest font-bold shadow-inner">
@@ -198,7 +194,7 @@ export default function HomePage() {
                 <span className="font-bold text-white">4.9⭐ rating</span> on Google Business (5000+ happy clients)
               </div>
             </div>
-          </motion.div>
+            </div>
 
           {/* Portrait Photo Container (Right) */}
           <motion.div
