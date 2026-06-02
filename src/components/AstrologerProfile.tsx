@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, Moon, Star, ShieldCheck, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function AstrologerProfile({ className }: { className?: string }) {
+export default function AstrologerProfile({ className, status = 'online' }: { className?: string, status?: 'online' | 'offline' | 'busy' }) {
   return (
     <aside className={cn("flex flex-col gap-5 w-full md:w-80", className)}>
       {/* Main Astrologer Card */}
@@ -34,10 +34,23 @@ export default function AstrologerProfile({ className }: { className?: string })
             </div>
             
             {/* Active Pulse Indicator */}
-            <span className="absolute bottom-2 right-2 flex h-4 w-4">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-slate-950"></span>
-            </span>
+            {status === 'online' && (
+              <span className="absolute bottom-2 right-2 flex h-4 w-4">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-slate-950"></span>
+              </span>
+            )}
+            {status === 'busy' && (
+              <span className="absolute bottom-2 right-2 flex h-4 w-4">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 border-2 border-slate-950"></span>
+              </span>
+            )}
+            {status === 'offline' && (
+              <span className="absolute bottom-2 right-2 flex h-4 w-4">
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-slate-500 border-2 border-slate-950"></span>
+              </span>
+            )}
           </div>
 
           <h2 className="text-xl font-semibold flex items-center gap-2 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">

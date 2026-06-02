@@ -7,6 +7,7 @@ interface ChartProps {
   dob?: string;
   tob?: string;
   pob?: string;
+  title?: string;
 }
 
 // Tamil mapping for Zodiac Signs
@@ -45,7 +46,7 @@ const FALLBACK_PLANETS = [
   { name: 'Ketu', sign: 'Sagittarius' }
 ];
 
-export default function SouthIndianChart({ dob, tob }: ChartProps) {
+export default function SouthIndianChart({ dob, tob, title = "Rasi Chart" }: ChartProps) {
   const [loading, setLoading] = useState(true);
   const [planets, setPlanets] = useState<any[]>([]);
 
@@ -123,7 +124,7 @@ export default function SouthIndianChart({ dob, tob }: ChartProps) {
     <div className="w-full max-w-sm mx-auto bg-slate-950/80 rounded-2xl border border-white/15 shadow-antigravity overflow-hidden">
       <div className="bg-gradient-to-r from-amber-500/20 to-indigo-500/20 p-3 border-b border-white/10 flex items-center justify-center gap-2">
         <Compass className="w-4 h-4 text-amber-400" />
-        <h3 className="text-xs font-black uppercase tracking-widest text-slate-200">Natal Rasi Chart</h3>
+        <h3 className="text-xs font-black uppercase tracking-widest text-slate-200">{title}</h3>
       </div>
       
       <div className="p-4 flex justify-center">

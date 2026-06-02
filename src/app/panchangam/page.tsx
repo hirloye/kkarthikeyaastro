@@ -407,7 +407,7 @@ export default function PanchangamPage() {
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> Vedic Astrology Calendar
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white font-serif leading-[1.15]">
-            Daily Panchangam
+            Daily Panchangam (தமிழ் பஞ்சாங்கம்)
           </h1>
           <p className="text-xs md:text-sm text-indigo-300 font-bold uppercase tracking-widest">
             Calculated Vedic planetary coordinates and Muhurtham timings for Chennai Grid
@@ -459,25 +459,25 @@ export default function PanchangamPage() {
                         
                         {/* Tithi */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
-                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">1. Tithi (Lunar Phase)</span>
+                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">1. Tithi (திதி)</span>
                           <strong className="text-slate-100 text-xs font-bold leading-normal block">{activePanchangam.tithi}</strong>
                         </div>
 
                         {/* Nakshatra */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
-                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">2. Nakshatra (Star Mansion)</span>
+                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">2. Nakshatra (நட்சத்திரம்)</span>
                           <strong className="text-slate-100 text-xs font-bold leading-normal block">{activePanchangam.nakshatra}</strong>
                         </div>
 
                         {/* Yoga */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
-                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">3. Yoga (Alignment)</span>
+                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">3. Yoga (யோகம்)</span>
                           <strong className="text-slate-100 text-xs font-bold leading-normal block">{activePanchangam.yoga}</strong>
                         </div>
 
                         {/* Karana */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
-                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">4. Karana (Half Tithi)</span>
+                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">4. Karana (கரணம்)</span>
                           <strong className="text-slate-100 text-xs font-bold leading-normal block">{activePanchangam.karana}</strong>
                         </div>
 
@@ -511,7 +511,7 @@ export default function PanchangamPage() {
                 <div className="flex items-center gap-2">
                   <Sunrise className="w-5 h-5 text-amber-500" />
                   <div>
-                    <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block">Sunrise</span>
+                    <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block">Sunrise (சூரியோதயம்)</span>
                     <span className="text-xs font-bold text-slate-200">{activePanchangam.sunrise}</span>
                   </div>
                 </div>
@@ -519,7 +519,7 @@ export default function PanchangamPage() {
                 <div className="flex items-center gap-2">
                   <Sunset className="w-5 h-5 text-indigo-400" />
                   <div>
-                    <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block">Sunset</span>
+                    <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block">Sunset (சூரிய அஸ்தமனம்)</span>
                     <span className="text-xs font-bold text-slate-200">{activePanchangam.sunset}</span>
                   </div>
                 </div>
@@ -527,7 +527,7 @@ export default function PanchangamPage() {
                 <div className="flex items-center gap-2">
                   <Moon className="w-5 h-5 text-indigo-300" />
                   <div>
-                    <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block">Sun Sign</span>
+                    <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block">Sun Sign (சூரிய ராசி)</span>
                     <span className="text-xs font-bold text-slate-200 truncate">{activePanchangam.sunSign.split(' ')[0]}</span>
                   </div>
                 </div>
@@ -535,7 +535,7 @@ export default function PanchangamPage() {
                 <div className="flex items-center gap-2">
                   <Moon className="w-5 h-5 text-purple-400 fill-current" />
                   <div>
-                    <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block">Moon Sign</span>
+                    <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block">Moon Sign (சந்திர ராசி)</span>
                     <span className="text-xs font-bold text-slate-200 truncate">{activePanchangam.moonSign.split(' ')[0]}</span>
                   </div>
                 </div>
@@ -553,13 +553,13 @@ export default function PanchangamPage() {
                 {/* Shubha Kaal (Auspicious Hours) */}
                 <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-5 shadow-antigravity space-y-4">
                   <h3 className="text-xs font-black tracking-widest text-emerald-400 font-serif uppercase flex items-center gap-1.5 border-b border-white/5 pb-2.5">
-                    <ShieldCheck className="w-4.5 h-4.5" /> Shubha Kaal (Auspicious)
+                    <ShieldCheck className="w-4.5 h-4.5" /> Shubha Kaal (சுப முகூர்த்தம்)
                   </h3>
 
                   <div className="space-y-3 text-xs">
                     <div className="flex justify-between items-center p-2.5 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
                       <div>
-                        <span className="font-bold text-slate-200">Abhijit Muhurtham</span>
+                        <span className="font-bold text-slate-200">Abhijit Muhurtham (அபிஜித் முகூர்த்தம்)</span>
                         <span className="text-[8px] uppercase tracking-widest text-slate-500 block">Best for all initiatives</span>
                       </div>
                       <span className="font-mono text-emerald-300 font-bold text-[11px]">{activePanchangam.abhijit}</span>
@@ -567,7 +567,7 @@ export default function PanchangamPage() {
 
                     <div className="flex justify-between items-center p-2.5 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
                       <div>
-                        <span className="font-bold text-slate-200">Brahma Muhurtham</span>
+                        <span className="font-bold text-slate-200">Brahma Muhurtham (பிரம்ம முகூர்த்தம்)</span>
                         <span className="text-[8px] uppercase tracking-widest text-slate-500 block">Best for meditation & study</span>
                       </div>
                       <span className="font-mono text-emerald-300 font-bold text-[11px]">{activePanchangam.brahma}</span>
@@ -578,7 +578,7 @@ export default function PanchangamPage() {
                 {/* Ashubha Kaal (Inauspicious Hours) */}
                 <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-5 shadow-antigravity space-y-4">
                   <h3 className="text-xs font-black tracking-widest text-rose-400 font-serif uppercase flex items-center gap-1.5 border-b border-white/5 pb-2.5">
-                    <AlertTriangle className="w-4.5 h-4.5" /> Ashubha Kaal (Inauspicious)
+                    <AlertTriangle className="w-4.5 h-4.5" /> Ashubha Kaal (ராகு/எமகண்டம்)
                   </h3>
 
                   <div className="space-y-3 text-xs">

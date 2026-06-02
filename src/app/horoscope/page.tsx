@@ -156,7 +156,10 @@ export default function DailyHoroscopePage() {
             timezone: 5.5
           })
         });
-        if (!res.ok) throw new Error("Transit API error response");
+        if (!res.ok) {
+          console.warn("Transit API error response");
+          return;
+        }
         const json = await res.json();
         if (active && json && json.success && json.data) {
           const rawData = json.data.data || json.data;

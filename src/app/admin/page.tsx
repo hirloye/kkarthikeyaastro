@@ -38,6 +38,34 @@ export default function AdminDashboard() {
   const [showChatSidebar, setShowChatSidebar] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
+  // Presence state
+  const [isManualOffline, setIsManualOffline] = useState(false);
+  const [offlineUntil, setOfflineUntil] = useState<Date | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('astro_admin_presence');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.isManualOffline) {
+          setIsManualOffline(true);
+          if (parsed.offlineUntil) {
+            setOfflineUntil(new Date(parsed.offlineUntil));
+          }
+        }
+      } catch (e) {}
+    }
+  }, []);
+
+  const updateAdminPresence = (offline: boolean, untilDate: Date | null) => {
+    setIsManualOffline(offline);
+    setOfflineUntil(untilDate);
+    localStorage.setItem('astro_admin_presence', JSON.stringify({
+      isManualOffline: offline,
+      offlineUntil: untilDate ? untilDate.toISOString() : null
+    }));
+  };
+
   // Auth state
   const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
@@ -284,7 +312,8 @@ export default function AdminDashboard() {
         if (status === 'SUBSCRIBED') {
           await channel.track({
             role: 'admin',
-            isOffline: isOfflineMode,
+            isOffline: isOfflineMode || isManualOffline,
+            offlineUntil: offlineUntil ? offlineUntil.toISOString() : null,
             talkingTo: selectedClient?.id || null
           });
         }
@@ -295,7 +324,8 @@ export default function AdminDashboard() {
       if (channel.state === 'joined') {
         await channel.track({
           role: 'admin',
-          isOffline: isOfflineMode,
+          isOffline: isOfflineMode || isManualOffline,
+          offlineUntil: offlineUntil ? offlineUntil.toISOString() : null,
           talkingTo: selectedClient?.id || null
         });
       }
@@ -305,7 +335,7 @@ export default function AdminDashboard() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [isAuthorized, isOfflineMode, selectedClient?.id]);
+  }, [isAuthorized, isOfflineMode, isManualOffline, offlineUntil, selectedClient?.id]);
 
   // Admin Countdown Timer for Selected Client
   useEffect(() => {
@@ -771,6 +801,14 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between w-full md:w-auto px-1 md:px-0">
             <div className="flex items-center gap-2.5">
               <span className="text-sm font-bold text-white uppercase tracking-widest font-serif">Admin Portal</span>
+              {typeof window !== 'undefined' && 'Notification' in window && Notification.permission !== 'granted' && (
+                <button 
+                  onClick={() => Notification.requestPermission()}
+                  className="ml-2 px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/50 rounded-full text-[10px] font-bold uppercase"
+                >
+                  Enable Alerts
+                </button>
+              )}
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -806,6 +844,46 @@ export default function AdminDashboard() {
                 </button>
               );
             })}
+          </div>
+
+          {/* Admin Presence Controls */}
+          <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex items-center gap-2 mt-2 md:mt-0 flex-col md:flex-row w-full md:w-auto`}>
+            <button
+              onClick={() => updateAdminPresence(!isManualOffline, null)}
+              className={`flex items-center justify-center gap-2 px-4 py-2 md:py-2 rounded-xl text-xs font-bold uppercase tracking-widest border transition-all w-full md:w-auto ${
+                !isManualOffline 
+                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-glow' 
+                  : 'bg-slate-800 text-slate-400 border-white/10 hover:bg-slate-700'
+              }`}
+            >
+              <div className={`w-2 h-2 rounded-full ${!isManualOffline ? 'bg-emerald-400 animate-ping' : 'bg-slate-500'}`} />
+              {!isManualOffline ? 'Online' : 'Offline'}
+            </button>
+
+            {isManualOffline && (
+              <select
+                onChange={(e) => {
+                  const minutes = parseInt(e.target.value);
+                  if (minutes === 0) {
+                    updateAdminPresence(true, null);
+                  } else {
+                    updateAdminPresence(true, new Date(Date.now() + minutes * 60000));
+                  }
+                }}
+                className="bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-[10px] rounded-xl px-2 py-2.5 outline-none uppercase font-bold tracking-widest w-full md:w-auto"
+                value={offlineUntil ? Math.max(30, Math.round((offlineUntil.getTime() - Date.now()) / 60000)) : 0}
+              >
+                <option value="0">Not Available</option>
+                <option value="30">Back in 30 Min</option>
+                <option value="60">Back in 1 Hr</option>
+                <option value="90">Back in 1.5 Hr</option>
+                <option value="120">Back in 2 Hr</option>
+                <option value="150">Back in 2.5 Hr</option>
+                <option value="180">Back in 3 Hr</option>
+                <option value="210">Back in 3.5 Hr</option>
+                <option value="240">Back in 4 Hr</option>
+              </select>
+            )}
           </div>
 
           {/* Logout Button */}

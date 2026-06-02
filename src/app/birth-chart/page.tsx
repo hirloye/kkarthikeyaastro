@@ -263,11 +263,19 @@ export default function BirthChartPage() {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 blur-[40px] rounded-full pointer-events-none" />
                     
                     <h3 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase mb-5 border-b border-white/5 pb-2 w-full text-center">
-                      South Indian Natal Chart
+                      South Indian Rasi Chart
                     </h3>
 
                     <div className="w-full flex justify-center py-4">
-                      <SouthIndianChart dob={dob} tob={tob} pob={pob} />
+                      <SouthIndianChart dob={dob} tob={tob} pob={pob} title="Rasi Chart" />
+                    </div>
+
+                    <h3 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase mt-10 mb-5 border-b border-white/5 pb-2 w-full text-center">
+                      South Indian Navamsam Chart
+                    </h3>
+
+                    <div className="w-full flex justify-center py-4">
+                      <SouthIndianChart dob={dob} tob={tob} pob={pob} title="Navamsam Chart" />
                     </div>
                   </div>
 

@@ -110,7 +110,7 @@ export default function HomePage() {
       price: dynamicPrices.gold,
       duration: "45-60 Minutes Deep Analysis",
       colorClass: "border-yellow-500/50 bg-gradient-to-b from-yellow-950/20 to-slate-900/40 text-yellow-400 shadow-[0_0_30px_rgba(234,179,8,0.15)]",
-      btnClass: "bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-950 hover:from-yellow-400 hover:to-yellow-500 shadow-[0_4px_20px_rgba(234,179,8,0.3)] font-black",
+      btnClass: "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white hover:from-yellow-400 hover:to-yellow-500 shadow-[0_4px_20px_rgba(234,179,8,0.3)] font-black",
       benefits: [
         "Full Detailed Horoscope Study",
         "Multiple Life Areas Covered",
@@ -455,7 +455,7 @@ export default function HomePage() {
                 className={`relative rounded-3xl border p-6 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 ${plan.colorClass}`}
               >
                 {plan.popular && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-indigo-600 border border-indigo-400/20 text-white text-[8px] font-black tracking-widest uppercase py-1 px-4.5 rounded-full shadow-glow">
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600 border border-amber-400/20 text-white text-[8px] font-black tracking-widest uppercase py-1 px-4.5 rounded-full shadow-[0_4px_15px_rgba(245,158,11,0.4)]">
                     MOST POPULAR
                   </span>
                 )}
@@ -481,7 +481,7 @@ export default function HomePage() {
                 <div className="pt-6">
                   <Link
                     href={`/booking?plan=${plan.id}`}
-                    className={`w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center block transition-all active:scale-95 ${plan.btnClass}`}
+                    className={`w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center block transition-all active:scale-95 text-white ${plan.btnClass}`}
                   >
                     Book Now
                   </Link>

@@ -49,6 +49,7 @@ function AstrologyChatPage() {
 
   // Astrologer presence status
   const [astrologerStatus, setAstrologerStatus] = useState<'offline' | 'online' | 'busy'>('offline');
+  const [offlineUntil, setOfflineUntil] = useState<string | null>(null);
 
   // Sync claimed review bonus status from localStorage on mount/user load
   useEffect(() => {
@@ -90,14 +91,21 @@ function AstrologyChatPage() {
         const state = channel.presenceState();
         let isAdminOnline = false;
         let isBusy = false;
+        let untilStr = null;
 
         for (const id in state) {
           const presences = state[id] as any[];
           for (const p of presences) {
-            if (p.role === 'admin' && !p.isOffline) {
-              isAdminOnline = true;
-              if (p.talkingTo && p.talkingTo !== currentUser?.id) {
-                isBusy = true;
+            if (p.role === 'admin') {
+              if (!p.isOffline) {
+                isAdminOnline = true;
+                if (p.talkingTo && p.talkingTo !== currentUser?.id) {
+                  isBusy = true;
+                }
+              } else {
+                if (p.offlineUntil) {
+                  untilStr = p.offlineUntil;
+                }
               }
             }
           }
@@ -105,10 +113,13 @@ function AstrologyChatPage() {
 
         if (!isAdminOnline) {
           setAstrologerStatus('offline');
+          setOfflineUntil(untilStr);
         } else if (isBusy) {
           setAstrologerStatus('busy');
+          setOfflineUntil(null);
         } else {
           setAstrologerStatus('online');
+          setOfflineUntil(null);
         }
       })
       .subscribe();
@@ -593,7 +604,7 @@ function AstrologyChatPage() {
       {/* Main Layout */}
       <div className="flex-1 w-full max-w-7xl mx-auto px-4 py-6 md:p-8 flex flex-col md:flex-row gap-6 items-stretch overflow-hidden h-[calc(100vh-73px)]">
 
-        <AstrologerProfile className="hidden md:flex self-start max-h-full sticky top-0 shrink-0" />
+        <AstrologerProfile className="hidden md:flex self-start max-h-full sticky top-0 shrink-0" status={astrologerStatus} />
 
         {/* Main Chat Bento */}
         <motion.div
@@ -621,7 +632,26 @@ function AstrologyChatPage() {
                   <><span className="text-amber-400 animate-pulse">●</span> <span className="text-amber-400">Busy • Talking to someone</span></>
                 )}
                 {astrologerStatus === 'offline' && (
-                  <><span className="text-slate-500">●</span> <span className="text-slate-400">Offline</span></>
+                  <>
+                    <span className="text-slate-500">●</span> 
+                    <span className="text-slate-400">
+                      Offline
+                      {offlineUntil && (
+                        <span className="text-slate-500 ml-1">
+                          • Available in {(() => {
+                            const diff = new Date(offlineUntil).getTime() - Date.now();
+                            if (diff <= 0) return 'a few moments';
+                            const m = Math.round(diff / 60000);
+                            const h = Math.floor(m / 60);
+                            const rm = m % 60;
+                            if (h > 0 && rm > 0) return `${h} hr ${rm} min`;
+                            if (h > 0) return `${h} hr`;
+                            return `${m} min`;
+                          })()}
+                        </span>
+                      )}
+                    </span>
+                  </>
                 )}
               </span>
             </div>
@@ -641,12 +671,12 @@ function AstrologyChatPage() {
 
           {/* Paid session active countdown banner */}
           {chatUnlocked && timeRemaining !== null && timeRemaining > 0 && (
-            <div className={`border-b text-xs px-6 py-2.5 flex items-center justify-between shrink-0 font-mono ${isBonusSession ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'}`}>
-              <span className="flex items-center gap-1">
-                <span className={`w-2 h-2 rounded-full animate-ping ${isBonusSession ? 'bg-amber-400' : 'bg-emerald-400'}`} />
-                {isBonusSession ? 'Review bonus free extension active. Remaining time:' : 'Paid consultation session active. Remaining time:'}
+            <div className={`border-b px-4 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 shrink-0 font-mono text-[10px] sm:text-xs ${isBonusSession ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'}`}>
+              <span className="flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full animate-ping shrink-0 ${isBonusSession ? 'bg-amber-400' : 'bg-emerald-400'}`} />
+                <span className="leading-tight">{isBonusSession ? 'Review bonus free extension active. Remaining time:' : 'Paid consultation session active. Remaining time:'}</span>
               </span>
-              <span className={`font-bold px-2 py-0.5 rounded border ${isBonusSession ? 'text-amber-400 bg-amber-950/40 border-amber-500/25' : 'text-emerald-400 bg-emerald-950/40 border-emerald-500/25'}`}>
+              <span className={`font-bold px-2 py-0.5 rounded border self-start sm:self-auto ${isBonusSession ? 'text-amber-400 bg-amber-950/40 border-amber-500/25' : 'text-emerald-400 bg-emerald-950/40 border-emerald-500/25'}`}>
                 {Math.floor(timeRemaining / 60)}m {timeRemaining % 60}s
               </span>
             </div>
@@ -683,7 +713,7 @@ function AstrologyChatPage() {
                     <img src="/assets/qr.jpeg" alt="Payment QR Code" className="w-24 h-24 rounded-xl object-contain" />
                   </div>
                   <a
-                    href={`upi://pay?pa=princekarthi111-2@okaxis&pn=Astrologer&am=${(pricingPlans?.quick?.price || "99").replace(/[^0-9.]/g, '')}&cu=INR`}
+                    href={`upi://pay?pa=kkarthikeyaastro@indianbank&pn=Astrologer&am=${(pricingPlans?.quick?.price || "99").replace(/[^0-9.]/g, '')}&cu=INR`}
                     className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-[0_0_15px_rgba(16,185,129,0.3)] flex flex-col items-center justify-center text-center gap-1 active:scale-95"
                   >
                     <span>Pay</span>
