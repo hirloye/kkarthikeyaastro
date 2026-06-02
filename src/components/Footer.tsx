@@ -29,7 +29,8 @@ export default function Footer() {
               width={56}
               height={56}
               className="w-14 h-14 object-contain"
-              loading="lazy"
+              priority
+              loading="eager"
             />
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-widest bg-gradient-to-r from-amber-200 to-white bg-clip-text text-transparent font-serif uppercase">
