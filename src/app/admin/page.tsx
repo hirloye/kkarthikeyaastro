@@ -847,18 +847,29 @@ export default function AdminDashboard() {
           </div>
 
           {/* Admin Presence Controls */}
-          <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex items-center gap-2 mt-2 md:mt-0 flex-col md:flex-row w-full md:w-auto`}>
-            <button
-              onClick={() => updateAdminPresence(!isManualOffline, null)}
-              className={`flex items-center justify-center gap-2 px-4 py-2 md:py-2 rounded-xl text-xs font-bold uppercase tracking-widest border transition-all w-full md:w-auto ${
-                !isManualOffline 
-                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-glow' 
-                  : 'bg-slate-800 text-slate-400 border-white/10 hover:bg-slate-700'
-              }`}
-            >
-              <div className={`w-2 h-2 rounded-full ${!isManualOffline ? 'bg-emerald-400 animate-ping' : 'bg-slate-500'}`} />
-              {!isManualOffline ? 'Online' : 'Offline'}
-            </button>
+          <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex items-center gap-3 mt-2 md:mt-0 flex-col md:flex-row w-full md:w-auto`}>
+            <div className="flex items-center gap-3 bg-slate-900/40 border border-white/10 rounded-xl px-4 py-2 w-full md:w-auto justify-between md:justify-start">
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${!isManualOffline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+                <span className={`text-[10px] font-bold uppercase tracking-widest ${!isManualOffline ? 'text-emerald-400' : 'text-slate-400'}`}>
+                  {!isManualOffline ? 'Online' : 'Offline'}
+                </span>
+              </div>
+              <button
+                onClick={() => updateAdminPresence(!isManualOffline, null)}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-opacity-75 ${
+                  !isManualOffline ? 'bg-emerald-500' : 'bg-slate-700'
+                }`}
+              >
+                <span className="sr-only">Toggle Online Status</span>
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                    !isManualOffline ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
 
             {isManualOffline && (
               <select
@@ -870,7 +881,7 @@ export default function AdminDashboard() {
                     updateAdminPresence(true, new Date(Date.now() + minutes * 60000));
                   }
                 }}
-                className="bg-slate-900 border border-white/10 text-slate-300 hover:text-white text-[10px] rounded-xl px-2 py-2.5 outline-none uppercase font-bold tracking-widest w-full md:w-auto"
+                className="bg-slate-900/40 border border-white/10 text-slate-300 hover:text-white text-[10px] rounded-xl px-2 py-2.5 outline-none uppercase font-bold tracking-widest w-full md:w-auto"
                 value={offlineUntil ? Math.max(30, Math.round((offlineUntil.getTime() - Date.now()) / 60000)) : 0}
               >
                 <option value="0">Not Available</option>
@@ -887,10 +898,10 @@ export default function AdminDashboard() {
           </div>
 
           {/* Logout Button */}
-          <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex mt-2 md:mt-0 pt-3 md:pt-0 border-t border-white/10 md:border-none w-full md:w-auto justify-center`}>
+          <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex mt-2 md:mt-0 pt-3 md:pt-0 w-full md:w-auto justify-center`}>
             <button
               onClick={handleAdminLogout}
-              className="flex items-center justify-center gap-2 py-2.5 md:py-2 px-4 md:px-5 rounded-xl border border-white/10 md:border-transparent bg-white/5 md:bg-red-500/10 md:hover:bg-red-500/20 md:text-red-400 text-slate-300 hover:text-white md:hover:text-red-300 transition-all active:scale-95 text-xs font-bold uppercase tracking-widest w-full"
+              className="flex items-center justify-center gap-2 py-2.5 md:py-2 px-4 md:px-5 rounded-xl bg-transparent hover:bg-red-500/10 text-red-500 hover:text-red-400 transition-all active:scale-95 text-xs font-bold uppercase tracking-widest w-full border border-transparent"
             >
               <LogOut className="w-4 h-4" />
               <span>Logout</span>
