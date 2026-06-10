@@ -102,19 +102,24 @@ export default function AdminDashboard() {
 
   const requestWakeLock = async () => {
     if (typeof window === 'undefined' || !('wakeLock' in navigator)) {
-      console.warn("Screen Wake Lock API not supported on this browser.");
+      toast.error("Screen Wake Lock is not supported on this browser version.");
       return;
     }
     try {
       if (wakeLockRef.current) return;
       wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
       setIsWakeLocked(true);
+      toast.success("Screen Awake active! Your screen will not go to sleep.");
       wakeLockRef.current.addEventListener('release', () => {
         setIsWakeLocked(false);
         wakeLockRef.current = null;
       });
-    } catch (err) {
+    } catch (err: any) {
       console.warn('Wake Lock request failed:', err);
+      toast.error(
+        `Failed to keep screen awake: ${err.message || 'Error'}. Note: If your device is in Low Power Mode (Battery Saver), please turn it off.`,
+        { duration: 6000 }
+      );
     }
   };
 
@@ -122,6 +127,7 @@ export default function AdminDashboard() {
     if (wakeLockRef.current) {
       try {
         await wakeLockRef.current.release();
+        toast.success("Screen Awake deactivated. Screen will sleep normally.");
       } catch (err) {}
       wakeLockRef.current = null;
       setIsWakeLocked(false);
@@ -163,11 +169,34 @@ export default function AdminDashboard() {
   }, []);
 
   const requestNotificationPermission = () => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      Notification.requestPermission().then((permission) => {
-        setNotificationPermission(permission);
-      });
+    if (typeof window === 'undefined') return;
+    
+    if (!('Notification' in window)) {
+      toast.error("This browser does not support Web Notifications.");
+      return;
     }
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const isStandalone = (navigator as any).standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+    if (isIOS && !isStandalone) {
+      toast.error(
+        "iOS Safari requires installing this site as an app first! Tap 'Share' -> 'Add to Home Screen', then launch the app from your home screen.",
+        { duration: 8000 }
+      );
+      return;
+    }
+
+    Notification.requestPermission().then((permission) => {
+      setNotificationPermission(permission);
+      if (permission === 'granted') {
+        toast.success("Notifications enabled successfully!");
+      } else if (permission === 'denied') {
+        toast.error("Notifications blocked by browser. Please enable them in your browser/device settings.");
+      }
+    }).catch((err) => {
+      toast.error("Permission request failed: " + err.message);
+    });
   };
 
   // Presence state
