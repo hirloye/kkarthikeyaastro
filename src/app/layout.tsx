@@ -37,6 +37,7 @@ export const metadata: Metadata = {
     "House warming Muhurtham timing",
     "C-Section delivery timing"
   ],
+  manifest: "/manifest.json",
   icons: {
     icon: "/assets/KK_Logo.webp",
     shortcut: "/assets/KK_Logo.webp",

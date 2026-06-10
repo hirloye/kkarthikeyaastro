@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Orbit, Shield, ArrowLeft, Users, Activity, Server,
   Compass, Calendar, MessageSquare, Phone, Sparkles,
-  Lock, Key, Send, CheckCircle2, RefreshCw, Mail, DollarSign, LogOut, Trash2, FileText, Menu, X, Eye, EyeOff
+  Lock, Key, Send, CheckCircle2, RefreshCw, Mail, DollarSign, LogOut, Trash2, FileText, Menu, X, Eye, EyeOff,
+  Volume2, VolumeX
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import { useApp, UserData } from '@/context/AppContext';
@@ -31,12 +32,143 @@ const getClientStatus = (user: UserData) => {
   }
 };
 
+const playCelestialChime = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    
+    const playTone = (freq: number, startTime: number, duration: number) => {
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
+      
+      gainNode.gain.setValueAtTime(0.001, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.15, startTime + 0.04);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    };
+
+    const now = ctx.currentTime;
+    playTone(783.99, now, 0.7);
+    playTone(1046.50, now + 0.08, 0.9);
+  } catch (e) {
+    console.warn("Web Audio API failed or blocked:", e);
+  }
+};
+
 export default function AdminDashboard() {
   const { allUsers, isOfflineMode, deleteUser, setAllUsers } = useApp();
   const [activeTab, setActiveTab] = useState<'users' | 'chat' | 'pricing' | 'blog-list' | 'blog-upload'>('users');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showChatSidebar, setShowChatSidebar] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+  // Sound settings state
+  const [isSoundEnabled, setIsSoundEnabled] = useState(false);
+  const isSoundEnabledRef = useRef(false);
+
+  useEffect(() => {
+    isSoundEnabledRef.current = isSoundEnabled;
+  }, [isSoundEnabled]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('astro_admin_sound_enabled');
+    if (saved === 'true') {
+      setIsSoundEnabled(true);
+    }
+  }, []);
+
+  const toggleSound = () => {
+    const nextVal = !isSoundEnabled;
+    setIsSoundEnabled(nextVal);
+    localStorage.setItem('astro_admin_sound_enabled', String(nextVal));
+    if (nextVal) {
+      playCelestialChime();
+    }
+  };
+
+  // Screen Wake Lock state
+  const [isWakeLocked, setIsWakeLocked] = useState(false);
+  const wakeLockRef = useRef<any>(null);
+
+  const requestWakeLock = async () => {
+    if (typeof window === 'undefined' || !('wakeLock' in navigator)) {
+      console.warn("Screen Wake Lock API not supported on this browser.");
+      return;
+    }
+    try {
+      if (wakeLockRef.current) return;
+      wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
+      setIsWakeLocked(true);
+      wakeLockRef.current.addEventListener('release', () => {
+        setIsWakeLocked(false);
+        wakeLockRef.current = null;
+      });
+    } catch (err) {
+      console.warn('Wake Lock request failed:', err);
+    }
+  };
+
+  const releaseWakeLock = async () => {
+    if (wakeLockRef.current) {
+      try {
+        await wakeLockRef.current.release();
+      } catch (err) {}
+      wakeLockRef.current = null;
+      setIsWakeLocked(false);
+    }
+  };
+
+  const toggleWakeLock = async () => {
+    if (isWakeLocked) {
+      await releaseWakeLock();
+    } else {
+      await requestWakeLock();
+    }
+  };
+
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (isWakeLocked && document.visibilityState === 'visible') {
+        await requestWakeLock();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (wakeLockRef.current) {
+        try {
+          wakeLockRef.current.release();
+        } catch (err) {}
+      }
+    };
+  }, [isWakeLocked]);
+
+  // Native notification permission state
+  const [notificationPermission, setNotificationPermission] = useState<string>('default');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      setNotificationPermission(Notification.permission);
+    }
+  }, []);
+
+  const requestNotificationPermission = () => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      Notification.requestPermission().then((permission) => {
+        setNotificationPermission(permission);
+      });
+    }
+  };
 
   // Presence state
   const [isManualOffline, setIsManualOffline] = useState(false);
@@ -234,6 +366,10 @@ export default function AdminDashboard() {
           const newUser = payload.new;
           const msg = `New client registered: ${newUser.name || 'Unknown'}`;
 
+          if (isSoundEnabledRef.current) {
+            playCelestialChime();
+          }
+
           // Native Browser Notification
           if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('New Registration', {
@@ -282,6 +418,10 @@ export default function AdminDashboard() {
       (payload) => {
         const user = payload.payload.user;
         const msg = `${user.username || 'A client'} entered the chat.\nDOB: ${user.dob || 'N/A'} | TOB: ${user.tob || 'N/A'} | Place: ${user.pob || 'N/A'}`;
+
+        if (isSoundEnabledRef.current) {
+          playCelestialChime();
+        }
 
         // Native Browser Notification
         if ('Notification' in window && Notification.permission === 'granted') {
@@ -387,6 +527,10 @@ export default function AdminDashboard() {
           // Don't notify if the admin is currently chatting with this user
           if (selectedClient && selectedClient.id === newMsg.user_id) return;
 
+          if (isSoundEnabledRef.current) {
+            playCelestialChime();
+          }
+
           const user = allUsersRef.current.find(u => u.id === newMsg.user_id);
           const name = user ? user.username : 'A client';
           const msgText = newMsg.content || 'Sent an attachment';
@@ -448,6 +592,11 @@ export default function AdminDashboard() {
           },
           (payload) => {
             const newMsg = payload.new;
+            
+            if (newMsg.sender === 'user' && isSoundEnabledRef.current) {
+              playCelestialChime();
+            }
+
             setChatMessages((prev) => {
               if (prev.some((m) => m.id === newMsg.id)) return prev;
               return [...prev, newMsg];
@@ -801,10 +950,10 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between w-full md:w-auto px-1 md:px-0">
             <div className="flex items-center gap-2.5">
               <span className="text-sm font-bold text-white uppercase tracking-widest font-serif">Admin Portal</span>
-              {typeof window !== 'undefined' && 'Notification' in window && Notification.permission !== 'granted' && (
+              {typeof window !== 'undefined' && 'Notification' in window && notificationPermission !== 'granted' && (
                 <button 
-                  onClick={() => Notification.requestPermission()}
-                  className="ml-2 px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/50 rounded-full text-[10px] font-bold uppercase"
+                  onClick={requestNotificationPermission}
+                  className="ml-2 px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/50 rounded-full text-[10px] font-bold uppercase hover:bg-indigo-500/30 transition-colors"
                 >
                   Enable Alerts
                 </button>
@@ -912,6 +1061,103 @@ export default function AdminDashboard() {
 
       {/* Main Content Controller Grid */}
       <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col gap-6">
+
+        {/* PWA, Sound, and Screen Awake control center */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 rounded-3rem border border-white/10 bg-slate-900/40 backdrop-blur-xl p-5 shadow-antigravity relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-[60px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/5 blur-[60px] rounded-full pointer-events-none" />
+          
+          {/* Sound settings card */}
+          <div className="flex items-center justify-between border-b md:border-b-0 md:border-r border-white/5 pb-4 md:pb-0 md:pr-5">
+            <div className="space-y-1">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
+                {isSoundEnabled ? <Volume2 className="w-4 h-4 text-amber-400 animate-pulse" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
+                Sound Alerts
+              </h3>
+              <p className="text-[10px] text-indigo-200/50 uppercase tracking-wider leading-relaxed">
+                Celestial sound chimes when events occur.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={toggleSound}
+                className={`px-3 py-2 rounded-xl text-[10px] uppercase font-black tracking-widest transition-all active:scale-95 border ${
+                  isSoundEnabled 
+                    ? 'bg-amber-500/10 border-amber-500/40 text-amber-400' 
+                    : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
+                }`}
+              >
+                {isSoundEnabled ? 'ON' : 'OFF'}
+              </button>
+              <button
+                onClick={playCelestialChime}
+                className="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-[10px] uppercase font-bold tracking-wider active:scale-95 transition-all"
+              >
+                Test
+              </button>
+            </div>
+          </div>
+
+          {/* Browser Notifications card */}
+          <div className="flex items-center justify-between border-b md:border-b-0 md:border-r border-white/5 py-4 md:py-0 md:px-5">
+            <div className="space-y-1">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
+                <Shield className="w-4 h-4 text-indigo-400" />
+                Browser Alerts
+              </h3>
+              <p className="text-[10px] text-indigo-200/50 uppercase tracking-wider leading-relaxed">
+                Native system popups for updates.
+              </p>
+            </div>
+            <div>
+              {typeof window !== 'undefined' && 'Notification' in window ? (
+                notificationPermission === 'granted' ? (
+                  <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-3 py-2 rounded-xl">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Enabled
+                  </span>
+                ) : (
+                  <button 
+                    onClick={requestNotificationPermission}
+                    className="px-3.5 py-2 bg-indigo-500 hover:bg-indigo-400 text-white rounded-xl text-[10px] uppercase font-black tracking-widest shadow-glow active:scale-95 transition-all"
+                  >
+                    Enable
+                  </button>
+                )
+              ) : (
+                <span className="text-[9px] font-bold uppercase text-red-400/70 border border-red-500/20 bg-red-500/5 px-3 py-2 rounded-xl">Unavailable</span>
+              )}
+            </div>
+          </div>
+
+          {/* Wake Lock Screen Awake card */}
+          <div className="flex items-center justify-between pt-4 md:pt-0 md:pl-5">
+            <div className="space-y-1">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
+                <Activity className="w-4 h-4 text-emerald-400" />
+                Screen Awake
+              </h3>
+              <p className="text-[10px] text-indigo-200/50 uppercase tracking-wider leading-relaxed">
+                Keeps screen active for live chats.
+              </p>
+            </div>
+            <div>
+              {typeof navigator !== 'undefined' && 'wakeLock' in navigator ? (
+                <button 
+                  onClick={toggleWakeLock}
+                  className={`px-3.5 py-2 rounded-xl text-[10px] uppercase font-black tracking-widest border transition-all active:scale-95 ${
+                    isWakeLocked 
+                      ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 shadow-glow animate-pulse' 
+                      : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {isWakeLocked ? 'Active' : 'Disabled'}
+                </button>
+              ) : (
+                <span className="text-[9px] font-bold uppercase text-slate-500 border border-white/5 bg-white/2 px-3 py-2 rounded-xl" title="Not supported on this browser version">Unsupported</span>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Tab Display Area */}
         <div>
