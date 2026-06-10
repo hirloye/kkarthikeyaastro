@@ -65,6 +65,26 @@ const playCelestialChime = () => {
   }
 };
 
+const showNotification = async (title: string, options: NotificationOptions) => {
+  if (typeof window === 'undefined') return;
+  
+  if ('serviceWorker' in navigator) {
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      if (reg && 'showNotification' in reg) {
+        await reg.showNotification(title, options);
+        return;
+      }
+    } catch (e) {
+      console.warn("Service Worker notification failed, falling back:", e);
+    }
+  }
+
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, options);
+  }
+};
+
 export default function AdminDashboard() {
   const { allUsers, isOfflineMode, deleteUser, setAllUsers } = useApp();
   const [activeTab, setActiveTab] = useState<'users' | 'chat' | 'pricing' | 'blog-list' | 'blog-upload'>('users');
@@ -84,6 +104,14 @@ export default function AdminDashboard() {
     const saved = localStorage.getItem('astro_admin_sound_enabled');
     if (saved === 'true') {
       setIsSoundEnabled(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service worker registered scope:', reg.scope))
+        .catch((err) => console.error('Service worker registration failed:', err));
     }
   }, []);
 
@@ -399,9 +427,9 @@ export default function AdminDashboard() {
             playCelestialChime();
           }
 
-          // Native Browser Notification
-          if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('New Registration', {
+          // Browser Notification
+          if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+            showNotification('New Registration', {
               body: msg,
               icon: '/assets/KK_Logo.webp'
             });
@@ -452,9 +480,9 @@ export default function AdminDashboard() {
           playCelestialChime();
         }
 
-        // Native Browser Notification
-        if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification('Client Active', {
+        // Browser Notification
+        if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+          showNotification('Client Active', {
             body: msg,
             icon: '/assets/KK_Logo.webp'
           });
@@ -564,8 +592,8 @@ export default function AdminDashboard() {
           const name = user ? user.username : 'A client';
           const msgText = newMsg.content || 'Sent an attachment';
 
-          if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(`New message from ${name}`, {
+          if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+            showNotification(`New message from ${name}`, {
               body: msgText,
               icon: '/assets/KK_Logo.webp'
             });
