@@ -213,6 +213,7 @@ function BookingFormContent() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
+            onSubmit={handleSubmitBooking}
             className="max-w-4xl mx-auto space-y-8"
           >
             {/* Main Form Container */}
@@ -368,9 +369,9 @@ function BookingFormContent() {
                     Select Date
                   </h3>
                   <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider">
-                    <button onClick={handlePrevMonth} className="p-1 hover:text-white text-slate-500">◀</button>
+                    <button type="button" onClick={handlePrevMonth} className="p-1 hover:text-white text-slate-500">◀</button>
                     <span className="text-amber-300 font-bold font-serif">{monthName} {currentDate.getFullYear()}</span>
-                    <button onClick={handleNextMonth} className="p-1 hover:text-white text-slate-500">▶</button>
+                    <button type="button" onClick={handleNextMonth} className="p-1 hover:text-white text-slate-500">▶</button>
                   </div>
                 </div>
 
@@ -398,6 +399,7 @@ function BookingFormContent() {
                     return (
                       <button
                         key={`day-${dayNum}`}
+                        type="button"
                         onClick={() => { if (!isPast) setSelectedDate(dayNum); }}
                         disabled={isPast}
                         className={`py-2 rounded-xl border text-[10px] font-mono transition-all ${
@@ -428,6 +430,7 @@ function BookingFormContent() {
                     return (
                       <button
                         key={idx}
+                        type="button"
                         onClick={() => { if (!isBooked) setSelectedSlot(slot.time); }}
                         disabled={isBooked}
                         className={`w-full lg:w-max lg:shrink-0 p-3 rounded-xl border text-left flex items-center justify-between gap-6 transition-all active:scale-95 ${

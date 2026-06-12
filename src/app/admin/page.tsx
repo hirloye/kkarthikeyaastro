@@ -1120,12 +1120,15 @@ export default function AdminDashboard() {
       <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col gap-6">
 
         {/* PWA, Sound, and Screen Awake control center */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 rounded-3rem border border-white/10 bg-slate-900/40 backdrop-blur-xl p-5 shadow-antigravity relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-[60px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/5 blur-[60px] rounded-full pointer-events-none" />
+        <div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 rounded-3rem border border-white/10 bg-slate-900/40 backdrop-blur-xl p-5 shadow-antigravity relative overflow-hidden"
+          style={{ 
+            backgroundImage: 'radial-gradient(circle at 100% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%), radial-gradient(circle at 0% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 60%)' 
+          }}
+        >
           
           {/* Sound settings card */}
-          <div className="flex items-center justify-between border-b md:border-b-0 md:border-r border-white/5 pb-4 md:pb-0 md:pr-5">
+          <div className="flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-4 border-b md:border-b-0 md:border-r border-white/5 pb-4 md:pb-0 md:pr-5">
             <div className="space-y-1">
               <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
                 {isSoundEnabled ? <Volume2 className="w-4 h-4 text-amber-400 animate-pulse" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
@@ -1135,7 +1138,7 @@ export default function AdminDashboard() {
                 Celestial sound chimes when events occur.
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 md:mt-2">
               <button 
                 onClick={toggleSound}
                 className={`px-3 py-2 rounded-xl text-[10px] uppercase font-black tracking-widest transition-all active:scale-95 border ${
@@ -1156,7 +1159,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Browser Notifications card */}
-          <div className="flex items-center justify-between border-b md:border-b-0 md:border-r border-white/5 py-4 md:py-0 md:px-5">
+          <div className="flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-4 border-b md:border-b-0 md:border-r border-white/5 py-4 md:py-0 md:px-5">
             <div className="space-y-1">
               <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
                 <Shield className="w-4 h-4 text-indigo-400" />
@@ -1166,7 +1169,7 @@ export default function AdminDashboard() {
                 Native system popups for updates.
               </p>
             </div>
-            <div>
+            <div className="md:mt-2">
               {typeof window !== 'undefined' && 'Notification' in window ? (
                 notificationPermission === 'granted' ? (
                   <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-3 py-2 rounded-xl">
@@ -1187,7 +1190,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Wake Lock Screen Awake card */}
-          <div className="flex items-center justify-between pt-4 md:pt-0 md:pl-5">
+          <div className="flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-4 pt-4 md:pt-0 md:pl-5">
             <div className="space-y-1">
               <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
                 <Activity className="w-4 h-4 text-emerald-400" />
@@ -1197,7 +1200,7 @@ export default function AdminDashboard() {
                 Keeps screen active for live chats.
               </p>
             </div>
-            <div>
+            <div className="md:mt-2">
               {typeof navigator !== 'undefined' && 'wakeLock' in navigator ? (
                 <button 
                   onClick={toggleWakeLock}
