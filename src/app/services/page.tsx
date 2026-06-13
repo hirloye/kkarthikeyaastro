@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import AuthGuard from '@/components/AuthGuard';
+import Image from 'next/image';
 
 export default function ServicesPage() {
   const [dynamicPrices, setDynamicPrices] = useState<Record<string, string>>({
@@ -98,7 +99,7 @@ export default function ServicesPage() {
                   className="p-6 rounded-3xl border border-white/5 bg-slate-900/30 backdrop-blur-xl shadow-inner flex flex-col justify-between hover:border-indigo-500/20 transition-all duration-300"
                 >
                   <div className="w-full h-32 md:h-40 mb-5 rounded-2xl overflow-hidden relative group">
-                    <img src={muh.image} alt={muh.title} className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105" />
+                    <Image src={muh.image} alt={muh.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105" />
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between border-b border-white/5 pb-3">

@@ -13,6 +13,7 @@ import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
 import { supabase } from '@/lib/supabaseClient';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 
 
@@ -633,7 +634,7 @@ function AstrologyChatPage() {
 
           <div className="md:hidden flex items-center gap-3 px-5 py-4 border-b border-white/10 bg-slate-950/20">
             <div className="relative w-10 h-10 rounded-full overflow-hidden border border-indigo-500/30 p-0.5 bg-indigo-950">
-              <img src="/assets/astrologer.png?v=2" alt="Avatar" className="w-full h-full object-cover rounded-full" />
+              <Image src="/assets/astrologer.png" alt="Avatar" width={40} height={40} className="w-full h-full object-cover rounded-full" />
             </div>
             <div className="flex-1">
               <h3 className="text-sm font-semibold text-white flex items-center gap-1">
@@ -716,7 +717,7 @@ function AstrologyChatPage() {
                 {/* 4. QR Code & Pay Button */}
                 <div className="flex flex-col items-center gap-3 w-full max-w-[160px] bg-white/5 p-4 rounded-3xl border border-white/10 shadow-xl relative z-10">
                   <div className="bg-white p-2 rounded-2xl shadow-inner w-full flex justify-center">
-                    <img src="/assets/qr.jpeg" alt="Payment QR Code" className="w-24 h-24 rounded-xl object-contain" />
+                    <Image src="/assets/qr.jpeg" alt="Payment QR Code" width={96} height={96} className="w-24 h-24 rounded-xl object-contain" />
                   </div>
                   <a
                     href={`upi://pay?pa=kkarthikeyaastro@indianbank&pn=Astrologer&am=${(pricingPlans?.quick?.price || "99").replace(/[^0-9.]/g, '')}&cu=INR`}

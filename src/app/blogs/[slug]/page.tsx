@@ -7,6 +7,7 @@ import { Calendar, ArrowLeft, Share2 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useApp } from '@/context/AppContext';
 import CosmicBackground from '@/components/CosmicBackground';
+import Image from 'next/image';
 
 interface Blog {
   id: string;
@@ -107,12 +108,14 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             {blog.title}
           </h1>
 
-          <div className="w-full aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl shadow-black/50 mb-12 border border-white/10 bg-white p-1">
-            <img 
-              src={blog.image_url || '/icon.jpg'} 
+          <div className="w-full aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl shadow-black/50 mb-12 border border-white/10 bg-white p-1 relative">
+            <Image 
+              src={blog.image_url || '/assets/icon.jpg'} 
               alt={blog.image_alt || blog.title}
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 80vw"
               className="w-full h-full object-cover rounded-2xl"
-              onError={(e) => { (e.target as HTMLImageElement).src = '/icon.jpg' }}
             />
           </div>
         </header>

@@ -8,6 +8,7 @@ import {
   Phone, Mail, MapPin, Send, CheckCircle, X, Eye
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
+import Image from 'next/image';
 
 export default function AboutPage() {
   // Form States
@@ -145,9 +146,12 @@ export default function AboutPage() {
           <div className="md:col-span-5 relative flex justify-center">
             <div className="relative w-full max-w-[320px] aspect-[3/4] rounded-3xl border border-white/10 bg-slate-900/30 backdrop-blur-xl p-4 shadow-antigravity group">
               <div className="relative w-full h-[88%] rounded-2xl overflow-hidden border border-white/5 bg-slate-950/60 p-1 shadow-glow">
-                <img
-                  src="/assets/astrologer.png?v=2"
+                <Image
+                  src="/assets/astrologer.png"
                   alt="Astrologer Kkarthikeya Vedic Astrology Specialist"
+                  width={320}
+                  height={427}
+                  priority
                   className="w-full h-full object-cover rounded-2xl"
                 />
               </div>
@@ -291,9 +295,11 @@ export default function AboutPage() {
                 <div>
                   {/* Certificate Image Frame */}
                   <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/5 bg-slate-900/50 p-2 mb-4 flex items-center justify-center group-hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] transition-shadow">
-                    <img
+                    <Image
                       src={cert.src}
                       alt={cert.title}
+                      width={384}
+                      height={288}
                       className="w-full h-full object-contain group-hover:scale-105 transition-all duration-500"
                     />
                     <button
@@ -333,9 +339,11 @@ export default function AboutPage() {
                 <div>
                   {/* Gallery Image Frame */}
                   <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/5 bg-slate-900/50 p-2 mb-4 flex items-center justify-center group-hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] transition-shadow">
-                    <img
+                    <Image
                       src={item.src}
                       alt={item.title}
+                      width={384}
+                      height={288}
                       className="w-full h-full object-contain group-hover:scale-105 transition-all duration-500"
                     />
                     <button
@@ -637,9 +645,11 @@ export default function AboutPage() {
               className="relative max-w-3xl w-full aspect-[4/3] rounded-3xl overflow-hidden border border-white/10 bg-slate-900 p-2 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
+              <Image
                 src={activeCert}
                 alt="Certificate Document Detail"
+                fill
+                sizes="(max-width: 768px) 100vw, 80vw"
                 className="w-full h-full object-contain rounded-2xl"
               />
               <button

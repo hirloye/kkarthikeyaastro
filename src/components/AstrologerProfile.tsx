@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Moon, Star, ShieldCheck, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 export default function AstrologerProfile({ className, status = 'online' }: { className?: string, status?: 'online' | 'offline' | 'busy' }) {
   return (
@@ -26,9 +27,12 @@ export default function AstrologerProfile({ className, status = 'online' }: { cl
             
             {/* Avatar frame */}
             <div className="absolute inset-2 rounded-full border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-1 overflow-hidden backdrop-blur-md">
-              <img 
-                src="/assets/astrologer.png?v=2"
+              <Image 
+                src="/assets/astrologer.png"
                 alt="Astrologer Nova"
+                width={128}
+                height={128}
+                priority
                 className="w-full h-full object-cover rounded-full transform transition duration-500 group-hover:scale-105 animate-float-slow"
               />
             </div>

@@ -7,6 +7,7 @@ import { Calendar, ArrowRight, BookOpen } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useApp } from '@/context/AppContext';
 import CosmicBackground from '@/components/CosmicBackground';
+import Image from 'next/image';
 
 interface Blog {
   id: string;
@@ -98,11 +99,12 @@ export default function BlogsPage() {
                 className="group flex flex-col bg-white backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-inner hover:bg-transparent hover:border-amber-500 transition-all duration-300"
               >
                 <Link href={`/blogs/${blog.slug}`} className="block relative h-56 overflow-hidden bg-white p-2 border border-white/5">
-                  <img
+                  <Image
                     src={blog.image_url || '/assets/icon.jpg'}
                     alt={blog.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                    onError={(e) => { (e.target as HTMLImageElement).src = '/icon.jpg' }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>

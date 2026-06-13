@@ -1,9 +1,22 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export default function CosmicBackground() {
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(max-width: 767px)').matches;
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px)');
+    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, []);
 
   return (
     <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden select-none">
@@ -19,7 +32,7 @@ export default function CosmicBackground() {
       {/* Fluffy drifting cloud shapes (simulated with glassmorphic glowing blur circles) */}
       <motion.div 
         className="absolute bottom-[15%] left-[5%] w-[450px] h-[250px] rounded-[150px] bg-white/60 blur-[70px]"
-        animate={{
+        animate={isMobile ? undefined : {
           x: [-10, 15, -10],
           y: [0, 8, 0]
         }}
@@ -32,7 +45,7 @@ export default function CosmicBackground() {
       
       <motion.div 
         className="absolute bottom-[25%] right-[10%] w-[550px] h-[300px] rounded-[180px] bg-white/70 blur-[90px]"
-        animate={{
+        animate={isMobile ? undefined : {
           x: [15, -15, 15],
           y: [0, -10, 0]
         }}
@@ -45,7 +58,7 @@ export default function CosmicBackground() {
       
       <motion.div 
         className="absolute top-[30%] left-[35%] w-[350px] h-[180px] rounded-[100px] bg-white/50 blur-[60px]"
-        animate={{
+        animate={isMobile ? undefined : {
           x: [0, 20, 0],
           y: [-5, 5, -5]
         }}
