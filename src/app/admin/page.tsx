@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Orbit, Shield, ArrowLeft, Users, Activity, Server,
-  Compass, Calendar, MessageSquare, Phone, Sparkles,
-  Lock, Key, Send, CheckCircle2, RefreshCw, Mail, DollarSign, LogOut, Trash2, FileText, Menu, X, Eye, EyeOff,
+  Shield, ArrowLeft, Users, Activity,
+  Compass, MessageSquare, Sparkles,
+  Lock, Key, Send, CheckCircle2, RefreshCw, DollarSign, LogOut, Trash2, FileText, Menu, X, Eye, EyeOff,
   Volume2, VolumeX
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
@@ -93,19 +93,18 @@ export default function AdminDashboard() {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   // Sound settings state
-  const [isSoundEnabled, setIsSoundEnabled] = useState(false);
-  const isSoundEnabledRef = useRef(false);
+  const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('astro_admin_sound_enabled');
+      return saved === 'true';
+    }
+    return false;
+  });
+  const isSoundEnabledRef = useRef(isSoundEnabled);
 
   useEffect(() => {
     isSoundEnabledRef.current = isSoundEnabled;
   }, [isSoundEnabled]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('astro_admin_sound_enabled');
-    if (saved === 'true') {
-      setIsSoundEnabled(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
@@ -156,7 +155,7 @@ export default function AdminDashboard() {
       try {
         await wakeLockRef.current.release();
         toast.success("Screen Awake deactivated. Screen will sleep normally.");
-      } catch (err) {}
+      } catch {}
       wakeLockRef.current = null;
       setIsWakeLocked(false);
     }
@@ -182,19 +181,18 @@ export default function AdminDashboard() {
       if (wakeLockRef.current) {
         try {
           wakeLockRef.current.release();
-        } catch (err) {}
+        } catch {}
       }
     };
   }, [isWakeLocked]);
 
   // Native notification permission state
-  const [notificationPermission, setNotificationPermission] = useState<string>('default');
-
-  useEffect(() => {
+  const [notificationPermission, setNotificationPermission] = useState<string>(() => {
     if (typeof window !== 'undefined' && 'Notification' in window) {
-      setNotificationPermission(Notification.permission);
+      return Notification.permission;
     }
-  }, []);
+    return 'default';
+  });
 
   const requestNotificationPermission = () => {
     if (typeof window === 'undefined') return;
@@ -228,23 +226,48 @@ export default function AdminDashboard() {
   };
 
   // Presence state
-  const [isManualOffline, setIsManualOffline] = useState(false);
-  const [offlineUntil, setOfflineUntil] = useState<Date | null>(null);
+  const [isManualOffline, setIsManualOffline] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('astro_admin_presence');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          return !!parsed.isManualOffline;
+        } catch {}
+      }
+    }
+    return false;
+  });
+  const [offlineUntil, setOfflineUntil] = useState<Date | null>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('astro_admin_presence');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.isManualOffline && parsed.offlineUntil) {
+            return new Date(parsed.offlineUntil);
+          }
+        } catch {}
+      }
+    }
+    return null;
+  });
+  const [offlineMinutes, setOfflineMinutes] = useState(0);
 
   useEffect(() => {
-    const saved = localStorage.getItem('astro_admin_presence');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.isManualOffline) {
-          setIsManualOffline(true);
-          if (parsed.offlineUntil) {
-            setOfflineUntil(new Date(parsed.offlineUntil));
-          }
-        }
-      } catch (e) {}
+    if (!offlineUntil) {
+      setOfflineMinutes(0);
+      return;
     }
-  }, []);
+    const updateOfflineMinutes = () => {
+      const diff = offlineUntil.getTime() - Date.now();
+      const mins = Math.max(30, Math.round(diff / 60000));
+      setOfflineMinutes(mins);
+    };
+    updateOfflineMinutes();
+    const interval = setInterval(updateOfflineMinutes, 30000);
+    return () => clearInterval(interval);
+  }, [offlineUntil]);
 
   const updateAdminPresence = (offline: boolean, untilDate: Date | null) => {
     setIsManualOffline(offline);
@@ -255,11 +278,16 @@ export default function AdminDashboard() {
     }));
   };
 
-  // Auth state
   const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const savedAuth = sessionStorage.getItem('astro_admin_auth');
+      return savedAuth === 'true';
+    }
+    return false;
+  });
   const [loginError, setLoginError] = useState('');
 
   // Blog Manager State
@@ -277,7 +305,6 @@ export default function AdminDashboard() {
 
   // Client List Query state
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
 
   // Pricing edit states
   const [pricingPlans, setPricingPlans] = useState<any>(null);
@@ -368,27 +395,12 @@ export default function AdminDashboard() {
     }
   };
 
-  // Auto-scroll chats
-  useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages]);
-
-  // Auth persistence check
-  useEffect(() => {
-    const savedAuth = sessionStorage.getItem('astro_admin_auth');
-    if (savedAuth === 'true') {
-      setIsAuthorized(true);
-    }
-  }, []);
-
   // Filter users table
-  useEffect(() => {
-    setFilteredUsers(
-      allUsers.filter(u =>
-        u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        u.mobile.includes(searchQuery) ||
-        (u.email && u.email.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
+  const filteredUsers = useMemo(() => {
+    return allUsers.filter(u =>
+      u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      u.mobile.includes(searchQuery) ||
+      (u.email && u.email.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   }, [allUsers, searchQuery]);
 
@@ -537,7 +549,7 @@ export default function AdminDashboard() {
   // Admin Countdown Timer for Selected Client
   useEffect(() => {
     if (!selectedClient || !selectedClient.chatUnlocked || !selectedClient.unlockedAt) {
-      setAdminTimeRemaining(null);
+      setTimeout(() => setAdminTimeRemaining(null), 0);
       return;
     }
     const unlockedTimeMs = new Date(selectedClient.unlockedAt).getTime();
@@ -553,10 +565,10 @@ export default function AdminDashboard() {
     }, 1000);
 
     // Initial set
-    setAdminTimeRemaining(Math.max(0, Math.floor((expiryTime - Date.now()) / 1000)));
+    setTimeout(() => setAdminTimeRemaining(Math.max(0, Math.floor((expiryTime - Date.now()) / 1000))), 0);
 
     return () => clearInterval(interval);
-  }, [selectedClient?.id, selectedClient?.chatUnlocked, selectedClient?.unlockedAt]);
+  }, [selectedClient]);
 
   // Keep a ref to allUsers for the message listener to avoid constant re-subscriptions
   const allUsersRef = useRef<UserData[]>(allUsers);
@@ -619,7 +631,7 @@ export default function AdminDashboard() {
         { id: 'm1', sender: 'astrologer', content: `Greetings, ${selectedClient.username}. How may the cosmic guides assist you today?`, created_at: new Date(Date.now() - 1000 * 60 * 10).toISOString() },
         { id: 'm2', sender: 'user', content: "Namaste guruji, I wanted to understand my Jupiter transits for this year.", created_at: new Date(Date.now() - 1000 * 60 * 5).toISOString() }
       ];
-      setChatMessages(mockHistory);
+      setTimeout(() => setChatMessages(mockHistory), 0);
     } else {
       // Query messages from Supabase
       const fetchHistory = async () => {
@@ -718,7 +730,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const fetchExistingBlogs = async () => {
+  const fetchExistingBlogs = useCallback(async () => {
     try {
       if (isOfflineMode) {
         const stored = JSON.parse(localStorage.getItem('astro_blogs') || '[]');
@@ -734,13 +746,13 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error("Failed to fetch blogs:", err);
     }
-  };
+  }, [isOfflineMode]);
 
   useEffect(() => {
     if (activeTab === 'blog-list') {
-      fetchExistingBlogs();
+      setTimeout(() => fetchExistingBlogs(), 0);
     }
-  }, [activeTab, isOfflineMode]);
+  }, [activeTab, fetchExistingBlogs]);
 
   const handleEditBlog = (blog: any) => {
     setEditingBlogId(blog.id);
@@ -1088,7 +1100,7 @@ export default function AdminDashboard() {
                   }
                 }}
                 className="bg-slate-900/40 border border-white/10 text-slate-300 hover:text-white text-[10px] rounded-xl px-2 py-2.5 outline-none uppercase font-bold tracking-widest w-full md:w-auto"
-                value={offlineUntil ? Math.max(30, Math.round((offlineUntil.getTime() - Date.now()) / 60000)) : 0}
+                value={offlineMinutes}
               >
                 <option value="0">Not Available</option>
                 <option value="30">Back in 30 Min</option>

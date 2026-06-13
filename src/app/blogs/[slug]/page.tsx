@@ -3,7 +3,6 @@
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { motion } from 'framer-motion';
 import { Calendar, ArrowLeft, Share2 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useApp } from '@/context/AppContext';

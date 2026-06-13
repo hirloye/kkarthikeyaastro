@@ -13,9 +13,9 @@ export async function POST(request: Request) {
     const { year, month, date, hours = 12, minutes = 0, latitude = 13.0827, longitude = 80.2707 } = body;
 
     const targetDate = new Date();
-    let y = year || targetDate.getFullYear();
-    let m = month || (targetDate.getMonth() + 1);
-    let d = date || targetDate.getDate();
+    const y = year || targetDate.getFullYear();
+    const m = month || (targetDate.getMonth() + 1);
+    const d = date || targetDate.getDate();
 
     // 1. Get OAuth Token from Prokerala
     const tokenRes = await fetch('https://api.prokerala.com/token', {

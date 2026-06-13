@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   Sparkles, Heart, Briefcase, DollarSign, Activity, 
-  Compass, Award, ShieldAlert, ArrowRight 
+  ShieldAlert, ArrowRight 
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import Link from 'next/link';
@@ -135,10 +135,9 @@ const DEFAULT_HOROSCOPE = (sign: string, day: 'yesterday' | 'today' | 'tomorrow'
 
 export default function DailyHoroscopePage() {
   const [selectedSign, setSelectedSign] = useState('aries');
-  const [selectedDay, setSelectedDay] = useState<'yesterday' | 'today' | 'tomorrow'>('today');
+  const selectedDay = 'today';
   const [activeReading, setActiveReading] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isDynamic, setIsDynamic] = useState(false);
   const [transitPlanets, setTransitPlanets] = useState<any[]>([]);
 
   const activeSignInfo = ZODIAC_SIGNS.find(s => s.id === selectedSign) || ZODIAC_SIGNS[0];
@@ -163,16 +162,22 @@ export default function DailyHoroscopePage() {
         const json = await res.json();
         if (active && json && json.success && json.data) {
           const rawData = json.data.data || json.data;
-          let planetsArray = [];
+          let planetsArray: any[] = [];
           if (Array.isArray(rawData)) {
-            planetsArray = rawData;
+            planetsArray = rawData.map((p: any) => ({
+              name: p.name || '',
+              sign: p.sign || p.sign_name || '',
+              house: p.house || '',
+              isRetrograde: p.isRetrograde || p.is_retrograde || false,
+              position: p.position ?? p.normDegree ?? 0
+            }));
           } else if (typeof rawData === 'object') {
             planetsArray = Object.keys(rawData).map(key => ({
               name: rawData[key].name || key,
               sign: rawData[key].sign || rawData[key].sign_name || '',
               house: rawData[key].house || '',
               isRetrograde: rawData[key].isRetrograde || rawData[key].is_retrograde || false,
-              position: rawData[key].position || rawData[key].normDegree || 0
+              position: rawData[key].position ?? rawData[key].normDegree ?? 0
             }));
           }
           if (planetsArray.length > 0) {
@@ -208,7 +213,6 @@ export default function DailyHoroscopePage() {
             luckyNumber: base.luckyNumber,
             remedy: base.remedy
           });
-          setIsDynamic(true);
         }
       } catch (err) {
         console.error("Failed to fetch horoscope from API, using fallback:", err);
@@ -216,7 +220,6 @@ export default function DailyHoroscopePage() {
           const fallback = HOROSCOPE_DATABASE[selectedSign]?.[selectedDay] 
             || DEFAULT_HOROSCOPE(activeSignInfo.name, selectedDay);
           setActiveReading(fallback);
-          setIsDynamic(false);
         }
       } finally {
         if (active) setLoading(false);
@@ -292,7 +295,7 @@ export default function DailyHoroscopePage() {
                     <div key={planet.name} className="p-2.5 rounded-xl bg-white/2 border border-white/5 flex flex-col">
                       <span className="text-[8px] uppercase tracking-widest text-indigo-300 font-black">{planet.name}</span>
                       <strong className="text-slate-200 mt-1 font-serif">{planet.sign}</strong>
-                      <span className="text-[8px] text-slate-400 mt-0.5">House {planet.house} • {planet.position.toFixed(1)}°</span>
+                      <span className="text-[8px] text-slate-400 mt-0.5">House {planet.house} • {(planet.position ?? 0).toFixed(1)}°</span>
                     </div>
                   ))}
                 </div>

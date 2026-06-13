@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Sparkles, ShieldCheck, Star, Award, Compass, MessageSquare,
-  Orbit, Globe, HeartHandshake, CheckCircle2, ChevronRight,
-  Phone, Mail, MapPin, Send, CheckCircle, Clock, X, Eye
+  Sparkles, ShieldCheck, Compass, MessageSquare,
+  Orbit, Globe, HeartHandshake, CheckCircle2,
+  Phone, Mail, MapPin, Send, CheckCircle, X, Eye
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 

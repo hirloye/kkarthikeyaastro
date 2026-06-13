@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       console.error('Failed to save booking to database:', dbError);
     }
 
-    const { data, error } = await resend.emails.send({
+    const emailResponse = await resend.emails.send({
       from: 'Astrology Booking <onboarding@resend.dev>',
       to: 'kkarthikeyaastro@gmail.com',
       subject: `[Astro Booking] ${bookingId} - ${seekerName} (${planTitle})`,
@@ -104,12 +104,12 @@ export async function POST(request: Request) {
       `,
     });
 
-    if (error) {
-      console.error('Resend Booking API error:', error);
-      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    if (emailResponse.error) {
+      console.error('Resend Booking API error:', emailResponse.error);
+      return NextResponse.json({ success: false, error: emailResponse.error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, data: emailResponse.data });
   } catch (err: any) {
     console.error('Booking API internal error:', err);
     return NextResponse.json({ success: false, error: err.message || 'Internal Server Error' }, { status: 500 });

@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, Sunrise, Sunset, Compass, Moon, Clock, 
+  Sparkles, Sunrise, Sunset, Compass, Moon, 
   ShieldCheck, AlertTriangle, ChevronRight, RefreshCw
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
@@ -147,12 +146,10 @@ export default function PanchangamPage() {
   const [selectedDayKey, setSelectedDayKey] = useState('');
   const [activePanchangam, setActivePanchangam] = useState<PanchangamDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isDynamic, setIsDynamic] = useState(false);
-  const [apiSource, setApiSource] = useState('Almanac Backup');
 
   // Generate dynamic 5 days from today
   useEffect(() => {
-    const dates = [];
+    const dates: any[] = [];
     const weekdaysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const weekdaysFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -173,10 +170,12 @@ export default function PanchangamPage() {
       });
     }
 
-    setWeekDays(dates);
-    if (dates.length > 0) {
-      setSelectedDayKey(dates[0].key);
-    }
+    setTimeout(() => {
+      setWeekDays(dates);
+      if (dates.length > 0) {
+        setSelectedDayKey(dates[0].key);
+      }
+    }, 0);
   }, []);
 
   // Fetch Chennai dynamic coordinates and calculate Vedic Panchang variables
@@ -192,7 +191,6 @@ export default function PanchangamPage() {
       setLoading(true);
       try {
         let results: any = null;
-        let source = "Almanac Backup";
 
         // 1. Try fetching from freeastrologyapi.com getsunriseandset via secure API route
         try {
@@ -233,7 +231,6 @@ export default function PanchangamPage() {
                   moon_illumination: 75,
                   moon_phase: "Waxing Gibbous"
                 };
-                source = "Vedic Live Engine";
               }
             }
           }
@@ -248,7 +245,6 @@ export default function PanchangamPage() {
           const json = await res.json();
           if (json && json.results) {
             results = json.results;
-            source = "Solar Public Live";
           }
         }
 
@@ -372,8 +368,6 @@ export default function PanchangamPage() {
             brahma,
             guidance
           });
-          setApiSource(source);
-          setIsDynamic(true);
         }
       } catch (err) {
         console.error("Failed to fetch Panchang from API, using fallback:", err);
@@ -384,8 +378,6 @@ export default function PanchangamPage() {
             dayName: currentDayData.dayFullName,
             dateStr: currentDayData.fullDateStr
           });
-          setApiSource("Almanac Backup");
-          setIsDynamic(false);
         }
       } finally {
         if (active) setLoading(false);

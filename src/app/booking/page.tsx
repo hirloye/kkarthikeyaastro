@@ -4,10 +4,9 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Calendar as CalIcon, Clock, Shield, CheckCircle, 
-  ChevronRight, Sparkles, User, PhoneCall, Moon, Compass, Sun, Orbit 
+  Clock, Shield, CheckCircle, 
+  ChevronRight, Sparkles, User, PhoneCall, Compass, Orbit 
 } from 'lucide-react';
-import CosmicBackground from '@/components/CosmicBackground';
 import AuthGuard from '@/components/AuthGuard';
 import { useApp } from '@/context/AppContext';
 
@@ -17,7 +16,6 @@ function BookingFormContent() {
   const { currentUser } = useApp();
   
   const planParam = searchParams.get('plan') || 'silver';
-  const serviceParam = searchParams.get('service') || '';
 
   // Dynamic Plans State
   const [plansData, setPlansData] = useState<Record<string, { title: string; price: number }>>({
@@ -42,7 +40,7 @@ function BookingFormContent() {
     const parts = raw.split(' ');
     let time = parts[0];
     if (parts[1]) {
-      let [hours, mins] = time.split(':');
+      const [hours, mins] = time.split(':');
       let h = parseInt(hours, 10);
       if (parts[1].toUpperCase() === 'PM' && h < 12) h += 12;
       if (parts[1].toUpperCase() === 'AM' && h === 12) h = 0;
@@ -56,13 +54,16 @@ function BookingFormContent() {
   
   useEffect(() => {
     if (currentUser) {
-      if (!userName) setUserName(currentUser.username || '');
-      if (!mobileNum) setMobileNum(currentUser.mobile || '');
-      if (!gender) setGender(currentUser.gender || '');
-      if (!dob) setDob(currentUser.dob || '');
-      if (!tob) setTob(parseTobForInput(currentUser.tob || ''));
-      if (!pob) setPob(currentUser.pob || '');
+      setTimeout(() => {
+        if (!userName) setUserName(currentUser.username || '');
+        if (!mobileNum) setMobileNum(currentUser.mobile || '');
+        if (!gender) setGender(currentUser.gender || '');
+        if (!dob) setDob(currentUser.dob || '');
+        if (!tob) setTob(parseTobForInput(currentUser.tob || ''));
+        if (!pob) setPob(currentUser.pob || '');
+      }, 0);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   // Custom Date Picker Grid States
@@ -99,7 +100,7 @@ function BookingFormContent() {
   // Sync plan if param changes
   useEffect(() => {
     if (planParam && plansData[planParam]) {
-      setSelectedPlan(planParam);
+      setTimeout(() => setSelectedPlan(planParam), 0);
     }
   }, [planParam, plansData]);
 
@@ -130,7 +131,7 @@ function BookingFormContent() {
         })
         .catch(err => console.error("Failed to load availability:", err));
     } else {
-      setBookedSlots([]);
+      setTimeout(() => setBookedSlots([]), 0);
     }
   }, [selectedDate, monthName, currentDate]);
 

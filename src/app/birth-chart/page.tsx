@@ -3,11 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, Calendar, Clock, MapPin, User, 
-  ChevronRight, Compass, ShieldCheck, HelpCircle, RefreshCw
+  Sparkles, MapPin, User, 
+  ChevronRight, Compass, ShieldCheck, RefreshCw
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
-import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import AuthGuard from '@/components/AuthGuard';
 import SouthIndianChart from '@/components/SouthIndianChart';
@@ -29,16 +28,18 @@ export default function BirthChartPage() {
   // Auto-fill from logged-in user details
   useEffect(() => {
     if (currentUser) {
-      setName(currentUser.username || '');
-      setDob(currentUser.dob || '');
-      setPob(currentUser.pob || '');
-      
-      if (currentUser.tob) {
-        const timePart = currentUser.tob.match(/(\d+:\d+)/);
-        const periodPart = currentUser.tob.match(/(AM|PM)/i);
-        if (timePart) setTob(timePart[0]);
-        if (periodPart) setTobPeriod(periodPart[0].toUpperCase());
-      }
+      setTimeout(() => {
+        setName(currentUser.username || '');
+        setDob(currentUser.dob || '');
+        setPob(currentUser.pob || '');
+        
+        if (currentUser.tob) {
+          const timePart = currentUser.tob.match(/(\d+:\d+)/);
+          const periodPart = currentUser.tob.match(/(AM|PM)/i);
+          if (timePart) setTob(timePart[0]);
+          if (periodPart) setTobPeriod(periodPart[0].toUpperCase());
+        }
+      }, 0);
     }
   }, [currentUser]);
 
@@ -54,72 +55,6 @@ export default function BirthChartPage() {
     }, 1500);
   };
 
-  // SVG Coordinates for drawing Houses in North Indian style:
-  // Points: (0,0), (400,0), (400,400), (0,400), (200,200)
-  // Let's create an interactive layout overlay.
-  // We divide the houses using standard paths so we can capture click events on them.
-  const housesPaths = [
-    {
-      house: 1, // Top center diamond
-      path: "M 0 200 L 200 0 L 400 200 L 200 200 Z",
-      labelX: 200, labelY: 120, planetX: 200, planetY: 155
-    },
-    {
-      house: 2, // Upper left triangle
-      path: "M 0 0 L 200 0 L 200 200 Z",
-      labelX: 110, labelY: 45, planetX: 110, planetY: 80
-    },
-    {
-      house: 3, // Far left triangle
-      path: "M 0 0 L 200 200 L 0 200 Z",
-      labelX: 45, labelY: 110, planetX: 45, planetY: 145
-    },
-    {
-      house: 4, // Middle left diamond
-      path: "M 0 200 L 200 200 L 200 400 L 0 200 Z",
-      labelX: 120, labelY: 200, planetX: 125, planetY: 235
-    },
-    {
-      house: 5, // Lower left triangle
-      path: "M 0 200 L 200 200 L 0 400 Z",
-      labelX: 45, labelY: 290, planetX: 45, planetY: 325
-    },
-    {
-      house: 6, // Bottom left triangle
-      path: "M 0 400 L 200 400 L 200 200 Z",
-      labelX: 110, labelY: 355, planetX: 110, planetY: 320
-    },
-    {
-      house: 7, // Bottom center diamond
-      path: "M 200 200 L 400 200 L 200 400 Z",
-      labelX: 200, labelY: 290, planetX: 200, planetY: 255
-    },
-    {
-      house: 8, // Bottom right triangle
-      path: "M 200 200 L 400 400 L 200 400 Z",
-      labelX: 290, labelY: 355, planetX: 290, planetY: 320
-    },
-    {
-      house: 9, // Lower right triangle
-      path: "M 200 200 L 400 200 L 400 400 Z",
-      labelX: 355, labelY: 290, planetX: 355, planetY: 325
-    },
-    {
-      house: 10, // Middle right diamond
-      path: "M 200 200 L 400 200 L 200 0 L 200 200 Z",
-      labelX: 280, labelY: 200, planetX: 275, planetY: 235
-    },
-    {
-      house: 11, // Upper right triangle
-      path: "M 200 200 L 400 0 L 400 200 Z",
-      labelX: 355, labelY: 110, planetX: 355, planetY: 145
-    },
-    {
-      house: 12, // Top right triangle
-      path: "M 200 0 L 400 0 L 200 200 Z",
-      labelX: 290, labelY: 45, planetX: 290, planetY: 80
-    }
-  ];
 
   return (
     <AuthGuard>

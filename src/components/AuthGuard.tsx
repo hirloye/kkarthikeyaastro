@@ -15,7 +15,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!currentUser) {
-      setIsRedirecting(true);
+      setTimeout(() => {
+        setIsRedirecting(true);
+      }, 0);
       // Store current path so login page can redirect back after successful auth
       sessionStorage.setItem('astro_redirect_after_login', pathname || '/');
       const timer = setTimeout(() => {
@@ -23,7 +25,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       }, 1000); // Small delay to let them see the "Celestial Seal" or loading animation
       return () => clearTimeout(timer);
     } else {
-      setIsRedirecting(false);
+      setTimeout(() => {
+        setIsRedirecting(false);
+      }, 0);
     }
   }, [currentUser, router, pathname]);
 

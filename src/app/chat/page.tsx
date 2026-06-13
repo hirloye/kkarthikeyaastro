@@ -10,7 +10,6 @@ import { Sparkles, Lock, ArrowLeft, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useApp } from '@/context/AppContext';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { supabase } from '@/lib/supabaseClient';
 import { toast } from 'react-hot-toast';
@@ -25,17 +24,16 @@ const RESPONSES = [
 ];
 
 function AstrologyChatPage() {
-  const { currentUser, logoutUser, isOfflineMode, setCurrentUser } = useApp();
-  const router = useRouter();
+  const { currentUser, isOfflineMode, setCurrentUser } = useApp();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
 
   // Chat locking states
   const [chatUnlocked, setChatUnlocked] = useState(false);
-  const [firstMessageAt, setFirstMessageAt] = useState<string | null>(null);
   const [unlockedAt, setUnlockedAt] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null); // in seconds
   const isLocked = !chatUnlocked || (timeRemaining !== null && timeRemaining <= 0);
+  const [offlineRemainingText, setOfflineRemainingText] = useState('');
   const [pricingPlans, setPricingPlans] = useState<any>(null);
 
   // Review & Rating Bonus States
@@ -51,11 +49,39 @@ function AstrologyChatPage() {
   const [astrologerStatus, setAstrologerStatus] = useState<'offline' | 'online' | 'busy'>('offline');
   const [offlineUntil, setOfflineUntil] = useState<string | null>(null);
 
+  // Calculate astrologer offline time remaining dynamically to avoid Date.now impurity in render
+  useEffect(() => {
+    if (!offlineUntil) {
+      setTimeout(() => setOfflineRemainingText(''), 0);
+      return;
+    }
+    const updateOfflineTime = () => {
+      const diff = new Date(offlineUntil).getTime() - Date.now();
+      if (diff <= 0) {
+        setOfflineRemainingText('a few moments');
+        return;
+      }
+      const m = Math.round(diff / 60000);
+      const h = Math.floor(m / 60);
+      const rm = m % 60;
+      if (h > 0 && rm > 0) {
+        setOfflineRemainingText(`${h} hr ${rm} min`);
+      } else if (h > 0) {
+        setOfflineRemainingText(`${h} hr`);
+      } else {
+        setOfflineRemainingText(`${m} min`);
+      }
+    };
+    setTimeout(updateOfflineTime, 0);
+    const interval = setInterval(updateOfflineTime, 10000);
+    return () => clearInterval(interval);
+  }, [offlineUntil]);
+
   // Sync claimed review bonus status from localStorage on mount/user load
   useEffect(() => {
     if (currentUser) {
       const savedClaimed = localStorage.getItem(`astro_claimed_review_bonus_${currentUser.id}`);
-      setClaimedBonus(savedClaimed === 'true');
+      setTimeout(() => setClaimedBonus(savedClaimed === 'true'), 0);
     }
   }, [currentUser]);
 
@@ -135,12 +161,13 @@ function AstrologyChatPage() {
       const saved = localStorage.getItem(`astro_session_expiry_${currentUser.id}`);
       try {
         const parsed = saved ? JSON.parse(saved) : null;
-        setIsBonusSession(!!parsed?.isBonus);
-      } catch (e) {
-        setIsBonusSession(false);
+        const isBonus = !!parsed?.isBonus;
+        setTimeout(() => setIsBonusSession(isBonus), 0);
+      } catch {
+        setTimeout(() => setIsBonusSession(false), 0);
       }
     } else {
-      setIsBonusSession(false);
+      setTimeout(() => setIsBonusSession(false), 0);
     }
   }, [currentUser, chatUnlocked, unlockedAt]);
 
@@ -199,20 +226,17 @@ function AstrologyChatPage() {
           .single();
 
         if (!error && data) {
-          const freshFirstMsg = data.first_message_at;
           const freshUnlocked = data.chat_unlocked || false;
           const freshUnlockedAt = data.unlocked_at;
 
-          setFirstMessageAt(freshFirstMsg);
           setChatUnlocked(freshUnlocked);
           setUnlockedAt(freshUnlockedAt);
 
           // Also sync app-wide context and localStorage
           setCurrentUser(prev => {
-            if (prev && (prev.chatUnlocked !== freshUnlocked || prev.firstMessageAt !== freshFirstMsg || prev.unlockedAt !== freshUnlockedAt)) {
+            if (prev && (prev.chatUnlocked !== freshUnlocked || prev.unlockedAt !== freshUnlockedAt)) {
               const updated = {
                 ...prev,
-                firstMessageAt: freshFirstMsg,
                 chatUnlocked: freshUnlocked,
                 unlockedAt: freshUnlockedAt
               };
@@ -242,11 +266,9 @@ function AstrologyChatPage() {
         filter: `id=eq.${currentUser.id}`
       }, (payload) => {
         if (payload.new) {
-          const freshFirstMsg = payload.new.first_message_at;
           const freshUnlocked = payload.new.chat_unlocked || false;
           const freshUnlockedAt = payload.new.unlocked_at;
 
-          setFirstMessageAt(freshFirstMsg);
           setChatUnlocked(freshUnlocked);
           setUnlockedAt(freshUnlockedAt);
 
@@ -254,7 +276,6 @@ function AstrologyChatPage() {
             if (prev) {
               const updated = {
                 ...prev,
-                firstMessageAt: freshFirstMsg,
                 chatUnlocked: freshUnlocked,
                 unlockedAt: freshUnlockedAt
               };
@@ -279,14 +300,13 @@ function AstrologyChatPage() {
       const ratingKey = `astro_rating_shown_${currentUser.id}`;
       const alreadyRated = localStorage.getItem(ratingKey);
       if (!alreadyRated && !ratingExpiresAt) {
-        // start 12‑minute rating window
-        setRatingExpiresAt(Date.now() + 12 * 60 * 1000);
+        const expiresAt = Date.now() + 12 * 60 * 1000;
+        setTimeout(() => setRatingExpiresAt(expiresAt), 0);
       }
     } else {
-      // reset when session is unlocked again
-      setRatingExpiresAt(null);
+      setTimeout(() => setRatingExpiresAt(null), 0);
     }
-  }, [isLocked, currentUser]);
+  }, [isLocked, currentUser, ratingExpiresAt]);
 
   // Initialize or retrieve expiration time based on user's local clock to prevent admin/client clock skew
   useEffect(() => {
@@ -299,24 +319,22 @@ function AstrologyChatPage() {
     try {
       const parsed = saved ? JSON.parse(saved) : null;
       if (!parsed || parsed.unlockedAt !== unlockedAt) {
-        // First time seeing this unlock action: start a fresh 10 minutes from now
         expiryTime = Date.now() + 10 * 60 * 1000;
         localStorage.setItem(key, JSON.stringify({ unlockedAt, expiryTime }));
       } else {
         expiryTime = parsed.expiryTime;
       }
-    } catch (e) {
+    } catch {
       expiryTime = Date.now() + 10 * 60 * 1000;
       localStorage.setItem(key, JSON.stringify({ unlockedAt, expiryTime }));
     }
 
-    // Early exit if not unlocked
     if (!chatUnlocked || !unlockedAt || !currentUser) {
-      setTimeRemaining(null);
+      setTimeout(() => setTimeRemaining(null), 0);
       if (currentUser) {
         localStorage.removeItem(`astro_session_expiry_${currentUser.id}`);
       }
-      return; // exit effect
+      return;
     }
 
     const updateTimer = () => {
@@ -330,7 +348,7 @@ function AstrologyChatPage() {
       }
     };
 
-    updateTimer();
+    setTimeout(updateTimer, 0);
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
@@ -371,7 +389,7 @@ function AstrologyChatPage() {
     ];
 
     if (isOfflineMode) {
-      setMessages(initialMsgs);
+      setTimeout(() => setMessages(initialMsgs), 0);
     } else {
       const fetchHistory = async () => {
         try {
@@ -564,10 +582,7 @@ function AstrologyChatPage() {
     }
   };
 
-
   if (!currentUser) return null; // Handled by AuthGuard
-
-  const rawPriceStr = pricingPlans?.quick?.price || "₹99";
 
   /*
   html, body { 
@@ -584,7 +599,7 @@ function AstrologyChatPage() {
   }
   */
 
-  const priceNumeric = rawPriceStr.replace(/[^0-9]/g, '');
+
 
   return (
     <main className="relative min-h-screen -mt-20 w-full text-slate-100 overflow-hidden flex flex-col">
@@ -636,18 +651,9 @@ function AstrologyChatPage() {
                     <span className="text-slate-500">●</span> 
                     <span className="text-slate-400">
                       Offline
-                      {offlineUntil && (
+                      {offlineUntil && offlineRemainingText && (
                         <span className="text-slate-500 ml-1">
-                          • Available in {(() => {
-                            const diff = new Date(offlineUntil).getTime() - Date.now();
-                            if (diff <= 0) return 'a few moments';
-                            const m = Math.round(diff / 60000);
-                            const h = Math.floor(m / 60);
-                            const rm = m % 60;
-                            if (h > 0 && rm > 0) return `${h} hr ${rm} min`;
-                            if (h > 0) return `${h} hr`;
-                            return `${m} min`;
-                          })()}
+                          • Available in {offlineRemainingText}
                         </span>
                       )}
                     </span>

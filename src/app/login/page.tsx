@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import CosmicBackground from '@/components/CosmicBackground';
 import { motion } from 'framer-motion';
-import { Sparkles, Orbit, User, Phone, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Orbit, User, Phone, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
 export default function LoginPage() {
-  const { currentUser, loginUser, registerUser, isOfflineMode } = useApp();
+  const { currentUser, loginUser, registerUser } = useApp();
   const router = useRouter();
 
   // Mode: Existing User (false) vs New User (true)

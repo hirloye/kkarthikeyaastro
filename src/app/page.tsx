@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  Sparkles, Orbit, Sun, Moon, Star, Compass,
+  Sparkles, Orbit, Sun, Star, Compass,
   ChevronRight, MessageSquare, Award,
   PhoneCall, CheckCircle2
 } from 'lucide-react';
@@ -64,12 +64,7 @@ export default function HomePage() {
     fetchReviews();
   }, []);
 
-  const specialties = [
-    { title: "Horoscope Reading", desc: "Deep-dive 12-house Vedic analysis mapping your career, finance, health, and family blueprints.", icon: Sun },
-    { title: "Marriage Matching", desc: "Scientific 10-Koota compatibility evaluation to secure blessed, harmonious life unions.", icon: Orbit },
-    { title: "Muhurtham Timings", desc: "Precise calculated electional timing for marriages, house warming, registration, and more.", icon: Compass },
-    { title: "Kadikara Prasannam", desc: "Specialized hourly horary consultation offering immediate answers to burning life queries.", icon: Moon }
-  ];
+
 
   const pricingPlans = [
     {
@@ -573,7 +568,7 @@ export default function HomePage() {
                     <span className="text-[9px] text-slate-500 uppercase tracking-wider font-semibold">{tst.time}</span>
                   </div>
                   <p className="text-xs leading-relaxed text-slate-300 italic mb-6">
-                    "{tst.text}"
+                    &ldquo;{tst.text}&rdquo;
                   </p>
                 </div>
                 <div className="flex items-center gap-3">

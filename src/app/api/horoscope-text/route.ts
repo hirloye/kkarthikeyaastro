@@ -76,8 +76,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: false, error: 'Prokerala API Error after fallback' }, { status: predictionRes.status });
     }
 
-    const predictionData = await predictionRes.json();
-    const predictionText = predictionData?.data?.daily_prediction?.prediction || 'Horoscope reading unavailable.';
+    const predictionText = (await predictionRes.json())?.data?.daily_prediction?.prediction || 'Horoscope reading unavailable.';
 
     return NextResponse.json({
       success: true,
