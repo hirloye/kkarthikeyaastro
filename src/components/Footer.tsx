@@ -60,13 +60,13 @@ export default function Footer() {
             <Compass className="w-3.5 h-3.5" /> Site Index
           </h4>
           <ul className="text-xs space-y-2 text-slate-400 font-medium">
-            <li><Link href="/" className="hover:text-amber-300 transition-colors">Home Portal</Link></li>
-            <li><Link href="/about" className="hover:text-amber-300 transition-colors">About Astrologer</Link></li>
-            <li><Link href="/services" className="hover:text-amber-300 transition-colors">Services</Link></li>
-            <li><Link href="/horoscope" className="hover:text-amber-300 transition-colors">Daily Horoscope</Link></li>
-            <li><Link href="/panchangam" className="hover:text-amber-300 transition-colors">Daily Panchangam</Link></li>
-            <li><Link href="/booking" className="hover:text-amber-300 transition-colors">Booking</Link></li>
-            <li><Link href="/about#contact" className="hover:text-amber-300 transition-colors">Contact</Link></li>
+            <li><Link href="/" prefetch={false} className="hover:text-amber-300 transition-colors">Home Portal</Link></li>
+            <li><Link href="/about" prefetch={false} className="hover:text-amber-300 transition-colors">About Astrologer</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-amber-300 transition-colors">Services</Link></li>
+            <li><Link href="/horoscope" prefetch={false} className="hover:text-amber-300 transition-colors">Daily Horoscope</Link></li>
+            <li><Link href="/panchangam" prefetch={false} className="hover:text-amber-300 transition-colors">Daily Panchangam</Link></li>
+            <li><Link href="/booking" prefetch={false} className="hover:text-amber-300 transition-colors">Booking</Link></li>
+            <li><Link href="/about#contact" prefetch={false} className="hover:text-amber-300 transition-colors">Contact</Link></li>
           </ul>
         </div>
 
@@ -76,11 +76,11 @@ export default function Footer() {
             <Sparkles className="w-3.5 h-3.5" /> Specialized Services
           </h4>
           <ul className="text-xs space-y-2 text-slate-400">
-            <li><Link href="/services" className="hover:text-indigo-300 transition-colors">Horoscope Analysis</Link></li>
-            <li><Link href="/services" className="hover:text-indigo-300 transition-colors">Marriage Compatibility (10 Koota)</Link></li>
-            <li><Link href="/services" className="hover:text-indigo-300 transition-colors">Kadikara Prasannam (Horary)</Link></li>
-            <li><Link href="/services" className="hover:text-indigo-300 transition-colors">House Warming & Grihapravesham</Link></li>
-            <li><Link href="/services" className="hover:text-indigo-300 transition-colors">C-Section & Child Birth Horas</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">Horoscope Analysis</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">Marriage Compatibility (10 Koota)</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">Kadikara Prasannam (Horary)</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">House Warming & Grihapravesham</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">C-Section & Child Birth Horas</Link></li>
           </ul>
         </div>
 

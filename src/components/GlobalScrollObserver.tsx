@@ -7,6 +7,11 @@ export default function GlobalScrollObserver() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Check if we are on a mobile viewport
+    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches) {
+      return; // Skip animations completely on mobile for high performance and low memory
+    }
+
     // Setup intersection observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

@@ -33,7 +33,7 @@ export default function Header() {
     <>
       <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-40 border border-white/10 bg-slate-950/65 backdrop-blur-xl rounded-full px-5 py-2.5 flex items-center justify-between shadow-[0_10px_40px_rgba(0,0,0,0.6)]">
         {/* Logo Branding */}
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" prefetch={false} className="flex items-center gap-3 group">
           <Image
             src="/assets/KK_Logo.webp"
             alt="Kkarthikeya Astrological Centre Logo"
@@ -61,6 +61,7 @@ export default function Header() {
               <Link
                 key={link.path}
                 href={link.path}
+                prefetch={false}
                 className={`relative py-1 transition-all duration-300 hover:text-amber-300 ${isActive ? 'text-amber-400 font-extrabold' : 'text-slate-300/80'
                   }`}
               >
@@ -86,6 +87,7 @@ export default function Header() {
               </span>
               <Link
                 href="/chat"
+                prefetch={false}
                 className="text-[9px] uppercase tracking-widest py-1.5 px-4 rounded-full bg-indigo-600 text-white font-bold transition-all shadow-[0_4px_12px_rgba(99,102,241,0.2)] border border-indigo-500/20 active:scale-95"
               >
                 Quick Chat
@@ -101,6 +103,7 @@ export default function Header() {
           ) : (
             <Link
               href="/login"
+              prefetch={false}
               className="relative group overflow-hidden py-2 px-5 rounded-full bg-gradient-to-r from-amber-600 to-amber-700 text-white text-[9px] font-bold tracking-wider uppercase shadow-[0_4px_15px_rgba(217,119,6,0.3)] border border-amber-400/20 active:scale-95 transition-all duration-300"
             >
               <span className="relative z-10 flex items-center gap-1">
@@ -117,6 +120,7 @@ export default function Header() {
           {currentUser ? (
             <Link
               href="/chat"
+              prefetch={false}
               className="text-[8px] uppercase tracking-widest font-extrabold py-1.5 px-3.5 bg-indigo-600 border border-indigo-500/25 rounded-full text-white shadow-glow"
             >
               Quick Chat
@@ -124,6 +128,7 @@ export default function Header() {
           ) : (
             <Link
               href="/login"
+              prefetch={false}
               className="text-[8px] uppercase tracking-widest font-extrabold py-1.5 px-3.5 bg-amber-600 border border-amber-500/25 rounded-full text-white shadow-glow"
             >
               Login
@@ -163,6 +168,7 @@ export default function Header() {
                     <Link
                       key={link.path}
                       href={link.path}
+                      prefetch={false}
                       onClick={() => setMobileMenuOpen(false)}
                       className={`text-xs py-2 px-3 rounded-xl transition-all ${isActive
                         ? 'bg-amber-500/10 border border-amber-500/20 text-amber-300 font-bold'
@@ -180,6 +186,7 @@ export default function Header() {
                   <>
                     <Link
                       href="/chat"
+                      prefetch={false}
                       onClick={() => setMobileMenuOpen(false)}
                       className="w-full py-2 rounded-full border border-indigo-500/30 text-center text-xs font-semibold uppercase tracking-wider text-white bg-indigo-600 flex items-center justify-center gap-2"
                     >
@@ -199,6 +206,7 @@ export default function Header() {
                 ) : (
                   <Link
                     href="/login"
+                    prefetch={false}
                     onClick={() => setMobileMenuOpen(false)}
                     className="w-full py-2.5 rounded-full bg-gradient-to-r from-amber-600 to-amber-700 text-center text-xs font-bold uppercase tracking-wider text-white shadow-glow border border-amber-500/20"
                   >

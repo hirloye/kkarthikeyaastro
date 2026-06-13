@@ -165,6 +165,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
               <Link
                 href="/booking"
+                prefetch={false}
                 className="py-3 px-7 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black tracking-widest uppercase shadow-[0_10px_30px_rgba(245,158,11,0.2)] active:scale-95 transition-all duration-300 text-center flex items-center justify-center gap-1"
               >
                 Book Consultation
@@ -172,6 +173,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/services"
+                prefetch={false}
                 className="py-3 px-7 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white text-xs font-bold tracking-widest uppercase hover:bg-white/10 transition-all duration-300 text-center"
               >
                 Explore Services
@@ -435,6 +437,7 @@ export default function HomePage() {
               </div>
               <Link
                 href="/booking?plan=quick"
+                prefetch={false}
                 className="py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black uppercase tracking-wider shadow-glow active:scale-95 transition-all border border-indigo-400/20"
               >
                 Chat Now
@@ -476,6 +479,7 @@ export default function HomePage() {
                 <div className="pt-6">
                   <Link
                     href={`/booking?plan=${plan.id}`}
+                    prefetch={false}
                     className={`w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center block transition-all active:scale-95 text-white ${plan.btnClass}`}
                   >
                     Book Now
@@ -488,6 +492,7 @@ export default function HomePage() {
           <div className="text-center mt-12">
             <Link
               href="/services"
+              prefetch={false}
               className="inline-flex items-center gap-2 py-3 px-8 rounded-full border border-amber-500/25 bg-amber-950/15 hover:bg-amber-950/30 text-amber-300 text-xs font-bold uppercase tracking-widest transition-all duration-300"
             >
               Compare Consultation Pricing
