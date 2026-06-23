@@ -70,7 +70,6 @@ function BookingFormContent() {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
 
   // Flow control states
   const [isProcessing, setIsProcessing] = useState(false);
@@ -116,24 +115,6 @@ function BookingFormContent() {
     { time: "04:30 PM", label: "Evening Hora" },
     { time: "06:30 PM", label: "Pradosha Hora" }
   ];
-
-  useEffect(() => {
-    if (selectedDate) {
-      const formattedDate = `${selectedDate} ${monthName} ${currentDate.getFullYear()}`;
-      fetch(`/api/booking/availability?date=${encodeURIComponent(formattedDate)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            setBookedSlots(data.bookedSlots || []);
-          } else {
-            setBookedSlots([]);
-          }
-        })
-        .catch(err => console.error("Failed to load availability:", err));
-    } else {
-      setTimeout(() => setBookedSlots([]), 0);
-    }
-  }, [selectedDate, monthName, currentDate]);
 
   const handleNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
@@ -427,31 +408,23 @@ function BookingFormContent() {
                 <div className="flex flex-col lg:flex-row lg:overflow-x-auto gap-2 lg:pb-2 scrollbar-hide">
                   {timeSlots.map((slot, idx) => {
                     const isSelected = selectedSlot === slot.time;
-                    const isBooked = bookedSlots.includes(slot.time);
                     return (
                       <button
                         key={idx}
                         type="button"
-                        onClick={() => { if (!isBooked) setSelectedSlot(slot.time); }}
-                        disabled={isBooked}
+                        onClick={() => setSelectedSlot(slot.time)}
                         className={`w-full lg:w-max lg:shrink-0 p-3 rounded-xl border text-left flex items-center justify-between gap-6 transition-all active:scale-95 ${
-                          isBooked
-                            ? 'border-red-500/20 bg-red-950/20 text-red-400/50 cursor-not-allowed'
-                            : isSelected
-                              ? 'border-indigo-500 bg-indigo-950/20 text-indigo-300'
-                              : 'border-white/5 bg-white/2 hover:border-white/10 text-slate-300 hover:text-white'
+                          isSelected
+                            ? 'border-indigo-500 bg-indigo-950/20 text-indigo-300'
+                            : 'border-white/5 bg-white/2 hover:border-white/10 text-slate-300 hover:text-white'
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
-                          <Clock className={`w-4 h-4 ${isBooked ? 'text-red-500/30' : isSelected ? 'text-indigo-400' : 'text-slate-500'}`} />
-                          <span className={`text-xs font-bold font-mono ${isBooked ? 'line-through decoration-red-500/50' : ''}`}>{slot.time}</span>
+                          <Clock className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-slate-500'}`} />
+                          <span className={`text-xs font-bold font-mono`}>{slot.time}</span>
                         </div>
-                        <span className={`text-[8px] uppercase tracking-widest font-black py-0.5 px-2 rounded-full ${
-                          isBooked
-                            ? 'text-red-400/50 bg-red-500/10'
-                            : 'text-indigo-400 bg-indigo-500/10'
-                        }`}>
-                          {isBooked ? 'Slot Booked' : slot.label}
+                        <span className={`text-[8px] uppercase tracking-widest font-black py-0.5 px-2 rounded-full text-indigo-400 bg-indigo-500/10`}>
+                          {slot.label}
                         </span>
                       </button>
                     );
