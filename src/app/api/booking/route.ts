@@ -23,6 +23,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Required booking parameters are missing.' }, { status: 400 });
     }
 
+    let formattedDob = dob;
+    if (dob && typeof dob === 'string' && dob.includes('-')) {
+      const parts = dob.split('-');
+      if (parts.length === 3 && parts[0].length === 4) {
+        formattedDob = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+    }
+
+    let formattedTob = tob;
+    if (tob && typeof tob === 'string' && tob.includes(':')) {
+      const parts = tob.split(':');
+      if (parts.length >= 2) {
+        let hour = parseInt(parts[0], 10);
+        if (!isNaN(hour)) {
+          const ampm = hour >= 12 ? 'pm' : 'am';
+          hour = hour % 12;
+          hour = hour ? hour : 12;
+          const minute = parts[1].substring(0, 2); // Ensure we just take minutes
+          formattedTob = `${String(hour).padStart(2, '0')}:${minute} ${ampm}`;
+        }
+      }
+    }
+
     // Save booking to Supabase (ignore 42P01 if table doesn't exist yet)
     const { error: dbError } = await supabase
       .from('bookings')
@@ -66,11 +89,11 @@ export async function POST(request: Request) {
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
               <td style="padding: 6px 0; font-weight: bold; width: 150px;">Date of Birth:</td>
-              <td style="padding: 6px 0; color: #333;">${dob}</td>
+              <td style="padding: 6px 0; color: #333;">${formattedDob}</td>
             </tr>
             <tr>
               <td style="padding: 6px 0; font-weight: bold;">Time of Birth:</td>
-              <td style="padding: 6px 0; color: #333;">${tob}</td>
+              <td style="padding: 6px 0; color: #333;">${formattedTob}</td>
             </tr>
             <tr>
               <td style="padding: 6px 0; font-weight: bold;">Place of Birth:</td>
