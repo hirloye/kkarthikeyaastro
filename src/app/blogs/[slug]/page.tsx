@@ -21,10 +21,8 @@ interface Blog {
   created_at: string;
 }
 
-export default function BlogPostPage({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
-  // Next.js 15+ passes params as a Promise, so we unwrap it safely
-  const resolvedParams = params instanceof Promise ? use(params) : params;
-  const { slug } = resolvedParams;
+export default function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   
   const { isOfflineMode } = useApp();
   const [blog, setBlog] = useState<Blog | null>(null);
