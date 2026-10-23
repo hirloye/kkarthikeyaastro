@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -75,6 +75,14 @@ function BookingFormContent() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isBooked, setIsBooked] = useState(false);
   const [bookingId, setBookingId] = useState('');
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const redirectTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimerRef.current) clearInterval(redirectTimerRef.current);
+    };
+  }, []);
 
   // Fetch custom prices
   useEffect(() => {
@@ -164,6 +172,26 @@ function BookingFormContent() {
       if (data.success) {
         setBookingId(newBookingId);
         setIsBooked(true);
+
+        const formattedDate = `${selectedDate} ${monthName} ${currentDate.getFullYear()}`;
+        const textMsg = `Namaste Kkarthikeya Astrological Centre. I have successfully scheduled a consultation appointment.\n\n*Booking ID:* ${newBookingId}\n*Service:* ${activePlanInfo.title}\n*Date:* ${formattedDate}\n*Time:* ${selectedSlot}\n*User:* ${userName}\n*Gender:* ${gender || 'N/A'}\n*Birth Details:* ${dob} @ ${tob}, ${pob}\n*Status:* Confirmed (Pay on Consultation)\n\nPlease confirm my spiritual consultation details.`;
+        const phoneNumber = "917845369302";
+        const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(textMsg)}`;
+
+        // Start 2-second countdown before automatically redirecting to WhatsApp
+        setCountdown(2);
+        let secondsLeft = 2;
+        redirectTimerRef.current = setInterval(() => {
+          secondsLeft -= 1;
+          setCountdown(secondsLeft);
+          if (secondsLeft <= 0) {
+            if (redirectTimerRef.current) {
+              clearInterval(redirectTimerRef.current);
+              redirectTimerRef.current = null;
+            }
+            window.location.href = waUrl;
+          }
+        }, 1000);
       } else {
         alert(data.error || 'Failed to submit booking. Please try again.');
       }
@@ -175,13 +203,18 @@ function BookingFormContent() {
     }
   };
 
-  const handleWhatsAppConfirmation = () => {
+  const handleWhatsAppConfirmation = (overrideBookingId?: string) => {
+    if (redirectTimerRef.current) {
+      clearInterval(redirectTimerRef.current);
+      redirectTimerRef.current = null;
+    }
+    const currentId = overrideBookingId || bookingId;
     const formattedDate = `${selectedDate} ${monthName} ${currentDate.getFullYear()}`;
-    const textMsg = `Namaste Kkarthikeya Astrological Centre. I have successfully scheduled a consultation appointment.\n\n*Booking ID:* ${bookingId}\n*Service:* ${activePlanInfo.title}\n*Date:* ${formattedDate}\n*Time:* ${selectedSlot}\n*User:* ${userName}\n*Gender:* ${gender || 'N/A'}\n*Birth Details:* ${dob} @ ${tob}, ${pob}\n*Status:* Confirmed (Pay on Consultation)\n\nPlease confirm my spiritual consultation details.`;
+    const textMsg = `Namaste Kkarthikeya Astrological Centre. I have successfully scheduled a consultation appointment.\n\n*Booking ID:* ${currentId}\n*Service:* ${activePlanInfo.title}\n*Date:* ${formattedDate}\n*Time:* ${selectedSlot}\n*User:* ${userName}\n*Gender:* ${gender || 'N/A'}\n*Birth Details:* ${dob} @ ${tob}, ${pob}\n*Status:* Confirmed (Pay on Consultation)\n\nPlease confirm my spiritual consultation details.`;
     
     const phoneNumber = "917845369302";
     const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(textMsg)}`;
-    window.open(waUrl, "_blank");
+    window.location.href = waUrl;
   };
 
   return (
@@ -533,12 +566,33 @@ function BookingFormContent() {
               </div>
             </div>
 
+            {countdown !== null && (
+              <motion.div 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-1"
+              >
+                <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  {countdown > 0 
+                    ? `Redirecting to WhatsApp in ${countdown}s...` 
+                    : `Opening WhatsApp now...`}
+                </div>
+                <p className="text-[10px] text-slate-300">
+                  Please tap <span className="text-emerald-400 font-bold">Send</span> in WhatsApp to deliver your booking directly to Astrologer Kkarthikeya.
+                </p>
+              </motion.div>
+            )}
+
             <div className="pt-2 flex flex-col gap-2.5">
               <button 
-                onClick={handleWhatsAppConfirmation}
-                className="w-full py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black tracking-widest uppercase shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-1.5"
+                onClick={() => handleWhatsAppConfirmation()}
+                className="w-full py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black tracking-widest uppercase shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                Send Details to WhatsApp
+                {countdown !== null && countdown > 0 ? "Open WhatsApp Immediately" : "Send Details to WhatsApp"}
               </button>
               <button 
                 onClick={() => router.push('/')}

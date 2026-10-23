@@ -64,7 +64,8 @@ export async function POST(request: Request) {
       console.error('Failed to save booking to database:', dbError);
     }
 
-    const emailResponse = await resend.emails.send({
+    // Prepare Email notification
+    const emailPromise = resend.emails.send({
       from: 'Astrology Booking <onboarding@resend.dev>',
       to: 'kkarthikeyaastro@gmail.com',
       subject: `[Astro Booking] ${bookingId} - ${seekerName} (${planTitle})`,
@@ -127,12 +128,60 @@ export async function POST(request: Request) {
       `,
     });
 
-    if (emailResponse.error) {
-      console.error('Resend Booking API error:', emailResponse.error);
-      return NextResponse.json({ success: false, error: emailResponse.error.message }, { status: 500 });
+    // Prepare Telegram Bot notification
+    const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+    const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+    const cleanDigits = mobileNum ? mobileNum.replace(/[^\d]/g, '') : '';
+    const waLink = cleanDigits ? `https://wa.me/${cleanDigits}` : '';
+
+    const telegramPromise = (telegramToken && telegramChatId) ? (async () => {
+      const tgMessage = 
+        `🚨 *NEW ASTROLOGY BOOKING SCHEDULED!* 🚨\n\n` +
+        `🆔 *Booking Ref:* \`${bookingId}\`\n` +
+        `👤 *Client:* ${seekerName}\n` +
+        `📞 *Mobile:* ${mobileNum}${waLink ? `\n💬 [Chat on WhatsApp](${waLink})` : ''}\n\n` +
+        `🔮 *Plan:* ${planTitle} (₹${planPrice})\n` +
+        `🗓️ *Date:* ${selectedDate}\n` +
+        `⏰ *Slot:* ${selectedSlot}\n\n` +
+        `📜 *Birth Particulars (Natal Chart):*\n` +
+        `• *DOB:* ${formattedDob}\n` +
+        `• *TOB:* ${formattedTob}\n` +
+        `• *POB:* ${pob}\n\n` +
+        `✨ _Please verify astrological coordinates before consultation._`;
+
+      const response = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramChatId,
+          text: tgMessage,
+          parse_mode: 'Markdown',
+          disable_web_page_preview: true,
+          disable_notification: false // Explicitly play sound & trigger alert notification
+        })
+      });
+
+      const resData = await response.json();
+      if (!resData.ok) {
+        console.error('Telegram API error:', resData);
+      }
+      return resData;
+    })() : (async () => {
+      console.warn('Telegram alert skipped: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID missing in .env.local');
+      return null;
+    })();
+
+    // Fire both Email and Telegram at the exact same time
+    const [emailResult, telegramResult] = await Promise.allSettled([emailPromise, telegramPromise]);
+
+    if (emailResult.status === 'rejected') {
+      console.error('Resend email failed:', emailResult.reason);
+    }
+    if (telegramResult.status === 'rejected') {
+      console.error('Telegram dispatch failed:', telegramResult.reason);
     }
 
-    return NextResponse.json({ success: true, data: emailResponse.data });
+    return NextResponse.json({ success: true, bookingId });
   } catch (err: any) {
     console.error('Booking API internal error:', err);
     return NextResponse.json({ success: false, error: err.message || 'Internal Server Error' }, { status: 500 });
