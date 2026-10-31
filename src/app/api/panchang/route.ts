@@ -8,12 +8,21 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json().catch(() => ({}));
-    const { year, month, date, latitude = 13.0827, longitude = 80.2707, timezone = 5.5 } = body;
-
     const targetDate = new Date();
-    const y = year || targetDate.getFullYear();
-    const m = month || (targetDate.getMonth() + 1);
-    const d = date || targetDate.getDate();
+
+    const numYear = Number(body.year);
+    const numMonth = Number(body.month);
+    const numDate = Number(body.date);
+    const numLat = Number(body.latitude);
+    const numLng = Number(body.longitude);
+    const numTz = Number(body.timezone);
+
+    const y = (!isNaN(numYear) && numYear >= 1900 && numYear <= 2100) ? numYear : targetDate.getFullYear();
+    const m = (!isNaN(numMonth) && numMonth >= 1 && numMonth <= 12) ? numMonth : (targetDate.getMonth() + 1);
+    const d = (!isNaN(numDate) && numDate >= 1 && numDate <= 31) ? numDate : targetDate.getDate();
+    const latitude = (!isNaN(numLat) && numLat >= -90 && numLat <= 90) ? numLat : 13.0827;
+    const longitude = (!isNaN(numLng) && numLng >= -180 && numLng <= 180) ? numLng : 80.2707;
+    const timezone = (!isNaN(numTz) && numTz >= -12 && numTz <= 14) ? numTz : 5.5;
 
     const apiResponse = await fetch('https://json.freeastrologyapi.com/getsunriseandset', {
       method: 'POST',

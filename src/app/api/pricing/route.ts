@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
+import { verifyAdminToken } from '@/lib/adminAuth';
 
 const getLocalPricing = () => {
   try {
@@ -73,6 +74,16 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    const cookieHeader = request.headers.get('cookie') || '';
+    const match = cookieHeader.match(/astro_admin_token=([^;]+)/);
+    const cookieToken = match ? match[1] : null;
+
+    if (!verifyAdminToken(token || cookieToken)) {
+      return NextResponse.json({ success: false, error: 'Unauthorized: Admin privileges required to update pricing.' }, { status: 401 });
+    }
+
     const newPricing = await request.json();
     
     // Write locally first

@@ -10,8 +10,17 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const sign = searchParams.get('sign') || 'aries';
-    const day = searchParams.get('day') || 'today';
+    const ALLOWED_SIGNS = [
+      'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+      'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+    ];
+    const ALLOWED_DAYS = ['today', 'yesterday', 'tomorrow'];
+
+    const rawSign = (searchParams.get('sign') || 'aries').toLowerCase().trim();
+    const rawDay = (searchParams.get('day') || 'today').toLowerCase().trim();
+
+    const sign = ALLOWED_SIGNS.includes(rawSign) ? rawSign : 'aries';
+    const day = ALLOWED_DAYS.includes(rawDay) ? rawDay : 'today';
 
     // 1. Get OAuth Token from Prokerala
     const tokenRes = await fetch('https://api.prokerala.com/token', {

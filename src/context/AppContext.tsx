@@ -38,49 +38,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isHydrated, setIsHydrated] = useState(false);
   const isOfflineMode = !isSupabaseConfigured;
 
-  // Load database users list on mount
+  // Only load active user session for current visitor (prevent global PII leak)
   useEffect(() => {
     async function loadData() {
-      if (isSupabaseConfigured) {
-        try {
-          const { data, error } = await supabase
-            .from('seekers')
-            .select('*')
-            .order('registered_at', { ascending: false });
-          
-          if (!error && data) {
-            const mapped = data.map((u: any) => {
-              const emailStr = u.email || '';
-              const parts = emailStr.split('|');
-              const emailVal = parts[0] || '';
-              const dobVal = parts[1] || '';
-              const tobVal = parts[2] || '';
-              const pobVal = parts[3] || '';
-              const genderVal = parts[4] || '';
-              return {
-                id: u.id,
-                username: u.name,
-                mobile: u.phone,
-                email: emailVal,
-                dob: dobVal,
-                tob: tobVal,
-                pob: pobVal,
-                gender: genderVal,
-                registeredAt: u.registered_at,
-                firstMessageAt: u.first_message_at,
-                chatUnlocked: u.chat_unlocked || false,
-                unlockedAt: u.unlocked_at
-              };
-            });
-            setAllUsers(mapped);
-          } else {
-            console.error("Failed to load seekers list from database:", error.message || error);
-          }
-        } catch (e) {
-          console.error("Connection to database failed:", e);
-        }
-      }
-
       // Check active user session (use localStorage for persistent visits)
       const activeSession = localStorage.getItem('astro_active_user');
       const activeCookie = document.cookie.split('; ').find(row => row.startsWith('astro_user_logged_in='));
@@ -184,7 +144,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     
     // Sync session keys and cookie (using localStorage for persistence)
     localStorage.setItem('astro_active_user', JSON.stringify(newUser));
-    document.cookie = `astro_user_logged_in=true; path=/; max-age=31536000`;
+    document.cookie = `astro_user_logged_in=true; path=/; max-age=31536000; SameSite=Lax; Secure`;
     
     return newUser;
   };
@@ -230,7 +190,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     setCurrentUser(user);
     localStorage.setItem('astro_active_user', JSON.stringify(user));
-    document.cookie = `astro_user_logged_in=true; path=/; max-age=31536000`;
+    document.cookie = `astro_user_logged_in=true; path=/; max-age=31536000; SameSite=Lax; Secure`;
     
     return user;
   };
@@ -238,7 +198,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const logoutUser = () => {
     setCurrentUser(null);
     localStorage.removeItem('astro_active_user');
-    document.cookie = `astro_user_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+    document.cookie = `astro_user_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax; Secure`;
   };
 
   const deleteUser = async (userId: string) => {

@@ -5,8 +5,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const date = searchParams.get('date');
 
-  if (!date) {
-    return NextResponse.json({ success: false, error: 'Date parameter is required' }, { status: 400 });
+  if (!date || typeof date !== 'string' || date.length > 50) {
+    return NextResponse.json({ success: false, error: 'Valid date parameter is required' }, { status: 400 });
   }
 
   try {

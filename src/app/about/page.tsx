@@ -498,7 +498,7 @@ export default function AboutPage() {
                     <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="space-y-1.5">
                         <label className="text-[10px] uppercase tracking-widest font-black text-slate-400">
-                          Seeker Name
+                          Member Name
                         </label>
                         <input
                           type="text"

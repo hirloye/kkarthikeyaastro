@@ -122,7 +122,7 @@ const HOROSCOPE_DATABASE: Record<string, Record<'yesterday' | 'today' | 'tomorro
 const DEFAULT_HOROSCOPE = (sign: string, day: 'yesterday' | 'today' | 'tomorrow'): HoroscopeDetail => {
   const hash = sign.charCodeAt(0) + day.charCodeAt(0);
   return {
-    general: `The celestial coordinates suggest a very progressive period for ${sign} individuals. The alignment of your ruling planet with Jupiter expands your creative wisdom and brings supportive seekers into your alignment. Focus on maintaining emotional balance and execute pending spiritual remedies to secure prosperity.`,
+    general: `The celestial coordinates suggest a very progressive period for ${sign} individuals. The alignment of your ruling planet with Jupiter expands your creative wisdom and brings supportive people into your alignment. Focus on maintaining emotional balance and execute pending spiritual remedies to secure prosperity.`,
     love: 70 + (hash % 25),
     career: 75 + (hash % 20),
     finance: 65 + (hash % 30),

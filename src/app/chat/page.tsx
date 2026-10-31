@@ -214,7 +214,7 @@ function AstrologyChatPage() {
       .catch(err => console.error("Failed to load pricing for chat lock:", err));
   }, []);
 
-  // Fetch seeker database status and listen to updates in real time
+  // Fetch member database status and listen to updates in real time
   useEffect(() => {
     if (!currentUser) return;
 
@@ -248,7 +248,7 @@ function AstrologyChatPage() {
           });
         }
       } catch (err) {
-        console.error("Failed to load seeker lock status:", err);
+        console.error("Failed to load member lock status:", err);
       }
     };
 

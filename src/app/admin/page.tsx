@@ -281,14 +281,33 @@ export default function AdminDashboard() {
   const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const savedAuth = sessionStorage.getItem('astro_admin_auth');
-      return savedAuth === 'true';
-    }
-    return false;
-  });
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
   const [loginError, setLoginError] = useState('');
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  // Securely verify admin session on mount
+  useEffect(() => {
+    async function verifySession() {
+      const storedToken = typeof window !== 'undefined' ? sessionStorage.getItem('astro_admin_token') : null;
+      try {
+        const res = await fetch('/api/admin/auth', {
+          headers: storedToken ? { 'Authorization': `Bearer ${storedToken}` } : {}
+        });
+        const data = await res.json();
+        if (data.success) {
+          setIsAuthorized(true);
+        } else {
+          setIsAuthorized(false);
+          sessionStorage.removeItem('astro_admin_token');
+        }
+      } catch {
+        setIsAuthorized(false);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    }
+    verifySession();
+  }, []);
 
   // Blog Manager State
   const [blogTitle, setBlogTitle] = useState('');
@@ -403,6 +422,46 @@ export default function AdminDashboard() {
       (u.email && u.email.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   }, [allUsers, searchQuery]);
+
+  // Securely load members only when authorized as admin
+  useEffect(() => {
+    if (!isAuthorized || isOfflineMode) return;
+
+    async function loadMembers() {
+      try {
+        const { data, error } = await supabase
+          .from('seekers')
+          .select('*')
+          .order('registered_at', { ascending: false });
+
+        if (!error && data) {
+          const mapped = data.map((u: any) => {
+            const emailStr = u.email || '';
+            const parts = emailStr.split('|');
+            return {
+              id: u.id,
+              username: u.name,
+              mobile: u.phone,
+              email: parts[0] || '',
+              dob: parts[1] || '',
+              tob: parts[2] || '',
+              pob: parts[3] || '',
+              gender: parts[4] || '',
+              registeredAt: u.registered_at,
+              firstMessageAt: u.first_message_at,
+              chatUnlocked: u.chat_unlocked || false,
+              unlockedAt: u.unlocked_at
+            };
+          });
+          setAllUsers(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to load members in admin:", err);
+      }
+    }
+
+    loadMembers();
+  }, [isAuthorized, isOfflineMode, setAllUsers]);
 
   // Load prices in admin
   useEffect(() => {
@@ -680,20 +739,32 @@ export default function AdminDashboard() {
     }
   }, [selectedClient, isAuthorized, isOfflineMode]);
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (usernameInput === 'kkarthikeya' && passwordInput === 'astrotalk2026@') {
-      setIsAuthorized(true);
-      sessionStorage.setItem('astro_admin_auth', 'true');
-      setLoginError('');
-    } else {
-      setLoginError('Invalid secret keys. Planetary access denied.');
+    setLoginError('');
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: usernameInput, password: passwordInput })
+      });
+      const data = await res.json();
+      if (data.success && data.token) {
+        setIsAuthorized(true);
+        sessionStorage.setItem('astro_admin_token', data.token);
+        setLoginError('');
+      } else {
+        setLoginError(data.error || 'Invalid credentials. Access denied.');
+      }
+    } catch {
+      setLoginError('Authentication server error. Please try again.');
     }
   };
 
   const handleAdminLogout = () => {
     setIsAuthorized(false);
-    sessionStorage.removeItem('astro_admin_auth');
+    sessionStorage.removeItem('astro_admin_token');
+    document.cookie = 'astro_admin_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT';
   };
 
   const handlePriceChange = (planId: string, field: string, val: string) => {
@@ -709,10 +780,14 @@ export default function AdminDashboard() {
   const handleSavePrices = async () => {
     setPricingLoading(true);
     setPricingSuccess(false);
+    const storedToken = sessionStorage.getItem('astro_admin_token');
     try {
       const res = await fetch('/api/pricing', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(storedToken ? { 'Authorization': `Bearer ${storedToken}` } : {})
+        },
         body: JSON.stringify(pricingPlans)
       });
       const data = await res.json();
@@ -927,6 +1002,18 @@ export default function AdminDashboard() {
   };
 
   // RENDER GATEWAY LOGIN IF NOT LOGGED IN
+  if (isCheckingAuth) {
+    return (
+      <main className="fixed inset-0 w-full h-full flex flex-col items-center justify-center text-slate-100 bg-slate-950 z-[100]">
+        <CosmicBackground />
+        <div className="flex flex-col items-center gap-3 relative z-10">
+          <Sparkles className="w-8 h-8 text-amber-400 animate-spin" />
+          <span className="text-xs tracking-widest uppercase text-slate-400">Verifying Celestial Clearance...</span>
+        </div>
+      </main>
+    );
+  }
+
   if (!isAuthorized) {
     return (
       <main className="fixed inset-0 w-full h-full flex flex-col items-center justify-center text-slate-100 overflow-hidden bg-slate-950 z-[100] px-6">

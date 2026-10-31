@@ -10,12 +10,23 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json().catch(() => ({}));
-    const { year, month, date, hours = 12, minutes = 0, latitude = 13.0827, longitude = 80.2707 } = body;
-
     const targetDate = new Date();
-    const y = year || targetDate.getFullYear();
-    const m = month || (targetDate.getMonth() + 1);
-    const d = date || targetDate.getDate();
+
+    const numYear = Number(body.year);
+    const numMonth = Number(body.month);
+    const numDate = Number(body.date);
+    const numHours = Number(body.hours);
+    const numMinutes = Number(body.minutes);
+    const numLat = Number(body.latitude);
+    const numLng = Number(body.longitude);
+
+    const y = (!isNaN(numYear) && numYear >= 1900 && numYear <= 2100) ? numYear : targetDate.getFullYear();
+    const m = (!isNaN(numMonth) && numMonth >= 1 && numMonth <= 12) ? numMonth : (targetDate.getMonth() + 1);
+    const d = (!isNaN(numDate) && numDate >= 1 && numDate <= 31) ? numDate : targetDate.getDate();
+    const hours = (!isNaN(numHours) && numHours >= 0 && numHours <= 23) ? numHours : 12;
+    const minutes = (!isNaN(numMinutes) && numMinutes >= 0 && numMinutes <= 59) ? numMinutes : 0;
+    const latitude = (!isNaN(numLat) && numLat >= -90 && numLat <= 90) ? numLat : 13.0827;
+    const longitude = (!isNaN(numLng) && numLng >= -180 && numLng <= 180) ? numLng : 80.2707;
 
     // 1. Get OAuth Token from Prokerala
     const tokenRes = await fetch('https://api.prokerala.com/token', {

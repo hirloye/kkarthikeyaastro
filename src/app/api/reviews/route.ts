@@ -58,7 +58,7 @@ export async function GET() {
 
       const reviews = (result.reviews || []).map((rev: any, index: number) => ({
         id: index + 1,
-        author: rev.author_name || "Seeker",
+        author: rev.author_name || "Member",
         location: rev.relative_time_description || "Verified Google User",
         rating: rev.rating || 5,
         text: rev.text || "",
