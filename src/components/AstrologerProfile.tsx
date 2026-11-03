@@ -65,7 +65,7 @@ export default function AstrologerProfile({ className, status = 'online' }: { cl
             <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
           </h2>
           <p className="text-xs text-indigo-300 tracking-wider uppercase mt-1">
-            {tText("Master Vedic Guide & Prasannam Expert", "வேத ஜோதிடர் & பிரசன்ன வல்லுநர்")}
+            {tText("Traditional Vedic Astrologer & Prasannam Guide", "வேத ஜோதிடர் & பிரசன்ன வல்லுநர்")}
           </p>
           
           <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-medium">
@@ -130,7 +130,7 @@ export default function AstrologerProfile({ className, status = 'online' }: { cl
             <Moon className="w-4 h-4 text-indigo-300" />
             <span>{tText("Auspicious Waxing Moon", "வளர்பிறை சுப காலம்")}</span>
           </div>
-          <span className="opacity-60">{tText("Auspicious Tithi Phase", "சுப திதி நேரம்")}</span>
+          <span className="opacity-60">{tText("Auspicious Moon Phase", "சுப திதி நேரம்")}</span>
         </div>
       </motion.div>
     </aside>

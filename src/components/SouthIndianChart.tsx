@@ -105,7 +105,7 @@ export default function SouthIndianChart({ dob, tob, title = "Rasi Chart" }: Cha
       <div className="w-full aspect-square max-w-sm mx-auto bg-slate-900/50 rounded-2xl border border-white/10 flex flex-col items-center justify-center p-6 text-indigo-300">
         <Loader2 className="w-8 h-8 animate-spin mb-3 text-amber-500" />
         <span className="text-xs uppercase tracking-widest font-bold">
-          {tText("Calculating alignments...", "கிரக நிலைகள் கணிக்கப்படுகிறது...")}
+          {tText("Calculating planet positions...", "கிரக நிலைகள் கணிக்கப்படுகிறது...")}
         </span>
       </div>
     );

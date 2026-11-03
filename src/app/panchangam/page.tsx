@@ -49,7 +49,7 @@ const PANCHANGAM_FALLBACK: Record<string, PanchangamDetail> = {
     gulika: "01:30 PM - 03:00 PM",
     abhijit: "11:45 AM - 12:35 PM",
     brahma: "04:24 AM - 05:12 AM",
-    guidance: "A highly auspicious day dominated by the Chandra (Moon) energy. The Rohini Nakshatra makes this an excellent alignment for laying foundations, home warming (Grihapravesham), and starting creative businesses."
+    guidance: "A peaceful and blessed day influenced by calming Moon energy. Rohini Star makes this a wonderful time for laying foundations, house warming ceremonies, and starting creative businesses."
   },
   Tue: {
     dayName: "Tuesday (Mangalavara)",
@@ -67,7 +67,7 @@ const PANCHANGAM_FALLBACK: Record<string, PanchangamDetail> = {
     gulika: "12:00 PM - 01:30 PM",
     abhijit: "11:46 AM - 12:36 PM",
     brahma: "04:24 AM - 05:12 AM",
-    guidance: "Mars energy governs the day. Tritiya Tithi combined with Mrigashirsha Nakshatra creates highly energetic frequencies. Perfect for physical tasks, research development, and tech projects. Avoid verbal disputes."
+    guidance: "Active and determined day with strong Mars energy. Excellent for energetic tasks, focused study, and technical projects. Speak kindly and avoid arguments."
   },
   Wed: {
     dayName: "Wednesday (Budhavara)",
@@ -85,7 +85,7 @@ const PANCHANGAM_FALLBACK: Record<string, PanchangamDetail> = {
     gulika: "10:30 AM - 12:00 PM",
     abhijit: "None (Chaturthi Dosha)",
     brahma: "04:23 AM - 05:11 AM",
-    guidance: "Chaturthi Tithi is dedicated to Lord Ganesha, making this an ideal day for obstacles removal and spiritual prayers. Speculative financial transfers or major new property purchases should be deferred."
+    guidance: "Chaturthi is dedicated to Lord Ganesha, making this the best day for prayer and removing life obstacles. Postpone risky financial trades and big property purchases."
   },
   Thu: {
     dayName: "Thursday (Guruvara)",
@@ -103,7 +103,7 @@ const PANCHANGAM_FALLBACK: Record<string, PanchangamDetail> = {
     gulika: "09:00 AM - 10:30 AM",
     abhijit: "11:46 AM - 12:36 PM",
     brahma: "04:23 AM - 05:11 AM",
-    guidance: "A golden day! Guru (Jupiter) energy governs PUNARVASU, bringing immense spiritual expansions and financial growth. Highly auspicious for vehicle purchases, business openings, and educational initiatives."
+    guidance: "A golden day! Jupiter's wisdom brings great blessings and financial progress. Highly lucky for buying new vehicles, opening businesses, and starting education."
   },
   Fri: {
     dayName: "Friday (Shukravara)",
@@ -121,7 +121,7 @@ const PANCHANGAM_FALLBACK: Record<string, PanchangamDetail> = {
     gulika: "07:30 AM - 09:00 AM",
     abhijit: "11:46 AM - 12:36 PM",
     brahma: "04:22 AM - 05:10 AM",
-    guidance: "Shukra governs the day alongside Pushya Nakshatra (the king of constellations). Highly auspicious for family marriages, purchasing gold/jewelry, moving into new houses, or hosting spiritual ceremonies."
+    guidance: "A truly fortunate day with Venus and Pushya Star (the most auspicious star). Highly blessed for weddings, buying gold or jewelry, moving into a new home, and prayer ceremonies."
   }
 };
 
@@ -342,11 +342,11 @@ export default function PanchangamPage() {
 
           // Dynamic guidance prompts
           const guidances = [
-            "A highly spiritual alignment. The cosmic frequencies favor building new foundations, home warmings, and starting long-term business projects.",
-            "Strong Mars currents govern this hour. Perfect for academic research, technological operations, and technical updates. Keep speaking with gentle tones.",
-            "Lord Ganesha energies rule the day. Highly auspicious for removing obstacles and spiritual purification. speculating large financial trades should be deferred.",
-            "Jupiter waves expand spiritual intelligence. Auspicious for entering educational institutions, purchasing learning resources, or consulting mentors.",
-            "Shukra energies bless the day. Highly auspicious for purchasing family gold, hosting matching events, or arranging wedding alignments."
+            "A peaceful and auspicious day. Favorable for building new foundations, house warmings, and launching long-term business projects.",
+            "Active energy guides this day. Excellent for learning, technical tasks, and focused work. Keep conversations calm and positive.",
+            "Lord Ganesha's blessings remove obstacles today. Best for prayers and clearing doubts. Avoid risky money speculations or impulsive spending.",
+            "Jupiter brings wisdom and clarity. Auspicious for starting courses, buying study books, and consulting mentors or teachers.",
+            "Venus brings love, harmony, and joy. Highly auspicious for buying family jewelry, matchmaking, and wedding arrangements."
           ];
           const guidance = guidances[daySeed % guidances.length];
 
@@ -425,7 +425,7 @@ export default function PanchangamPage() {
                   <div className="border-b border-white/5 pb-4 flex justify-between items-center">
                     <div>
                       <h2 className="text-xl font-bold font-serif text-white uppercase tracking-widest">
-                        {tText("Planetary Pillars (பஞ்ச அங்கங்கள்)", "பஞ்ச அங்கங்கள் (ஐந்து கூறுகள்)")}
+                        {tText("5 Cosmic Elements of the Day (Panchangam)", "பஞ்ச அங்கங்கள் (ஐந்து கூறுகள்)")}
                       </h2>
                       <span className="text-[9px] uppercase tracking-widest text-indigo-300 font-bold block mt-0.5">
                         {activePanchangam.dayName} — {activePanchangam.dateStr}
@@ -453,25 +453,25 @@ export default function PanchangamPage() {
 
                         {/* Tithi */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
-                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">1. Tithi (திதி)</span>
+                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">1. Lunar Day (Tithi / திதி)</span>
                           <strong className="text-slate-100 text-xs font-bold leading-normal block">{activePanchangam.tithi}</strong>
                         </div>
 
                         {/* Nakshatra */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
-                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">2. Nakshatra (நட்சத்திரம்)</span>
+                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">2. Birth Star (Nakshatra / நட்சத்திரம்)</span>
                           <strong className="text-slate-100 text-xs font-bold leading-normal block">{activePanchangam.nakshatra}</strong>
                         </div>
 
                         {/* Yoga */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
-                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">3. Yoga (யோகம்)</span>
+                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">3. Planetary Combination (Yoga / யோகம்)</span>
                           <strong className="text-slate-100 text-xs font-bold leading-normal block">{activePanchangam.yoga}</strong>
                         </div>
 
                         {/* Karana */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
-                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">4. Karana (கரணம்)</span>
+                          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">4. Half Lunar Day (Karana / கரணம்)</span>
                           <strong className="text-slate-100 text-xs font-bold leading-normal block">{activePanchangam.karana}</strong>
                         </div>
 

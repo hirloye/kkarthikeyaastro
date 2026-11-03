@@ -314,7 +314,7 @@ function BookingFormContent() {
       if (!firstFieldId) firstFieldId = 'calendar-section';
     }
     if (!selectedSlot) {
-      newErrors.selectedSlot = tText('Please select an auspicious hora time slot', 'சுப ஹோரை நேரத்தைத் தேர்ந்தெடுக்கவும்');
+      newErrors.selectedSlot = tText('Please select a consultation time slot', 'ஆலோசனை நேரத்தைத் தேர்ந்தெடுக்கவும்');
       if (!firstFieldId) firstFieldId = 'slot-section';
     }
 
@@ -334,11 +334,11 @@ function BookingFormContent() {
   const monthName = currentDate.toLocaleString('default', { month: 'long' });
 
   const timeSlots = [
-    { time: "09:30 AM", label: tText("Morning Hora", "காலை ஹோரை") },
-    { time: "11:00 AM", label: tText("Morning Hora", "காலை ஹோரை") },
-    { time: "02:30 PM", label: tText("Afternoon Hora", "மதிய ஹோரை") },
-    { time: "04:30 PM", label: tText("Evening Hora", "மாலை ஹோரை") },
-    { time: "06:30 PM", label: tText("Pradosha Hora", "பிரதோஷ ஹோரை") }
+    { time: "09:30 AM", label: tText("Morning Slot", "காலை நேரம்") },
+    { time: "11:00 AM", label: tText("Morning Slot", "காலை நேரம்") },
+    { time: "02:30 PM", label: tText("Afternoon Slot", "மதிய நேரம்") },
+    { time: "04:30 PM", label: tText("Evening Slot", "மாலை நேரம்") },
+    { time: "06:30 PM", label: tText("Evening Slot", "மாலை நேரம்") }
   ];
 
   const handleNextMonth = () => {
@@ -518,12 +518,12 @@ function BookingFormContent() {
               </motion.div>
             )}
 
-            {/* SECTION 1: ASTROLOGICAL PLAN & MEMBER DETAILS */}
+            {/* SECTION 1: CONSULTATION PLAN & PERSON DETAILS */}
             <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 sm:p-8 shadow-antigravity space-y-6">
               
               <div className="border-b border-white/5 pb-4">
                 <h2 className="text-lg sm:text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-400" /> {tText("1. Astrological Plan & Member Details", "1. ஜோதிடத் திட்டம் & நபர் விவரங்கள்")}
+                  <Sparkles className="w-5 h-5 text-amber-400" /> {tText("1. Select Plan & Person Details", "1. ஜோதிடத் திட்டம் & நபர் விவரங்கள்")}
                 </h2>
                 <p className="text-[10px] sm:text-[11px] text-slate-400 mt-1 uppercase tracking-widest">
                   {tText("Choose your consultation service and specify who this reading is for.", "உங்கள் ஆலோசனைத் திட்டத்தைத் தேர்ந்தெடுத்து யாருக்கு ஜாதகம் கணிக்க வேண்டும் என்பதைக் குறிப்பிடவும்.")}
@@ -533,7 +533,7 @@ function BookingFormContent() {
               {/* Plan Selection Dropdown */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase tracking-widest font-black text-amber-300">
-                  {tText("Selected Astrological Plan", "தேர்ந்தெடுக்கப்பட்ட ஜோதிடத் திட்டம்")}
+                  {tText("Select Consultation Plan", "தேர்ந்தெடுக்கப்பட்ட ஜோதிடத் திட்டம்")}
                 </label>
                 <select 
                   value={selectedPlan}
@@ -545,7 +545,7 @@ function BookingFormContent() {
                   <option value="silver">{tText("Silver Consultation (30 Mins)", "வெள்ளி ஆலோசனை (30 நிமிடங்கள்)")} — ₹{plansData.silver.price}</option>
                   <option value="gold">{tText("Gold Deep Analysis (60 Mins)", "தங்க ஆழ்ந்த ஆய்வு (60 நிமிடங்கள்)")} — ₹{plansData.gold.price}</option>
                   <option value="marriage">{tText("Marriage Matching", "திருமணப் பொருத்தம்")} — ₹{plansData.marriage.price}</option>
-                  <option value="muhurtham">{tText("Muhurtham Auspicious Timing", "சுப முகூர்த்த நேரம்")} — ₹{plansData.muhurtham.price}</option>
+                  <option value="muhurtham">{tText("Auspicious Timing (Muhurtham)", "சுப முகூர்த்த நேரம்")} — ₹{plansData.muhurtham.price}</option>
                 </select>
               </div>
 
@@ -598,11 +598,11 @@ function BookingFormContent() {
                       <HeartHandshake className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
                       <div>
                         <p className="font-semibold text-white text-[11px]">
-                          {tText("Allocating Consultation for Family Member or Friend", "குடும்ப உறுப்பினர் அல்லது நண்பருக்கான ஆலோசனை")}
+                          {tText("Booking Consultation for Family Member or Friend", "குடும்ப உறுப்பினர் அல்லது நண்பருக்கான ஆலோசனை")}
                         </p>
                         <p className="text-[10px] text-slate-300 mt-0.5">
                           {tText(
-                            "Enter their name, relationship, and birth coordinates. The astrological chart will be mapped for them, while notifications will reach your account.",
+                            "Enter their name, relationship, and birth details. The horoscope will be calculated for them, while booking updates will be sent to your account.",
                             "அவர்களது பெயர், உறவுமுறை மற்றும் பிறப்பு விவரங்களை உள்ளிடவும். அவர்களுக்கான ஜாதகம் கணிக்கப்படும், தகவல் உங்கள் கணக்கிற்கு வரும்."
                           )}
                         </p>
@@ -885,16 +885,16 @@ function BookingFormContent() {
 
             </div>
 
-            {/* SECTION 2: NATAL BIRTH COORDINATES */}
+            {/* SECTION 2: BIRTH DETAILS */}
             <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 sm:p-8 shadow-antigravity space-y-6">
               
               <div className="border-b border-white/5 pb-4">
                 <h2 className="text-lg sm:text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
-                  <Compass className="w-5 h-5 text-indigo-400" /> {tText("2. Natal Birth Coordinates", "2. பிறப்பு விவரங்கள் (தேதி, நேரம் & இடம்)")}
+                  <Compass className="w-5 h-5 text-indigo-400" /> {tText("2. Birth Details (Date, Time & Place)", "2. பிறப்பு விவரங்கள் (தேதி, நேரம் & இடம்)")}
                 </h2>
                 <p className="text-[10px] sm:text-[11px] text-slate-400 mt-1 uppercase tracking-widest">
                   {tText(
-                    "Provide birth particulars for high-accuracy horoscope chart calculations.",
+                    "Enter accurate birth details for precise horoscope calculations and predictions.",
                     "துல்லியமான ஜாதகக் கணிப்பிற்கு பிறப்பு விவரங்களை உள்ளிடவும்."
                   )}
                 </p>
@@ -992,17 +992,17 @@ function BookingFormContent() {
               {/* Privacy assurance banner */}
               <div className="flex items-center gap-2 p-3.5 bg-white/2 border border-white/5 rounded-2xl text-[10px] uppercase tracking-widest font-bold text-slate-400">
                 <Shield className="w-4 h-4 text-indigo-400 shrink-0" />
-                <span>{tText("All planetary coordinates and birth details are strictly private & encrypted.", "பிறப்பு விவரங்கள் அனைத்தும் முற்றிலும் பாதுகாப்பாகவும் ரகசியமாகவும் வைக்கப்படும்.")}</span>
+                <span>{tText("All birth details and personal information are strictly confidential & encrypted.", "பிறப்பு விவரங்கள் அனைத்தும் முற்றிலும் பாதுகாப்பாகவும் ரகசியமாகவும் வைக்கப்படும்.")}</span>
               </div>
 
             </div>
 
-            {/* SECTION 3: SCHEDULE APPOINTMENT (CALENDAR & AUSPICIOUS HORA) */}
+            {/* SECTION 3: SCHEDULE APPOINTMENT (CALENDAR & TIME SLOT) */}
             <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 sm:p-8 shadow-antigravity space-y-6">
               
               <div className="border-b border-white/5 pb-4">
                 <h2 className="text-lg sm:text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-emerald-400" /> {tText("3. Schedule Auspicious Hora", "3. ஆலோசனை தேதி & நேரத்தை தேர்ந்தெடுக்கவும்")}
+                  <Clock className="w-5 h-5 text-emerald-400" /> {tText("3. Choose Appointment Date & Time", "3. ஆலோசனை தேதி & நேரத்தை தேர்ந்தெடுக்கவும்")}
                 </h2>
                 <p className="text-[10px] sm:text-[11px] text-slate-400 mt-1 uppercase tracking-widest">
                   {tText("Select your preferred appointment date and convenient time slot.", "உங்களுக்கு வசதியான தேதி மற்றும் நேரத்தை தேர்ந்தெடுக்கவும்.")}
@@ -1091,7 +1091,7 @@ function BookingFormContent() {
                 }`}
               >
                 <h3 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase border-b border-white/5 pb-2.5 flex items-center justify-between">
-                  <span>{tText("Select Auspicious Hora (Time Slot)", "சுப ஹோரை (நேரத்தை) தேர்ந்தெடுக்கவும்")} <span className="text-red-400">*</span></span>
+                  <span>{tText("Select Consultation Time Slot", "ஆலோசனை நேரத்தைத் தேர்ந்தெடுக்கவும்")} <span className="text-red-400">*</span></span>
                   {selectedSlot && <span className="text-indigo-400 text-[10px] font-mono font-bold">{selectedSlot}</span>}
                 </h3>
 
@@ -1161,7 +1161,7 @@ function BookingFormContent() {
 
                 <div className="space-y-1 border-t sm:border-t-0 sm:border-l border-white/5 pt-2 sm:pt-0">
                   <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">
-                    {tText("Rate Fee", "கட்டணம்")}
+                    {tText("Consultation Fee", "கட்டணம்")}
                   </span>
                   <strong className="text-amber-400 font-serif font-black text-sm block">₹{activePlanInfo.price}</strong>
                 </div>
@@ -1172,7 +1172,7 @@ function BookingFormContent() {
                   </span>
                   <strong className="text-indigo-300 font-medium block">
                     {selectedDate ? `${selectedDate} ${monthName}` : tText("Date Not Picked", "தேதி தேர்ந்தெடுக்கப்படவில்லை")} <br/> 
-                    {selectedSlot || tText("Hora Not Picked", "ஹோரை தேர்ந்தெடுக்கப்படவில்லை")}
+                    {selectedSlot || tText("Time Slot Not Selected", "நேரம் தேர்ந்தெடுக்கப்படவில்லை")}
                   </strong>
                 </div>
               </div>
@@ -1216,18 +1216,18 @@ function BookingFormContent() {
                 {tText("Booking Confirmed!", "முன்பதிவு உறுதியானது!")}
               </h2>
               <span className="text-[10px] text-emerald-400 tracking-widest font-black uppercase bg-emerald-500/10 border border-emerald-500/20 py-1 px-4 rounded-full inline-block">
-                {tText("Celestial Channel Secured", "ஜோதிட ஆலோசனை நேரம் ஒதுக்கப்பட்டது")}
+                {tText("Appointment Confirmed", "ஜோதிட ஆலோசனை நேரம் ஒதுக்கப்பட்டது")}
               </span>
             </div>
 
             <p className="text-slate-300 text-xs leading-relaxed max-w-sm mx-auto">
               {tText(
-                `Namaste ${currentUser?.username || userName}. Your auspicious slot for `,
+                `Namaste ${currentUser?.username || userName}. Your consultation slot for `,
                 `வணக்கம் ${currentUser?.username || userName}. `
               )}
               <strong className="text-white">{userName} {bookingFor === 'family' ? `(${getEffectiveRelationship()})` : ''}</strong>
               {tText(
-                " has been successfully secured. Astrologer Kkarthikeya has blocked this hora for personalized chart calculations.",
+                " has been successfully confirmed. Astrologer Kkarthikeya has reserved this time for your personalized consultation.",
                 "-க்கான சுப ஆலோசனை நேரம் வெற்றிகரமாக ஒதுக்கப்பட்டது. ஜோதிடர் கார்த்திகேயா உங்களுக்காக இந்த நேரத்தை ஒதுக்கியுள்ளார்."
               )}
             </p>
@@ -1333,7 +1333,7 @@ function BookingFormContent() {
 
             <div className="text-[8px] text-slate-500 tracking-wider uppercase">
               {tText(
-                "An automated email and SMS notification have been sent with join coordinates.",
+                "An automated confirmation email and SMS notification have been sent with consultation details.",
                 "தானியங்கி உறுதிப்படுத்தல் மற்றும் ஆலோசனை விவரங்கள் பதிவு செய்யப்பட்டுள்ளது."
               )}
             </div>

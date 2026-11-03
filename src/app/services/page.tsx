@@ -117,7 +117,7 @@ export default function ServicesPage() {
                         href={`/booking?plan=muhurtham&service=${muh.id}`}
                         className="w-full py-2 rounded-xl border border-indigo-500/20 hover:border-indigo-500/50 text-[9px] uppercase tracking-widest font-black text-indigo-300 text-center block transition-all active:scale-95 hover:bg-indigo-500/5"
                       >
-                        {tText("Book Muhurtham Now", "சுப முகூர்த்தம் முன்பதிவு செய்க")}
+                        {tText("Book Auspicious Timing", "சுப முகூர்த்தம் முன்பதிவு செய்க")}
                       </Link>
                     </div>
                   </div>
@@ -132,7 +132,7 @@ export default function ServicesPage() {
                 </h3>
                 <p className="text-xs text-slate-400 max-w-md leading-relaxed">
                   {tText(
-                    "If you have a complex event requiring multiple chart overlays (e.g. joint ventures or multiple baby delivery predictions), choose our Gold Plan for a full 60-minute session.",
+                    "If you need an in-depth consultation for major life events (such as business partnerships, property purchases, or child delivery dates), choose our Gold Plan for a full 60-minute session.",
                     "கூட்டுத் தொழில் அல்லது குழந்தை பிறப்பு நேரம் போன்ற விரிவான ஆய்வு தேவைப்படும் நிகழ்வுகளுக்கு எங்கள் தங்கத் திட்டத்தை (Gold Plan) தேர்ந்தெடுத்து 60 நிமிட நேரடி ஆலோசனை பெறலாம்."
                   )}
                 </p>

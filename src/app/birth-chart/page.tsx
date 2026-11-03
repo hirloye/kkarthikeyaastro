@@ -180,7 +180,7 @@ export default function BirthChartPage() {
             {/* Encryption Shield Tag */}
             <div className="flex items-center gap-2 p-3.5 rounded-2xl border border-white/5 bg-slate-900/20 text-[9px] uppercase tracking-widest font-black text-slate-500 justify-center">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>{tText("Vedic Astrological Encryption Secure", "பாதுகாப்பான வேத ஜோதிட கணிப்பு")}</span>
+              <span>{tText("100% Private & Confidential Birth Chart", "பாதுகாப்பான வேத ஜோதிட கணிப்பு")}</span>
             </div>
           </div>
 

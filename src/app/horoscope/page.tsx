@@ -49,7 +49,7 @@ const ZODIAC_SIGNS: ZodiacSign[] = [
 const HOROSCOPE_DATABASE: Record<string, Record<'yesterday' | 'today' | 'tomorrow', HoroscopeDetail>> = {
   aries: {
     yesterday: {
-      general: "Yesterday brought significant planetary alignment in your career house. The Moon in your tenth house enabled excellent networking opportunities. Trust your gut instincts regarding financial matters.",
+      general: "Yesterday brought positive planetary energy to your career house. The Moon brought great networking opportunities. Trust your gut instincts regarding financial matters.",
       love: 75, career: 88, finance: 80, health: 85,
       luckyColor: "Red", luckyNumber: 9,
       remedy: "Chant 'Om Angarakaya Namaha' 9 times in the morning."
@@ -61,7 +61,7 @@ const HOROSCOPE_DATABASE: Record<string, Record<'yesterday' | 'today' | 'tomorro
       remedy: "Offer water to the rising Sun in the morning and pray for good health and strength."
     },
     tomorrow: {
-      general: "Tomorrow suggests a restful phase as the Moon shifts into your twelfth house. Good day to meditate, plan your upcoming week, and refrain from signing speculative contracts.",
+      general: "Tomorrow brings a peaceful and restful phase. Good day to meditate, plan your upcoming week, and avoid signing risky or uncertain contracts.",
       love: 80, career: 75, finance: 85, health: 82,
       luckyColor: "Yellow", luckyNumber: 7,
       remedy: "Donate food to someone in need to reduce planetary obstacles and bring peace."
@@ -75,7 +75,7 @@ const HOROSCOPE_DATABASE: Record<string, Record<'yesterday' | 'today' | 'tomorro
       remedy: "Keep a silver coin in your wallet for material gains."
     },
     today: {
-      general: "Today, planetary positions favor higher studies and legal matters. Venus in your ninth house brings supportive teachers and mentors into your life. Speak kindly and honestly.",
+      general: "Today, planetary positions favor higher studies and legal matters. Venus brings supportive teachers and helpful advisors into your life. Speak kindly and honestly.",
       love: 88, career: 85, finance: 90, health: 85,
       luckyColor: "Cream", luckyNumber: 2,
       remedy: "Apply a small paste of white sandalwood to your forehead for mental cooling."
@@ -84,24 +84,24 @@ const HOROSCOPE_DATABASE: Record<string, Record<'yesterday' | 'today' | 'tomorro
       general: "Tomorrow demands care regarding joint funds. An unexpected expenditure might arise in the afternoon. Keep your financial expenses organized and consult elders before investing.",
       love: 78, career: 82, finance: 68, health: 88,
       luckyColor: "Pale Blue", luckyNumber: 5,
-      remedy: "Feed a green grass bundle to a cow tomorrow morning to pacify Mercury."
+      remedy: "Feed fresh green grass to a cow tomorrow morning to bring positive Mercury energy and peace."
     }
   },
   gemini: {
     yesterday: {
-      general: "Yesterday felt a bit rushed. Mercury's retrograding shadow triggered slight delay in communications. However, late evening brought a comforting dialogue with a friend.",
+      general: "Yesterday felt a bit rushed. Mercury slowing down caused minor delays in messages and calls. However, the evening brought a comforting conversation with a friend.",
       love: 70, career: 75, finance: 78, health: 82,
       luckyColor: "Green", luckyNumber: 5,
       remedy: "Avoid using dark black clothes on days of Mercury shifts."
     },
     today: {
-      general: "Today, intellectual clarity returns! A favorable trine between Mercury and Saturn grants focus to execute pending writing tasks, coding, or academic calculations. Trust your logical mind.",
+      general: "Today, mental clarity returns! A harmonious alignment between Mercury and Saturn grants focus to finish pending work, coding, or academic tasks. Trust your logical mind.",
       love: 80, career: 90, finance: 85, health: 88,
       luckyColor: "Emerald Green", luckyNumber: 14,
       remedy: "Chant 'Om Budhaya Namaha' 108 times to sharpen logical power."
     },
     tomorrow: {
-      general: "Tomorrow warns against verbal friction in partnerships. The transition of Mars may provoke impatient speech. Breathe deeply, count to ten, and seek mutual understanding.",
+      general: "Tomorrow suggests patience in relationships and partnerships. Mars movement may provoke impatient speech. Breathe deeply, stay calm, and communicate with understanding.",
       love: 65, career: 80, finance: 82, health: 75,
       luckyColor: "Turquoise", luckyNumber: 8,
       remedy: "Keep a small piece of camphor on your desk to clear toxic energy vibrations."
@@ -109,22 +109,22 @@ const HOROSCOPE_DATABASE: Record<string, Record<'yesterday' | 'today' | 'tomorro
   },
   scorpio: {
     yesterday: {
-      general: "Yesterday brought transformational insight. An unexpected revelation concerning property or joint family plans worked in your favor.",
+      general: "Yesterday brought deep clarity and helpful breakthroughs. Positive news regarding property or family plans worked in your favor.",
       love: 82, career: 78, finance: 90, health: 75,
       luckyColor: "Maroon", luckyNumber: 9,
       remedy: "Feed stray birds in the morning to balance Mars."
     },
     today: {
-      general: "Today provides strong determination. Mars transit stimulates ambition, enabling you to finish demanding projects ahead of schedule.",
+      general: "Today brings strong motivation and energy. You will feel confident and able to complete important projects ahead of time.",
       love: 78, career: 94, finance: 84, health: 88,
       luckyColor: "Crimson", luckyNumber: 1,
       remedy: "Light a ghee lamp in your puja corner and pray to Lord Murugan."
     },
     tomorrow: {
-      general: "Tomorrow points to spiritual introspection. Spend time in solitary research, write down your dreams, and do not let external chaotic voices distract your inner alignment.",
+      general: "Tomorrow is ideal for quiet reflection and peace of mind. Spend time in calm study, note your ideas, and do not let outside noise distract your focus.",
       love: 90, career: 80, finance: 82, health: 85,
       luckyColor: "Orange", luckyNumber: 4,
-      remedy: "Recite the Hanuman Chalisa in the evening to dispel Saturn delays."
+      remedy: "Recite the Hanuman Chalisa in the evening to overcome delays and find peace."
     }
   }
 };
@@ -298,7 +298,7 @@ export default function DailyHoroscopePage() {
             {transitPlanets.length > 0 && (
               <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-5 shadow-antigravity space-y-4">
                 <h3 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase border-b border-white/5 pb-2.5 flex items-center justify-between">
-                  <span>{tText("Live Transiting Planets", "தற்போதைய கிரக சஞ்சாரம்")}</span>
+                  <span>{tText("Today's Planet Positions", "தற்போதைய கிரக சஞ்சாரம்")}</span>
                 </h3>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {transitPlanets.map((planet) => (

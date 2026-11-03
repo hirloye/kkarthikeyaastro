@@ -17,10 +17,10 @@ import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 
 const RESPONSES = [
-  "Ah, I see. Mercury resides in your 10th house, suggesting that during the retrograde, you should reflect and reorganize rather than launch new initiatives.",
-  "Your chart vibrates with Jupiter's expansion right now. It's an exceptional time for deep spiritual growth and learning.",
-  "Interesting question. The Moon is entering Pisces tonight. Focus on your intuition and let it guide your decisions for the next 48 hours.",
-  "The stellar flows indicate high energetic resonance in your relationships. Keep open channels for positive cosmic shifts."
+  "I understand. Mercury is currently placed in your career house. Take time to review and plan carefully before starting major new projects.",
+  "Jupiter brings wisdom and positive growth to your horoscope right now. It is a wonderful time for learning and personal progress.",
+  "Good question. The Moon is moving into Pisces tonight. Trust your inner feelings and make calm, thoughtful decisions over the next couple of days.",
+  "Your planetary positions show positive harmony in your relationships. Keep communication open, friendly, and honest."
 ];
 
 function AstrologyChatPage() {

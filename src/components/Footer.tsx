@@ -79,11 +79,11 @@ export default function Footer() {
             <Sparkles className="w-3.5 h-3.5" /> {t.footer.specializedServices}
           </h4>
           <ul className="text-xs space-y-2 text-slate-400">
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Horoscope Analysis", "ஜாதக கணிப்பு & பலன்கள்")}</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Marriage Compatibility (10 Koota)", "திருமணப் பொருத்தம் (10 பொருத்தம்)")}</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Kadikara Prasannam (Horary)", "கடிகாரப் பிரசன்னம்")}</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("House Warming & Grihapravesham", "கிரகப்பிரவேசம் & புதுமனை புகுவிழா")}</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Child Birth & Auspicious Timing", "குழந்தை பிறப்பு சுப முகூர்த்தம்")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Horoscope Analysis & Predictions", "ஜாதக கணிப்பு & பலன்கள்")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Marriage Compatibility (10-Point Match)", "திருமணப் பொருத்தம் (10 பொருத்தம்)")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Instant Clock Astrology (Prasannam)", "கடிகாரப் பிரசன்னம்")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("House Warming (Grihapravesham)", "கிரகப்பிரவேசம் & புதுமனை புகுவிழா")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Newborn Birth Timing (C-Section)", "குழந்தை பிறப்பு சுப முகூர்த்தம்")}</Link></li>
           </ul>
         </div>
 

@@ -84,7 +84,7 @@ export default function HomePage() {
         tText("Phone / Chat Support", "தொலைபேசி / அரட்டை ஆதரவு"),
         tText("Basic Horoscope Analysis", "அடிப்படை ஜாதக கணிப்பு"),
         tText("Simple Remedies Included", "எளிய பரிகார வழிகாட்டல்"),
-        tText("1 Key Life Focus Query", "1 முக்கிய கேள்விக்கான தீர்வு")
+        tText("1 Key Life Question Answered", "1 முக்கிய கேள்விக்கான தீர்வு")
       ]
     },
     {
@@ -105,7 +105,7 @@ export default function HomePage() {
         tText("Detailed Horoscope Reading", "முழுமையான ஜாதக ஆய்வு"),
         tText("Career / Marriage / Finance Focus", "தொழில் / திருமணம் / நிதி ஆலோசனை"),
         tText("Personalized Vedic Remedies", "தனிப்பயனாக்கப்பட்ட வேத பரிகாரங்கள்"),
-        tText("Priority Response Window", "முன்னுரிமை நேர ஒதுக்கீடு")
+        tText("Priority Consultation Slot", "முன்னுரிமை நேர ஒதுக்கீடு")
       ]
     },
     {
@@ -123,8 +123,8 @@ export default function HomePage() {
         "முன்னுரிமை முன்பதிவு & அடுத்த நாள் ஆலோசனை",
         "1 மாத தொடர் ஆலோசனை உதவி"
       ] : [
-        tText("Full Detailed Horoscope Study", "ஆயுள், தசா புக்தி முழு ஜாதக ஆய்வு"),
-        tText("Multiple Life Areas Covered", "வாழ்வின் அனைத்து நிலைகளுக்கும் வழிகாட்டல்"),
+        tText("In-Depth Horoscope & Life Timeline Study", "ஆயுள், தசா புக்தி முழு ஜாதக ஆய்வு"),
+        tText("All Major Life Areas Covered (Career, Health, Marriage, Wealth)", "வாழ்வின் அனைத்து நிலைகளுக்கும் வழிகாட்டல்"),
         tText("Advanced Remedies & Predictions", "துல்லியமான எதிர்கால கணிப்பு & பரிகாரம்"),
         tText("Priority Booking & Next-day Consultation", "அடுத்த நாள் உடனடி ஆலோசனை"),
         tText("1-Month Follow-Up Support", "1 மாத தொடர் வழிகாட்டல்")
@@ -145,8 +145,8 @@ export default function HomePage() {
         "பரிகாரங்கள் & நல்வழிகாட்டல்"
       ] : [
         tText("Detailed Compatibility Analysis", "விரிவான திருமணப் பொருத்த ஆய்வு"),
-        tText("10-Koota Scorecard Check", "10 விதமான பொருத்தங்கள் சரிபார்த்தல்"),
-        tText("Manglik & Dosh Check", "செவ்வாய் தோஷம் & நாக தோஷ ஆய்வு"),
+        tText("10-Point Marriage Compatibility Check", "10 விதமான பொருத்தங்கள் சரிபார்த்தல்"),
+        tText("Mars & Planetary Dosha Check", "செவ்வாய் தோஷம் & நாக தோஷ ஆய்வு"),
         tText("Remedies & Guidance Included", "பரிகாரங்கள் & முகூர்த்த ஆலோசனைகள்")
       ]
     }

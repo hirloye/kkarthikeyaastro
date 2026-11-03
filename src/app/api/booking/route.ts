@@ -175,7 +175,7 @@ export async function POST(request: Request) {
           </table>
 
           <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;" />
-          <p style="font-size: 10px; color: #888; text-align: center;">Channeled via Kkarthikeya Astrological Centre Booking Portal</p>
+          <p style="font-size: 10px; color: #888; text-align: center;">Sent via Kkarthikeya Astrological Centre Booking Portal</p>
         </div>
       `,
     });

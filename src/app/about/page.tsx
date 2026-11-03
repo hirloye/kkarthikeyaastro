@@ -26,20 +26,20 @@ export default function AboutPage() {
   const [activeCert, setActiveCert] = useState<string | null>(null);
 
   const experiences = [
-    tText("Vedic Astrology Consultation", "பாரம்பரிய வேத ஜோதிட ஆலோசனை"),
-    tText("Horoscope Analysis & Chart Rectification", "துல்லிய ஜாதக கணிப்பு & கால திருத்தம்"),
-    tText("Muhurtham Guidance for critical life events", "வாழ்வின் முக்கிய நிகழ்வுகளுக்கான சுப முகூர்த்தம்"),
-    tText("Kadikara Prasannam (Horary Astrology)", "கடிகாரப் பிரசன்னம் (உடனடி கேள்விக்கான தீர்வு)"),
-    tText("Convenient Online & Phone Consultations globally", "உலகெங்கிலும் உள்ள தமிழர்களுக்கு தொலைபேசி & ஆன்லைன் ஆலோசனை")
+    tText("Traditional Vedic Astrology Consultation", "பாரம்பரிய வேத ஜோதிட ஆலோசனை"),
+    tText("Horoscope Analysis & Birth Time Correction (Chart Verification)", "துல்லிய ஜாதக கணிப்பு & கால திருத்தம்"),
+    tText("Auspicious Timing (Muhurtham) for major life milestones", "வாழ்வின் முக்கிய நிகழ்வுகளுக்கான சுப முகூர்த்தம்"),
+    tText("Instant Clock Astrology for Urgent Questions (Kadikara Prasannam)", "கடிகாரப் பிரசன்னம் (உடனடி கேள்விக்கான தீர்வு)"),
+    tText("Convenient Phone & Online Video Consultations Worldwide", "உலகெங்கிலும் உள்ள தமிழர்களுக்கு தொலைபேசி & ஆன்லைன் ஆலோசனை")
   ];
 
   const specializations = [
-    { title: tText("Horoscope Reading", "ஜாதக கணிப்பு & பலன்கள்"), category: tText("Core analysis of Lagnam, planetary placements & Dasha periods", "லக்னம், நவகிரக நிலைகள் மற்றும் தசா புக்தி பலன்கள் விரிவான ஆய்வு") },
-    { title: tText("Marriage Matching", "திருமணப் பொருத்தம்"), category: tText("Scientific 10-Koota analysis & Manglik / Dosha checks", "10 விதமான பொருத்தங்கள், செவ்வாய் & ராகு கேது தோஷ ஆய்வு") },
-    { title: tText("Kadikara Prasannam", "கடிகாரப் பிரசன்னம்"), category: tText("Instant time-based astrological prediction for urgent questions and decisions", "அவசர கேள்விகள் மற்றும் முடிவுகளுக்கு உடனடி தீர்வு") },
-    { title: tText("Career & Business Guidance", "தொழில் & வியாபார வழிகாட்டல்"), category: tText("Optimal periods for career growth, job change & investments", "தொழில் வளர்ச்சி, வேலை மாற்றம் மற்றும் முதலீடுகளுக்கான உகந்த காலங்கள்") },
-    { title: tText("Financial Guidance", "பொருளாதாரம் & நிதி வழிகாட்டல்"), category: tText("Wealth potential, financial hurdles & remedial suggestions", "தன ஸ்தான பலம், கடன் தடைகள் மற்றும் நிதி பெருக்கத்திற்கான பரிகாரங்கள்") },
-    { title: tText("Muhurtham Consultations", "சுப முகூர்த்த ஆலோசனை"), category: tText("Auspicious timings for Vehicle Purchase, House Warming, C-Section, Property Registration", "வாகனம் வாங்குதல், புதுமனை புகுவிழா, குழந்தை பிறப்பு, சொத்து பதிவு சுப நேரங்கள்") }
+    { title: tText("Horoscope Reading", "ஜாதக கணிப்பு & பலன்கள்"), category: tText("Complete study of Rising Sign (Lagna), planet positions, and life timeline (Dasha periods)", "லக்னம், நவகிரக நிலைகள் மற்றும் தசா புக்தி பலன்கள் விரிவான ஆய்வு") },
+    { title: tText("Marriage Matching", "திருமணப் பொருத்தம்"), category: tText("Comprehensive 10-point compatibility check with Mars & planetary dosha analysis", "10 விதமான பொருத்தங்கள், செவ்வாய் & ராகு கேது தோஷ ஆய்வு") },
+    { title: tText("Kadikara Prasannam", "கடிகாரப் பிரசன்னம்"), category: tText("Instant clock-based astrology (Prasannam) to answer urgent questions and make clear decisions", "அவசர கேள்விகள் மற்றும் முடிவுகளுக்கு உடனடி தீர்வு") },
+    { title: tText("Career & Business Guidance", "தொழில் & வியாபார வழிகாட்டல்"), category: tText("Best lucky periods for career growth, job transitions, and business investments", "தொழில் வளர்ச்சி, வேலை மாற்றம் மற்றும் முதலீடுகளுக்கான உகந்த காலங்கள்") },
+    { title: tText("Financial Guidance", "பொருளாதாரம் & நிதி வழிகாட்டல்"), category: tText("Income prospects, overcoming money delays, and practical remedies for wealth", "தன ஸ்தான பலம், கடன் தடைகள் மற்றும் நிதி பெருக்கத்திற்கான பரிகாரங்கள்") },
+    { title: tText("Muhurtham Consultations", "சுப முகூர்த்த ஆலோசனை"), category: tText("Lucky dates and auspicious hours for buying a vehicle, house warming, child delivery, and property registration", "வாகனம் வாங்குதல், புதுமனை புகுவிழா, குழந்தை பிறப்பு, சொத்து பதிவு சுப நேரங்கள்") }
   ];
 
   const achievements = [
@@ -128,7 +128,7 @@ export default function AboutPage() {
       <section className="pt-10 pb-12 px-6 max-w-6xl mx-auto relative z-10">
         <div className="text-center space-y-4 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-amber-500/20 bg-amber-950/20 text-amber-300 text-[9px] uppercase tracking-widest font-black">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Vedic Master & Scholar
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Certified Vedic Astrologer & Guide
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white font-serif leading-[1.15]">
             About Astrologer Kkarthikeya
@@ -159,7 +159,7 @@ export default function AboutPage() {
               </div>
 
               <div className="mt-3 flex items-center justify-between px-1">
-                <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Lagna Specialist</span>
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Horoscope Specialist</span>
                 <span className="text-[9px] py-0.5 px-2 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-300 font-extrabold">Chennai, TN</span>
               </div>
             </div>
@@ -252,10 +252,10 @@ export default function AboutPage() {
       {/* 🔮 Expertise Catalog Grid */}
       <section className="py-20 px-6 max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-14">
-          <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-2">Stellar Domains</div>
+          <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-2">Areas of Expertise</div>
           <h2 className="text-3xl md:text-4xl font-bold text-white font-serif">Astrology Specialization</h2>
           <p className="text-slate-400 text-xs md:text-sm mt-3 max-w-xl mx-auto">
-            Traditional calculations processed through rigorous Vedic formulas to secure clarity for career, finance, marriage, and family decisions.
+            Authentic calculations based on trusted Vedic astrology principles to bring you clarity in career, finances, marriage, and family life.
           </p>
         </div>
 
@@ -284,7 +284,7 @@ export default function AboutPage() {
             <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-2">Credentials</div>
             <h2 className="text-3xl md:text-4xl font-bold text-white font-serif">Board Certifications</h2>
             <p className="text-slate-400 text-xs md:text-sm mt-3 max-w-xl mx-auto">
-              Authentic authorizations validating ancient Vedic studies, chart computations, and clock-based Prasannam mastery.
+              Authentic certifications validating traditional Vedic astrology studies, horoscope calculations, and clock-based Prasannam mastery.
             </p>
           </div>
 
