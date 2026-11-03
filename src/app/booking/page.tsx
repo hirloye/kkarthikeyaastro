@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import AuthGuard from '@/components/AuthGuard';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export interface SavedFamilyMember {
   id: string;
@@ -26,6 +27,7 @@ function BookingFormContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { currentUser } = useApp();
+  const { t, tText } = useLanguage();
   
   const planParam = searchParams.get('plan') || 'silver';
 
@@ -266,51 +268,53 @@ function BookingFormContent() {
 
     // 1. Member Profile Validation
     if (!userName.trim()) {
-      newErrors.userName = bookingFor === 'family' ? 'Please enter family member/friend name' : 'Please enter your name';
+      newErrors.userName = bookingFor === 'family' 
+        ? tText('Please enter family member/friend name', 'குடும்ப உறுப்பினர் அல்லது நண்பரின் பெயரை உள்ளிடவும்') 
+        : tText('Please enter your name', 'உங்கள் பெயரை உள்ளிடவும்');
       if (!firstFieldId) firstFieldId = 'input-userName';
     }
     if (!mobileNum.trim()) {
-      newErrors.mobileNum = 'Please enter mobile number for consultation';
+      newErrors.mobileNum = tText('Please enter mobile number for consultation', 'ஆலோசனைக்கான தொலைபேசி எண்ணை உள்ளிடவும்');
       if (!firstFieldId) firstFieldId = 'input-mobileNum';
     } else if (mobileNum.replace(/\D/g, '').length < 10) {
-      newErrors.mobileNum = 'Please enter a valid 10-digit mobile number';
+      newErrors.mobileNum = tText('Please enter a valid 10-digit mobile number', 'சரியான 10 இலக்க தொலைபேசி எண்ணை உள்ளிடவும்');
       if (!firstFieldId) firstFieldId = 'input-mobileNum';
     }
     if (!gender) {
-      newErrors.gender = 'Please select gender';
+      newErrors.gender = tText('Please select gender', 'பாலினத்தைத் தேர்ந்தெடுக்கவும்');
       if (!firstFieldId) firstFieldId = 'input-gender';
     }
     if (bookingFor === 'family') {
       if (!relationship) {
-        newErrors.relationship = 'Please select relationship';
+        newErrors.relationship = tText('Please select relationship', 'உறவுமுறையைத் தேர்ந்தெடுக்கவும்');
         if (!firstFieldId) firstFieldId = 'input-relationship';
       } else if (relationship === 'Other' && !customRelationship.trim()) {
-        newErrors.customRelationship = 'Please specify relationship';
+        newErrors.customRelationship = tText('Please specify relationship', 'உறவுமுறையைக் குறிப்பிடவும்');
         if (!firstFieldId) firstFieldId = 'input-customRelationship';
       }
     }
 
     // 2. Birth Coordinates Validation
     if (!dob) {
-      newErrors.dob = 'Please select date of birth';
+      newErrors.dob = tText('Please select date of birth', 'பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்');
       if (!firstFieldId) firstFieldId = 'input-dob';
     }
     if (!tob) {
-      newErrors.tob = 'Please enter time of birth';
+      newErrors.tob = tText('Please enter time of birth', 'பிறந்த நேரத்தை உள்ளிடவும்');
       if (!firstFieldId) firstFieldId = 'input-tob';
     }
     if (!pob.trim()) {
-      newErrors.pob = 'Please enter place of birth (City, State/Country)';
+      newErrors.pob = tText('Please enter place of birth (City, State/Country)', 'பிறந்த ஊரை உள்ளிடவும் (ஊர், மாநிலம்)');
       if (!firstFieldId) firstFieldId = 'input-pob';
     }
 
     // 3. Schedule Slot Validation
     if (!selectedDate) {
-      newErrors.selectedDate = 'Please select an appointment date from the calendar';
+      newErrors.selectedDate = tText('Please select an appointment date from the calendar', 'நாட்காட்டியில் இருந்து ஒரு தேதியைத் தேர்ந்தெடுக்கவும்');
       if (!firstFieldId) firstFieldId = 'calendar-section';
     }
     if (!selectedSlot) {
-      newErrors.selectedSlot = 'Please select an auspicious hora time slot';
+      newErrors.selectedSlot = tText('Please select an auspicious hora time slot', 'சுப ஹோரை நேரத்தைத் தேர்ந்தெடுக்கவும்');
       if (!firstFieldId) firstFieldId = 'slot-section';
     }
 
@@ -330,11 +334,11 @@ function BookingFormContent() {
   const monthName = currentDate.toLocaleString('default', { month: 'long' });
 
   const timeSlots = [
-    { time: "09:30 AM", label: "Morning Hora" },
-    { time: "11:00 AM", label: "Morning Hora" },
-    { time: "02:30 PM", label: "Afternoon Hora" },
-    { time: "04:30 PM", label: "Evening Hora" },
-    { time: "06:30 PM", label: "Pradosha Hora" }
+    { time: "09:30 AM", label: tText("Morning Hora", "காலை ஹோரை") },
+    { time: "11:00 AM", label: tText("Morning Hora", "காலை ஹோரை") },
+    { time: "02:30 PM", label: tText("Afternoon Hora", "மதிய ஹோரை") },
+    { time: "04:30 PM", label: tText("Evening Hora", "மாலை ஹோரை") },
+    { time: "06:30 PM", label: tText("Pradosha Hora", "பிரதோஷ ஹோரை") }
   ];
 
   const handleNextMonth = () => {
@@ -502,10 +506,13 @@ function BookingFormContent() {
                 <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 font-serif">
-                    Required Details Incomplete
+                    {tText("Required Details Incomplete", "முழுமையற்ற விவரங்கள்")}
                   </h4>
                   <p className="text-[11px] text-red-200/90 leading-relaxed">
-                    Please provide the missing fields highlighted in <span className="font-bold underline text-red-400">red</span> below to book your consultation appointment.
+                    {tText(
+                      "Please provide the missing fields highlighted in red below to book your consultation appointment.",
+                      "உங்கள் ஆலோசனையை முன்பதிவு செய்ய சிவப்பு நிறத்தில் குறிக்கப்பட்ட விடுபட்ட விவரங்களை பூர்த்தி செய்யவும்."
+                    )}
                   </p>
                 </div>
               </motion.div>
@@ -516,29 +523,29 @@ function BookingFormContent() {
               
               <div className="border-b border-white/5 pb-4">
                 <h2 className="text-lg sm:text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-400" /> 1. Astrological Plan & Member Details
+                  <Sparkles className="w-5 h-5 text-amber-400" /> {tText("1. Astrological Plan & Member Details", "1. ஜோதிடத் திட்டம் & நபர் விவரங்கள்")}
                 </h2>
                 <p className="text-[10px] sm:text-[11px] text-slate-400 mt-1 uppercase tracking-widest">
-                  Choose your consultation service and specify who this reading is for.
+                  {tText("Choose your consultation service and specify who this reading is for.", "உங்கள் ஆலோசனைத் திட்டத்தைத் தேர்ந்தெடுத்து யாருக்கு ஜாதகம் கணிக்க வேண்டும் என்பதைக் குறிப்பிடவும்.")}
                 </p>
               </div>
 
               {/* Plan Selection Dropdown */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase tracking-widest font-black text-amber-300">
-                  Selected Astrological Plan
+                  {tText("Selected Astrological Plan", "தேர்ந்தெடுக்கப்பட்ட ஜோதிடத் திட்டம்")}
                 </label>
                 <select 
                   value={selectedPlan}
                   onChange={(e) => setSelectedPlan(e.target.value)}
                   className="w-full bg-slate-950/80 border border-white/10 rounded-2xl py-3 px-4 text-xs text-white outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 transition-all font-serif cursor-pointer"
                 >
-                  <option value="quick">Quick Chat Consultation — ₹{plansData.quick.price}</option>
-                  <option value="bronze">Bronze Consultation (15 Mins) — ₹{plansData.bronze.price}</option>
-                  <option value="silver">Silver Consultation (30 Mins) — ₹{plansData.silver.price}</option>
-                  <option value="gold">Gold Deep Analysis (60 Mins) — ₹{plansData.gold.price}</option>
-                  <option value="marriage">Marriage Matching — ₹{plansData.marriage.price}</option>
-                  <option value="muhurtham">Muhurtham Auspicious Timing — ₹{plansData.muhurtham.price}</option>
+                  <option value="quick">{tText("Quick Chat Consultation", "உடனடி அரட்டை ஆலோசனை")} — ₹{plansData.quick.price}</option>
+                  <option value="bronze">{tText("Bronze Consultation (15 Mins)", "வெண்கல ஆலோசனை (15 நிமிடங்கள்)")} — ₹{plansData.bronze.price}</option>
+                  <option value="silver">{tText("Silver Consultation (30 Mins)", "வெள்ளி ஆலோசனை (30 நிமிடங்கள்)")} — ₹{plansData.silver.price}</option>
+                  <option value="gold">{tText("Gold Deep Analysis (60 Mins)", "தங்க ஆழ்ந்த ஆய்வு (60 நிமிடங்கள்)")} — ₹{plansData.gold.price}</option>
+                  <option value="marriage">{tText("Marriage Matching", "திருமணப் பொருத்தம்")} — ₹{plansData.marriage.price}</option>
+                  <option value="muhurtham">{tText("Muhurtham Auspicious Timing", "சுப முகூர்த்த நேரம்")} — ₹{plansData.muhurtham.price}</option>
                 </select>
               </div>
 
@@ -546,10 +553,12 @@ function BookingFormContent() {
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] uppercase tracking-widest font-black text-slate-300">
-                    Who is this consultation for?
+                    {tText("Who is this consultation for?", "யாருக்கு இந்த ஆலோசனை?")}
                   </label>
                   <span className="text-[9px] uppercase tracking-wider text-amber-400 font-bold font-serif">
-                    {bookingFor === 'self' ? '👤 Personal Reading' : '👥 Reading for Loved One'}
+                    {bookingFor === 'self' 
+                      ? tText('👤 Personal Reading', '👤 சொந்த ஜாதக கணிப்பு') 
+                      : tText('👥 Reading for Loved One', '👥 குடும்பத்தினர்/நண்பருக்கான கணிப்பு')}
                   </span>
                 </div>
 
@@ -565,7 +574,7 @@ function BookingFormContent() {
                     }`}
                   >
                     <User className="w-4 h-4" />
-                    <span>For Myself</span>
+                    <span>{tText("For Myself", "எனக்கு (சொந்த விவரம்)")}</span>
                   </button>
 
                   <button
@@ -578,7 +587,7 @@ function BookingFormContent() {
                     }`}
                   >
                     <Users className="w-4 h-4" />
-                    <span>Family & Friends</span>
+                    <span>{tText("Family & Friends", "குடும்பத்தினர் & நண்பர்கள்")}</span>
                   </button>
                 </div>
 
@@ -589,10 +598,13 @@ function BookingFormContent() {
                       <HeartHandshake className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
                       <div>
                         <p className="font-semibold text-white text-[11px]">
-                          Allocating Consultation for Family Member or Friend
+                          {tText("Allocating Consultation for Family Member or Friend", "குடும்ப உறுப்பினர் அல்லது நண்பருக்கான ஆலோசனை")}
                         </p>
                         <p className="text-[10px] text-slate-300 mt-0.5">
-                          Enter their name, relationship, and birth coordinates. The astrological chart will be mapped for them, while notifications will reach your account.
+                          {tText(
+                            "Enter their name, relationship, and birth coordinates. The astrological chart will be mapped for them, while notifications will reach your account.",
+                            "அவர்களது பெயர், உறவுமுறை மற்றும் பிறப்பு விவரங்களை உள்ளிடவும். அவர்களுக்கான ஜாதகம் கணிக்கப்படும், தகவல் உங்கள் கணக்கிற்கு வரும்."
+                          )}
                         </p>
                       </div>
                     </div>
@@ -601,13 +613,13 @@ function BookingFormContent() {
                     {savedFamilyMembers.length > 0 && (
                       <div className="space-y-2 p-3 bg-white/2 border border-white/5 rounded-2xl">
                         <div className="flex items-center justify-between text-[10px] uppercase tracking-widest font-black text-slate-400">
-                          <span>Saved Family & Friends:</span>
+                          <span>{tText("Saved Family & Friends:", "சேமிக்கப்பட்ட குடும்பத்தினர் & நண்பர்கள்:")}</span>
                           <button
                             type="button"
                             onClick={handleAddNewMember}
                             className="text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer"
                           >
-                            <UserPlus className="w-3 h-3" /> + New Person
+                            <UserPlus className="w-3 h-3" /> {tText("+ New Person", "+ புதிய நபர்")}
                           </button>
                         </div>
                         <div className="flex flex-wrap gap-2 pt-1">
@@ -636,7 +648,7 @@ function BookingFormContent() {
                                     e.stopPropagation();
                                     handleDeleteSavedMember(member.id);
                                   }}
-                                  title="Remove profile"
+                                  title={tText("Remove profile", "நீக்குக")}
                                   className="text-slate-500 hover:text-red-400 transition-colors p-0.5 cursor-pointer"
                                 >
                                   <Trash2 className="w-3 h-3" />
@@ -652,7 +664,7 @@ function BookingFormContent() {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[10px] uppercase tracking-widest font-black text-slate-300 flex items-center justify-between">
-                          <span>Relationship to You <span className="text-red-400">*</span></span>
+                          <span>{tText("Relationship to You", "உங்களுடனான உறவு")} <span className="text-red-400">*</span></span>
                           {errors.relationship && <span className="text-red-400 lowercase font-normal">required</span>}
                         </label>
                         <select
@@ -668,16 +680,16 @@ function BookingFormContent() {
                               : 'border-white/10 focus:border-indigo-500/50'
                           }`}
                         >
-                          <option value="Mother">Mother (Amma)</option>
-                          <option value="Father">Father (Appa)</option>
-                          <option value="Spouse">Spouse / Partner</option>
-                          <option value="Son">Son</option>
-                          <option value="Daughter">Daughter</option>
-                          <option value="Brother">Brother</option>
-                          <option value="Sister">Sister</option>
-                          <option value="Friend">Friend</option>
-                          <option value="Relative">Relative</option>
-                          <option value="Other">Other</option>
+                          <option value="Mother">{tText("Mother (Amma)", "தாய் (அம்மா)")}</option>
+                          <option value="Father">{tText("Father (Appa)", "தந்தை (அப்பா)")}</option>
+                          <option value="Spouse">{tText("Spouse / Partner", "கணவர் / மனைவி")}</option>
+                          <option value="Son">{tText("Son", "மகன்")}</option>
+                          <option value="Daughter">{tText("Daughter", "மகள்")}</option>
+                          <option value="Brother">{tText("Brother", "சகோதரன்")}</option>
+                          <option value="Sister">{tText("Sister", "சகோதரி")}</option>
+                          <option value="Friend">{tText("Friend", "நண்பர்")}</option>
+                          <option value="Relative">{tText("Relative", "உறவினர்")}</option>
+                          <option value="Other">{tText("Other", "மற்றவை")}</option>
                         </select>
                         {errors.relationship && (
                           <p className="text-[10px] text-red-400 font-medium flex items-center gap-1 mt-1">
@@ -689,12 +701,12 @@ function BookingFormContent() {
                       {relationship === 'Other' && (
                         <div className="space-y-1.5 animate-fadeIn">
                           <label className="text-[10px] uppercase tracking-widest font-black text-slate-300">
-                            Specify Relationship <span className="text-red-400">*</span>
+                            {tText("Specify Relationship", "உறவுமுறையைக் குறிப்பிடவும்")} <span className="text-red-400">*</span>
                           </label>
                           <input 
                             id="input-customRelationship"
                             type="text"
-                            placeholder="Eg: Cousin, Mentor, Colleague"
+                            placeholder={tText("Eg: Cousin, Mentor, Colleague", "உதா: உறவினர், நண்பர், சக ஊழியர்")}
                             value={customRelationship}
                             onChange={(e) => {
                               setCustomRelationship(e.target.value);
@@ -720,7 +732,8 @@ function BookingFormContent() {
                   <div className="p-3 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-xs text-amber-200/90 flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
                     <span>
-                      Consultation booked directly for account holder: <strong className="text-white">{currentUser?.username || 'You'}</strong>
+                      {tText("Consultation booked directly for account holder: ", "கணக்கு உரிமையாளருக்கு நேரடியாக முன்பதிவு செய்யப்படுகிறது: ")}
+                      <strong className="text-white">{currentUser?.username || 'You'}</strong>
                     </span>
                   </div>
                 )}
@@ -733,7 +746,9 @@ function BookingFormContent() {
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 flex items-center justify-between">
                     <span>
-                      {bookingFor === 'family' ? "Person's Name" : "Your Name"} <span className="text-red-400">*</span>
+                      {bookingFor === 'family' 
+                        ? tText("Person's Name", "நபரின் பெயர்") 
+                        : tText("Your Name", "உங்கள் பெயர்")} <span className="text-red-400">*</span>
                     </span>
                     {errors.userName && <span className="text-red-400 font-bold lowercase text-[9px]">required</span>}
                   </label>
@@ -742,7 +757,9 @@ function BookingFormContent() {
                     <input 
                       id="input-userName"
                       type="text" 
-                      placeholder={bookingFor === 'family' ? "Eg: Radha Devi" : "Eg: Ramesh Kumar"} 
+                      placeholder={bookingFor === 'family' 
+                        ? tText("Eg: Radha Devi", "உதா: ராதா தேவி") 
+                        : tText("Eg: Ramesh Kumar", "உதா: ரமேஷ் குமார்")} 
                       value={userName}
                       onChange={(e) => {
                         setUserName(e.target.value);
@@ -766,7 +783,7 @@ function BookingFormContent() {
                 {/* Mobile Number */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 flex items-center justify-between">
-                    <span>Contact Number <span className="text-red-400">*</span></span>
+                    <span>{tText("Contact Number", "தொடர்பு எண்")} <span className="text-red-400">*</span></span>
                     {errors.mobileNum && <span className="text-red-400 font-bold lowercase text-[9px]">required</span>}
                   </label>
                   <div className="relative">
@@ -808,7 +825,7 @@ function BookingFormContent() {
                         }}
                         className="rounded accent-indigo-500"
                       />
-                      <span>Use my account mobile ({currentUser.mobile})</span>
+                      <span>{tText(`Use my account mobile (${currentUser.mobile})`, `எனது கணக்கு எண்ணைப் பயன்படுத்தவும் (${currentUser.mobile})`)}</span>
                     </label>
                   )}
                 </div>
@@ -816,7 +833,7 @@ function BookingFormContent() {
                 {/* Gender Selection */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 flex items-center justify-between">
-                    <span>Gender <span className="text-red-400">*</span></span>
+                    <span>{tText("Gender", "பாலினம்")} <span className="text-red-400">*</span></span>
                     {errors.gender && <span className="text-red-400 font-bold lowercase text-[9px]">required</span>}
                   </label>
                   <div className="relative">
@@ -834,10 +851,10 @@ function BookingFormContent() {
                           : 'border-white/10 focus:border-indigo-500/50'
                       }`}
                     >
-                      <option value="">Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
+                      <option value="">{tText("Select Gender", "பாலினத்தைத் தேர்ந்தெடுக்கவும்")}</option>
+                      <option value="Male">{tText("Male", "ஆண்")}</option>
+                      <option value="Female">{tText("Female", "பெண்")}</option>
+                      <option value="Other">{tText("Other", "மற்றவை")}</option>
                     </select>
                   </div>
                   {errors.gender && (
@@ -861,7 +878,7 @@ function BookingFormContent() {
                     className="rounded accent-indigo-500 cursor-pointer"
                   />
                   <label htmlFor="save-member" className="text-xs text-slate-300 font-medium cursor-pointer">
-                    Save this person to My Family & Friends for future consultations
+                    {tText("Save this person to My Family & Friends for future consultations", "எதிர்கால ஆலோசனைக்காக இந்த நபரை குடும்பத்தினர் பட்டியலில் சேமிக்கவும்")}
                   </label>
                 </div>
               )}
@@ -873,12 +890,13 @@ function BookingFormContent() {
               
               <div className="border-b border-white/5 pb-4">
                 <h2 className="text-lg sm:text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
-                  <Compass className="w-5 h-5 text-indigo-400" /> 2. Natal Birth Coordinates
+                  <Compass className="w-5 h-5 text-indigo-400" /> {tText("2. Natal Birth Coordinates", "2. பிறப்பு விவரங்கள் (தேதி, நேரம் & இடம்)")}
                 </h2>
                 <p className="text-[10px] sm:text-[11px] text-slate-400 mt-1 uppercase tracking-widest">
-                  {bookingFor === 'family' 
-                    ? `Provide ${userName || 'their'} birth particulars for high-accuracy horoscope chart calculations.`
-                    : 'Provide your birth particulars for high-accuracy horoscope chart calculations.'}
+                  {tText(
+                    "Provide birth particulars for high-accuracy horoscope chart calculations.",
+                    "துல்லியமான ஜாதகக் கணிப்பிற்கு பிறப்பு விவரங்களை உள்ளிடவும்."
+                  )}
                 </p>
               </div>
 
@@ -887,7 +905,7 @@ function BookingFormContent() {
                 {/* Date of Birth */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 flex items-center justify-between">
-                    <span>Date of Birth <span className="text-red-400">*</span></span>
+                    <span>{tText("Date of Birth", "பிறந்த தேதி")} <span className="text-red-400">*</span></span>
                     {errors.dob && <span className="text-red-400 font-bold lowercase text-[9px]">required</span>}
                   </label>
                   <input 
@@ -915,7 +933,7 @@ function BookingFormContent() {
                 {/* Time of Birth */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 flex items-center justify-between">
-                    <span>Time of Birth <span className="text-red-400">*</span></span>
+                    <span>{tText("Time of Birth", "பிறந்த நேரம்")} <span className="text-red-400">*</span></span>
                     {errors.tob && <span className="text-red-400 font-bold lowercase text-[9px]">required</span>}
                   </label>
                   <input 
@@ -943,13 +961,13 @@ function BookingFormContent() {
                 {/* Place of Birth */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 flex items-center justify-between">
-                    <span>Place of Birth <span className="text-red-400">*</span></span>
+                    <span>{tText("Place of Birth", "பிறந்த இடம்")} <span className="text-red-400">*</span></span>
                     {errors.pob && <span className="text-red-400 font-bold lowercase text-[9px]">required</span>}
                   </label>
                   <input 
                     id="input-pob"
                     type="text" 
-                    placeholder="City, State / Country"
+                    placeholder={tText("City, State / Country", "ஊர் / நகரம், மாநிலம், நாடு")}
                     value={pob}
                     onChange={(e) => {
                       setPob(e.target.value);
@@ -974,7 +992,7 @@ function BookingFormContent() {
               {/* Privacy assurance banner */}
               <div className="flex items-center gap-2 p-3.5 bg-white/2 border border-white/5 rounded-2xl text-[10px] uppercase tracking-widest font-bold text-slate-400">
                 <Shield className="w-4 h-4 text-indigo-400 shrink-0" />
-                <span>All planetary coordinates and birth details are strictly private & encrypted.</span>
+                <span>{tText("All planetary coordinates and birth details are strictly private & encrypted.", "பிறப்பு விவரங்கள் அனைத்தும் முற்றிலும் பாதுகாப்பாகவும் ரகசியமாகவும் வைக்கப்படும்.")}</span>
               </div>
 
             </div>
@@ -984,10 +1002,10 @@ function BookingFormContent() {
               
               <div className="border-b border-white/5 pb-4">
                 <h2 className="text-lg sm:text-xl font-bold font-serif text-white uppercase tracking-widest flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-emerald-400" /> 3. Schedule Auspicious Hora
+                  <Clock className="w-5 h-5 text-emerald-400" /> {tText("3. Schedule Auspicious Hora", "3. ஆலோசனை தேதி & நேரத்தை தேர்ந்தெடுக்கவும்")}
                 </h2>
                 <p className="text-[10px] sm:text-[11px] text-slate-400 mt-1 uppercase tracking-widest">
-                  Select your preferred appointment date and convenient time slot.
+                  {tText("Select your preferred appointment date and convenient time slot.", "உங்களுக்கு வசதியான தேதி மற்றும் நேரத்தை தேர்ந்தெடுக்கவும்.")}
                 </p>
               </div>
 
@@ -1003,7 +1021,7 @@ function BookingFormContent() {
                 <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
                   <h3 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase flex items-center gap-2">
                     <CalIcon className="w-4 h-4 text-amber-400" />
-                    Select Date <span className="text-red-400">*</span>
+                    {tText("Select Date", "தேதியைத் தேர்ந்தெடுக்கவும்")} <span className="text-red-400">*</span>
                   </h3>
                   <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider">
                     <button type="button" onClick={handlePrevMonth} className="p-1 hover:text-white text-slate-500 cursor-pointer">◀</button>
@@ -1073,7 +1091,7 @@ function BookingFormContent() {
                 }`}
               >
                 <h3 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase border-b border-white/5 pb-2.5 flex items-center justify-between">
-                  <span>Select Auspicious Hora (Time Slot) <span className="text-red-400">*</span></span>
+                  <span>{tText("Select Auspicious Hora (Time Slot)", "சுப ஹோரை (நேரத்தை) தேர்ந்தெடுக்கவும்")} <span className="text-red-400">*</span></span>
                   {selectedSlot && <span className="text-indigo-400 text-[10px] font-mono font-bold">{selectedSlot}</span>}
                 </h3>
 
@@ -1120,33 +1138,41 @@ function BookingFormContent() {
             <div className="rounded-[2rem] border border-white/10 bg-slate-900/40 backdrop-blur-2xl p-6 shadow-antigravity text-xs text-slate-400 space-y-4">
               <div className="grid sm:grid-cols-4 gap-4 text-center">
                 <div className="space-y-1">
-                  <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">Plan Selection</span>
+                  <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">
+                    {tText("Plan Selection", "தேர்ந்தெடுக்கப்பட்ட திட்டம்")}
+                  </span>
                   <strong className="text-white font-bold block">{activePlanInfo.title}</strong>
                 </div>
 
                 <div className="space-y-1 border-t sm:border-t-0 sm:border-l border-white/5 pt-2 sm:pt-0">
-                  <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">Consultation For</span>
+                  <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">
+                    {tText("Consultation For", "யாருக்கான ஆலோசனை")}
+                  </span>
                   <strong className="text-amber-300 font-bold block">
                     {userName ? (
                       <>
                         {userName} {bookingFor === 'family' && `(${getEffectiveRelationship()})`}
                       </>
                     ) : (
-                      <span className="text-slate-500 italic">Not Entered Yet</span>
+                      <span className="text-slate-500 italic">{tText("Not Entered Yet", "இன்னும் உள்ளிடவில்லை")}</span>
                     )}
                   </strong>
                 </div>
 
                 <div className="space-y-1 border-t sm:border-t-0 sm:border-l border-white/5 pt-2 sm:pt-0">
-                  <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">Rate Fee</span>
+                  <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">
+                    {tText("Rate Fee", "கட்டணம்")}
+                  </span>
                   <strong className="text-amber-400 font-serif font-black text-sm block">₹{activePlanInfo.price}</strong>
                 </div>
 
                 <div className="space-y-1 border-t sm:border-t-0 sm:border-l border-white/5 pt-2 sm:pt-0">
-                  <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">Chosen Slot</span>
+                  <span className="block text-[9px] uppercase tracking-widest font-bold text-slate-500">
+                    {tText("Chosen Slot", "தேர்ந்தெடுக்கப்பட்ட நேரம்")}
+                  </span>
                   <strong className="text-indigo-300 font-medium block">
-                    {selectedDate ? `${selectedDate} ${monthName}` : "Date Not Picked"} <br/> 
-                    {selectedSlot || "Hora Not Picked"}
+                    {selectedDate ? `${selectedDate} ${monthName}` : tText("Date Not Picked", "தேதி தேர்ந்தெடுக்கப்படவில்லை")} <br/> 
+                    {selectedSlot || tText("Hora Not Picked", "ஹோரை தேர்ந்தெடுக்கப்படவில்லை")}
                   </strong>
                 </div>
               </div>
@@ -1160,11 +1186,11 @@ function BookingFormContent() {
                 {isProcessing ? (
                   <>
                     <Orbit className="w-5 h-5 animate-spin" />
-                    Running Vedic Algorithms...
+                    {tText("Confirming Appointment...", "முன்பதிவு செய்யப்படுகிறது...")}
                   </>
                 ) : (
                   <>
-                    Book Consultation Appointment
+                    {t.booking.confirmBooking}
                     <ChevronRight className="w-5 h-5" />
                   </>
                 )}
@@ -1187,54 +1213,80 @@ function BookingFormContent() {
 
             <div className="space-y-2">
               <h2 className="text-2xl md:text-3xl font-black font-serif text-white uppercase tracking-widest">
-                Booking Confirmed!
+                {tText("Booking Confirmed!", "முன்பதிவு உறுதியானது!")}
               </h2>
               <span className="text-[10px] text-emerald-400 tracking-widest font-black uppercase bg-emerald-500/10 border border-emerald-500/20 py-1 px-4 rounded-full inline-block">
-                Celestial Channel Secured
+                {tText("Celestial Channel Secured", "ஜோதிட ஆலோசனை நேரம் ஒதுக்கப்பட்டது")}
               </span>
             </div>
 
             <p className="text-slate-300 text-xs leading-relaxed max-w-sm mx-auto">
-              Namaste {currentUser?.username || userName}. Your auspicious slot for <strong className="text-white">{userName} {bookingFor === 'family' ? `(${getEffectiveRelationship()})` : ''}</strong> has been successfully secured. Astrologer Kkarthikeya has blocked this hora for personalized chart calculations.
+              {tText(
+                `Namaste ${currentUser?.username || userName}. Your auspicious slot for `,
+                `வணக்கம் ${currentUser?.username || userName}. `
+              )}
+              <strong className="text-white">{userName} {bookingFor === 'family' ? `(${getEffectiveRelationship()})` : ''}</strong>
+              {tText(
+                " has been successfully secured. Astrologer Kkarthikeya has blocked this hora for personalized chart calculations.",
+                "-க்கான சுப ஆலோசனை நேரம் வெற்றிகரமாக ஒதுக்கப்பட்டது. ஜோதிடர் கார்த்திகேயா உங்களுக்காக இந்த நேரத்தை ஒதுக்கியுள்ளார்."
+              )}
             </p>
 
             {/* Receipt details */}
             <div className="p-5 rounded-2xl bg-slate-950/70 border border-white/5 space-y-3 text-left text-xs text-slate-300 font-medium">
               <div className="flex justify-between border-b border-white/5 pb-2">
-                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Booking Code</span>
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">
+                  {tText("Booking Code", "முன்பதிவு எண்")}
+                </span>
                 <span className="font-mono text-indigo-300 font-bold">{bookingId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Consultation For</span>
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">
+                  {tText("Consultation For", "யாருக்கான ஆலோசனை")}
+                </span>
                 <span className="text-white font-bold">
                   {userName} {bookingFor === 'family' ? `(${getEffectiveRelationship()})` : '(Self)'}
                 </span>
               </div>
               {bookingFor === 'family' && currentUser?.username && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500 uppercase tracking-widest text-[9px]">Booked By Account</span>
+                  <span className="text-slate-500 uppercase tracking-widest text-[9px]">
+                    {tText("Booked By Account", "முன்பதிவு செய்தவர்")}
+                  </span>
                   <span className="text-slate-300">{currentUser.username}</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Gender</span>
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">
+                  {tText("Gender", "பாலினம்")}
+                </span>
                 <span className="text-slate-300">{gender || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Consultation Plan</span>
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">
+                  {tText("Consultation Plan", "ஆலோசனைத் திட்டம்")}
+                </span>
                 <span className="text-white font-bold">{activePlanInfo.title}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Auspicious Date</span>
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">
+                  {tText("Auspicious Date", "ஆலோசனை தேதி")}
+                </span>
                 <span className="text-white font-bold">{selectedDate} {monthName} {currentDate.getFullYear()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Consultation Hour</span>
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">
+                  {tText("Consultation Hour", "ஆலோசனை நேரம்")}
+                </span>
                 <span className="text-white font-bold">{selectedSlot}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Booking Status</span>
-                <span className="text-amber-400 font-bold font-serif">Confirmed (Pay on Consultation)</span>
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">
+                  {tText("Booking Status", "முன்பதிவு நிலை")}
+                </span>
+                <span className="text-amber-400 font-bold font-serif">
+                  {tText("Confirmed (Pay on Consultation)", "உறுதியானது (ஆலோசனையின் போது கட்டணம்)")}
+                </span>
               </div>
             </div>
 
@@ -1250,11 +1302,14 @@ function BookingFormContent() {
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
                   {countdown > 0 
-                    ? `Redirecting to WhatsApp in ${countdown}s...` 
-                    : `Opening WhatsApp now...`}
+                    ? tText(`Redirecting to WhatsApp in ${countdown}s...`, `${countdown} வினாடிகளில் வாட்ஸ்அப்பிற்கு செல்கிறது...`)
+                    : tText(`Opening WhatsApp now...`, `வாட்ஸ்அப் இப்போது திறக்கப்படுகிறது...`)}
                 </div>
                 <p className="text-[10px] text-slate-300">
-                  Please tap <span className="text-emerald-400 font-bold">Send</span> in WhatsApp to deliver your booking directly to Astrologer Kkarthikeya.
+                  {tText(
+                    "Please tap Send in WhatsApp to deliver your booking directly to Astrologer Kkarthikeya.",
+                    "ஜோதிடர் கார்த்திகேயாவுக்கு விவரங்களை அனுப்ப வாட்ஸ்அப்பில் Send பொத்தானை அழுத்தவும்."
+                  )}
                 </p>
               </motion.div>
             )}
@@ -1264,18 +1319,23 @@ function BookingFormContent() {
                 onClick={() => handleWhatsAppConfirmation()}
                 className="w-full py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black tracking-widest uppercase shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                {countdown !== null && countdown > 0 ? "Open WhatsApp Immediately" : "Send Details to WhatsApp"}
+                {countdown !== null && countdown > 0 
+                  ? tText("Open WhatsApp Immediately", "வாட்ஸ்அப்பை உடனே திறக்கவும்") 
+                  : tText("Send Details to WhatsApp", "விவரங்களை வாட்ஸ்அப்பில் அனுப்பவும்")}
               </button>
               <button 
                 onClick={() => router.push('/')}
                 className="w-full py-3 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 text-xs font-bold uppercase tracking-widest transition-all cursor-pointer"
               >
-                Return to Centre
+                {tText("Return to Centre", "முகப்புக்கு திரும்பவும்")}
               </button>
             </div>
 
             <div className="text-[8px] text-slate-500 tracking-wider uppercase">
-              An automated email and SMS notification have been sent with join coordinates.
+              {tText(
+                "An automated email and SMS notification have been sent with join coordinates.",
+                "தானியங்கி உறுதிப்படுத்தல் மற்றும் ஆலோசனை விவரங்கள் பதிவு செய்யப்பட்டுள்ளது."
+              )}
             </div>
           </motion.div>
         )}

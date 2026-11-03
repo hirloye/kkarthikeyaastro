@@ -7,9 +7,11 @@ import CosmicBackground from '@/components/CosmicBackground';
 import { motion } from 'framer-motion';
 import { Orbit, User, Phone, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function LoginPage() {
   const { currentUser, loginUser, registerUser } = useApp();
+  const { t, language, tText } = useLanguage();
   const router = useRouter();
 
   // Mode: Existing User (false) vs New User (true)
@@ -24,7 +26,7 @@ export default function LoginPage() {
   const [tobPeriod, setTobPeriod] = useState('AM');
   const [pob, setPob] = useState('');
   const [gender, setGender] = useState('');
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -42,25 +44,24 @@ export default function LoginPage() {
     setError('');
 
     if (!phone.trim()) {
-      return setError('Please enter your phone number.');
+      return setError(tText('Please enter your phone number.', 'உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்.'));
     }
 
     if (isRegister) {
-      if (!name.trim()) return setError('Please enter your full name.');
+      if (!name.trim()) return setError(tText('Please enter your full name.', 'உங்கள் முழு பெயரை உள்ளிடவும்.'));
       const trimmedEmail = email.trim().toLowerCase();
       if (trimmedEmail && !trimmedEmail.includes('@')) {
-        return setError('Please enter a valid email address.');
+        return setError(tText('Please enter a valid email address.', 'சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்.'));
       }
-      if (!gender) return setError('Please select your gender.');
-      if (!dob) return setError('Please enter your date of birth.');
-      if (!tob) return setError('Please enter your time of birth.');
-      if (!pob.trim()) return setError('Please enter your place of birth.');
+      if (!gender) return setError(tText('Please select your gender.', 'பாலினத்தைத் தேர்ந்தெடுக்கவும்.'));
+      if (!dob) return setError(tText('Please enter your date of birth.', 'பிறந்த தேதியை உள்ளிடவும்.'));
+      if (!tob) return setError(tText('Please enter your time of birth.', 'பிறந்த நேரத்தை உள்ளிடவும்.'));
+      if (!pob.trim()) return setError(tText('Please enter your place of birth.', 'பிறந்த இடத்தை உள்ளிடவும்.'));
     }
 
     setIsLoading(true);
     try {
       if (isRegister) {
-        // Register flow: First check if phone number is already used
         const { data: existingUser, error: queryErr } = await supabase
           .from('seekers')
           .select('id')
@@ -70,7 +71,10 @@ export default function LoginPage() {
         if (queryErr) throw queryErr;
 
         if (existingUser) {
-          setError('This phone number is already registered. Please login as an Existing User.');
+          setError(tText(
+            'This phone number is already registered. Please login as an Existing User.',
+            'இந்த தொலைபேசி எண் ஏற்கனவே பதிவு செய்யப்பட்டுள்ளது. ஏற்கெனவே உள்ள பயனர் வழியாக உள்நுழையவும்.'
+          ));
           setIsLoading(false);
           return;
         }
@@ -78,12 +82,11 @@ export default function LoginPage() {
         const formattedTob = `${tob} ${tobPeriod}`;
         await registerUser(name.trim(), phone.trim(), email.trim().toLowerCase(), dob, formattedTob, pob.trim(), gender);
       } else {
-        // Login flow: Check if user exists via phone number
         await loginUser(phone.trim());
       }
     } catch (err: any) {
       console.error("Authentication failed:", err);
-      setError(err.message || 'Stellar sync alignment failed. Please verify your details.');
+      setError(err.message || tText('Authentication failed. Please verify your details.', 'உள்நுழைவு தோல்வியடைந்தது. உங்கள் விவரங்களை சரிபார்க்கவும்.'));
     } finally {
       setIsLoading(false);
     }
@@ -100,12 +103,13 @@ export default function LoginPage() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="max-w-md w-full rounded-3rem border border-white/10 bg-slate-900/35 backdrop-blur-xl p-8 md:p-10 shadow-antigravity relative overflow-hidden z-10"
       >
-
-
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold font-serif text-white tracking-wide uppercase">
-            Ascend User Portal
+            {tText("User Sign In & Register", "பயனர் உள்நுழைவு & பதிவு")}
           </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            {tText("Access your consultations, birth charts, and chat", "உங்கள் ஆலோசனைகள் மற்றும் ஜாதக விபரங்களைப் பார்க்க")}
+          </p>
         </div>
 
         {/* Toggle Mode Tabs */}
@@ -113,35 +117,37 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => { setIsRegister(false); setError(''); }}
-            className={`pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${!isRegister ? 'border-amber-400 text-amber-300' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
+            className={`pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 cursor-pointer ${!isRegister ? 'border-amber-400 text-amber-300' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
           >
-            Existing User
+            {tText("Existing User", "ஏற்கெனவே உள்ள பயனர்")}
           </button>
           <button
             type="button"
             onClick={() => { setIsRegister(true); setError(''); }}
-            className={`pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${isRegister ? 'border-amber-400 text-amber-300' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
+            className={`pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 cursor-pointer ${isRegister ? 'border-amber-400 text-amber-300' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
           >
-            New User
+            {tText("New Registration", "புதிய பதிவு")}
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Field (Only visible in Register mode) */}
           {isRegister && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               className="space-y-1.5 overflow-hidden"
             >
-              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">User Full Name</label>
+              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">
+                {tText("Full Name", "முழு பெயர்")}
+              </label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
+                  placeholder={tText("Enter your name", "உங்கள் பெயரை உள்ளிடவும்")}
                   className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-11 pr-4 text-xs text-slate-100 placeholder-slate-500 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner"
                   disabled={isLoading}
                   required={isRegister}
@@ -150,9 +156,11 @@ export default function LoginPage() {
             </motion.div>
           )}
 
-          {/* Phone Field (Always visible since we login with phone number) */}
+          {/* Phone Field */}
           <div className="space-y-1.5">
-            <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Phone Number</label>
+            <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">
+              {tText("Phone Number", "தொலைபேசி எண்")}
+            </label>
             <div className="relative">
               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
               <input
@@ -167,39 +175,43 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Gender Field (Only visible in Register mode) */}
+          {/* Gender Field */}
           {isRegister && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               className="space-y-1.5 overflow-hidden"
             >
-              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Gender</label>
+              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">
+                {t.booking.gender}
+              </label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
                 <select
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-2xl py-3.5 pl-11 pr-4 text-xs text-slate-100 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner"
+                  className="w-full bg-slate-900 border border-white/10 rounded-2xl py-3.5 pl-11 pr-4 text-xs text-slate-100 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner cursor-pointer"
                   disabled={isLoading}
                   required={isRegister}
                 >
-                  <option value="" disabled>Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
+                  <option value="" disabled>{tText("-- Select Gender --", "-- பாலினத்தைத் தேர்ந்தெடுக்கவும் --")}</option>
+                  <option value="Male">{t.common.male}</option>
+                  <option value="Female">{t.common.female}</option>
                 </select>
               </div>
             </motion.div>
           )}
 
-          {/* Date of Birth Field (Only visible in Register mode) */}
+          {/* Date of Birth Field */}
           {isRegister && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               className="space-y-1.5 overflow-hidden"
             >
-              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Date of Birth</label>
+              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">
+                {t.booking.dob}
+              </label>
               <input
                 type="date"
                 value={dob}
@@ -211,15 +223,17 @@ export default function LoginPage() {
             </motion.div>
           )}
 
-          {/* Birth Time Field (Only visible in Register mode) */}
+          {/* Birth Time Field */}
           {isRegister && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               className="grid grid-cols-3 gap-3 overflow-hidden"
             >
               <div className="col-span-2 space-y-1.5">
-                <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Birth Time</label>
+                <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">
+                  {t.booking.tob}
+                </label>
                 <input
                   type="time"
                   value={tob}
@@ -234,7 +248,7 @@ export default function LoginPage() {
                 <select
                   value={tobPeriod}
                   onChange={(e) => setTobPeriod(e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-2xl py-3.5 px-3 text-xs text-slate-100 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner"
+                  className="w-full bg-slate-900 border border-white/10 rounded-2xl py-3.5 px-3 text-xs text-slate-100 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner cursor-pointer"
                   disabled={isLoading}
                 >
                   <option value="AM">AM</option>
@@ -244,19 +258,21 @@ export default function LoginPage() {
             </motion.div>
           )}
 
-          {/* Birth Place Field (Only visible in Register mode) */}
+          {/* Birth Place Field */}
           {isRegister && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               className="space-y-1.5 overflow-hidden"
             >
-              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Birth Place</label>
+              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">
+                {t.booking.pob}
+              </label>
               <input
                 type="text"
                 value={pob}
                 onChange={(e) => setPob(e.target.value)}
-                placeholder="City, State, Country"
+                placeholder={tText("City, State, Country", "ஊர் / நகரம், மாவட்டம்")}
                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-xs text-slate-100 placeholder-slate-500 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner"
                 disabled={isLoading}
                 required={isRegister}
@@ -264,21 +280,23 @@ export default function LoginPage() {
             </motion.div>
           )}
 
-          {/* Email Field (Optional, Only visible in Register mode) */}
+          {/* Email Field (Optional) */}
           {isRegister && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               className="space-y-1.5 overflow-hidden"
             >
-              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Mail Identification (Email) - Optional</label>
+              <label className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block ml-1">
+                {tText("Email Address (Optional)", "மின்னஞ்சல் முகவரி (விருப்பத்தேர்வு)")}
+              </label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="user@cosmos.com"
+                  placeholder="user@example.com"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-11 pr-4 text-xs text-slate-100 placeholder-slate-500 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/10 transition-all shadow-inner"
                   disabled={isLoading}
                 />
@@ -299,17 +317,17 @@ export default function LoginPage() {
           {/* Connect Button */}
           <button
             type="submit"
-            className="w-full mt-6 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold uppercase tracking-widest shadow-glow border border-indigo-400/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
+            className="w-full mt-6 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold uppercase tracking-widest shadow-glow border border-indigo-400/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 cursor-pointer"
             disabled={isLoading}
           >
             {isLoading ? (
               <>
                 <Orbit className="w-4 h-4 animate-spin text-white" />
-                Aligning Coordinates...
+                {tText("Processing...", "செயல்படுத்தப்படுகிறது...")}
               </>
             ) : (
               <>
-                {isRegister ? 'Initiate Cosmic Gateway' : 'Open Cosmic Gateway'}
+                {isRegister ? tText('Create Account', 'புதிய கணக்கு தொடங்கு') : tText('Sign In', 'உள்நுழைக')}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </>
             )}
@@ -319,10 +337,9 @@ export default function LoginPage() {
         {/* Footer info inside card */}
         <div className="mt-8 border-t border-t-white/5 pt-5 text-center flex items-center justify-center gap-1.5 text-[9px] uppercase tracking-widest font-extrabold text-slate-500">
           <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
-          <span>Vedic Encryption Standards Shielded</span>
+          <span>{tText("Vedic Encryption Standards Shielded", "பாரம்பரிய வேத ஜோதிட விதிகளின்படி பாதுகாப்பானது")}</span>
         </div>
       </motion.div>
     </main>
   );
 }
-

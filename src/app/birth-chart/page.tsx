@@ -8,11 +8,13 @@ import {
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import AuthGuard from '@/components/AuthGuard';
 import SouthIndianChart from '@/components/SouthIndianChart';
 
 export default function BirthChartPage() {
   const { currentUser } = useApp();
+  const { t, tText } = useLanguage();
   
   // Inputs
   const [name, setName] = useState('');
@@ -55,7 +57,6 @@ export default function BirthChartPage() {
     }, 1500);
   };
 
-
   return (
     <AuthGuard>
       <main className="relative min-h-screen w-full text-slate-100 overflow-x-hidden pb-20 selection:bg-amber-500/30">
@@ -64,13 +65,13 @@ export default function BirthChartPage() {
         {/* 🌌 Title section */}
         <section className="pt-10 pb-6 px-6 max-w-6xl mx-auto relative z-10 text-center space-y-4">
           <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-amber-500/20 bg-amber-950/20 text-amber-300 text-[9px] uppercase tracking-widest font-black">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Natal Calculations
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> {t.birthChart.badge}
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white font-serif leading-[1.15]">
-            Birth Chart (Kundli)
+            {t.birthChart.title}
           </h1>
           <p className="text-xs md:text-sm text-indigo-300 font-bold uppercase tracking-widest">
-            Vedic Ascendant & Planetary Placements Map Generator
+            {t.birthChart.subtitle}
           </p>
           <div className="w-12 h-1 bg-gradient-to-r from-amber-500 to-indigo-500 mx-auto rounded-full mt-3" />
         </section>
@@ -82,17 +83,17 @@ export default function BirthChartPage() {
           <div className="lg:col-span-4 space-y-4">
             <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 md:p-7 shadow-antigravity space-y-4">
               <h2 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase border-b border-white/5 pb-2.5">
-                Birth Coordinates
+                {t.birthChart.formTitle}
               </h2>
 
               <form onSubmit={handleGenerateChart} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Full Name</label>
+                  <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">{t.birthChart.fullName}</label>
                   <div className="relative">
                     <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
                     <input 
                       type="text" 
-                      placeholder="Your Name"
+                      placeholder={tText("Your Name", "உங்கள் பெயர்")}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 outline-none focus:border-indigo-500/50 transition-all shadow-inner"
@@ -103,7 +104,7 @@ export default function BirthChartPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Date of Birth</label>
+                  <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">{t.birthChart.dob}</label>
                   <input 
                     type="date" 
                     value={dob}
@@ -116,7 +117,7 @@ export default function BirthChartPage() {
 
                 <div className="grid grid-cols-3 gap-2">
                   <div className="col-span-2 space-y-1.5">
-                    <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Birth Time</label>
+                    <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">{t.birthChart.tob}</label>
                     <input 
                       type="time" 
                       value={tob}
@@ -141,12 +142,12 @@ export default function BirthChartPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">Place of Birth</label>
+                  <label className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block ml-1">{t.birthChart.pob}</label>
                   <div className="relative">
                     <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300/40" />
                     <input 
                       type="text" 
-                      placeholder="City, State, Country"
+                      placeholder={tText("City, State, Country", "ஊர், மாவட்டம், மாநிலம்")}
                       value={pob}
                       onChange={(e) => setPob(e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-600 outline-none focus:border-indigo-500/50 transition-all shadow-inner"
@@ -164,11 +165,11 @@ export default function BirthChartPage() {
                   {isProcessing ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin" />
-                      Decrypting Cosmos...
+                      {t.birthChart.generating}
                     </>
                   ) : (
                     <>
-                      Generate Kundli Chart
+                      {t.birthChart.generateBtn}
                       <ChevronRight className="w-4 h-4" />
                     </>
                   )}
@@ -179,7 +180,7 @@ export default function BirthChartPage() {
             {/* Encryption Shield Tag */}
             <div className="flex items-center gap-2 p-3.5 rounded-2xl border border-white/5 bg-slate-900/20 text-[9px] uppercase tracking-widest font-black text-slate-500 justify-center">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Vedic Astrological Encryption Secure</span>
+              <span>{tText("Vedic Astrological Encryption Secure", "பாதுகாப்பான வேத ஜோதிட கணிப்பு")}</span>
             </div>
           </div>
 
@@ -198,24 +199,21 @@ export default function BirthChartPage() {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 blur-[40px] rounded-full pointer-events-none" />
                     
                     <h3 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase mb-5 border-b border-white/5 pb-2 w-full text-center">
-                      South Indian Rasi Chart
+                      {t.birthChart.rasiChart}
                     </h3>
 
                     <div className="w-full flex justify-center py-4">
-                      <SouthIndianChart dob={dob} tob={tob} pob={pob} title="Rasi Chart" />
+                      <SouthIndianChart dob={dob} tob={tob} pob={pob} title={t.birthChart.rasiChart} />
                     </div>
 
                     <h3 className="text-xs font-black tracking-widest text-slate-300 font-serif uppercase mt-10 mb-5 border-b border-white/5 pb-2 w-full text-center">
-                      South Indian Navamsam Chart
+                      {t.birthChart.navamsaChart}
                     </h3>
 
                     <div className="w-full flex justify-center py-4">
-                      <SouthIndianChart dob={dob} tob={tob} pob={pob} title="Navamsam Chart" />
+                      <SouthIndianChart dob={dob} tob={tob} pob={pob} title={t.birthChart.navamsaChart} />
                     </div>
                   </div>
-
-
-
                 </motion.div>
               ) : (
                 <motion.div
@@ -227,9 +225,14 @@ export default function BirthChartPage() {
                 >
                   <Compass className="w-12 h-12 mx-auto text-slate-700 animate-spin [animation-duration:15s]" />
                   <div className="space-y-2 max-w-sm mx-auto">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 font-serif">Awaiting Coordinates</h3>
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 font-serif">
+                      {tText("Enter Your Birth Details", "உங்கள் பிறப்பு விவரங்களை உள்ளிடவும்")}
+                    </h3>
                     <p className="text-xs leading-relaxed text-slate-500">
-                      Enter your precise birth date, time, and coordinates on the left panel to generate your interactive Vedic Kundli chart.
+                      {tText(
+                        "Enter your birth date, time, and birthplace on the left to calculate your Vedic birth chart (Kundli).",
+                        "உங்கள் பிறந்த தேதி, நேரம் மற்றும் இடத்தை உள்ளிட்டு துல்லியமான வேத பிறப்பு ஜாதகத்தை கணிக்கவும்."
+                      )}
                     </p>
                   </div>
                 </motion.div>

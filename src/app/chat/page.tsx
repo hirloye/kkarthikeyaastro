@@ -14,8 +14,7 @@ import AuthGuard from '@/components/AuthGuard';
 import { supabase } from '@/lib/supabaseClient';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
-
-
+import { useLanguage } from '@/context/LanguageContext';
 
 const RESPONSES = [
   "Ah, I see. Mercury resides in your 10th house, suggesting that during the retrograde, you should reflect and reorganize rather than launch new initiatives.",
@@ -26,6 +25,7 @@ const RESPONSES = [
 
 function AstrologyChatPage() {
   const { currentUser, isOfflineMode, setCurrentUser } = useApp();
+  const { t, tText } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
 
@@ -196,11 +196,11 @@ function AstrologyChatPage() {
           }]);
       } else {
         // Offline demo mode
-        toast.success("Review recorded! (Admin approval required in live mode)");
+        toast.success(tText("Review recorded! (Admin approval required in live mode)", "மதிப்பீடு பதிவு செய்யப்பட்டது! (நேரலையில் ஒப்புதல் தேவை)"));
       }
     } catch (err) {
       console.error("Failed to claim review bonus:", err);
-      alert("Failed to submit claim. Please try again.");
+      alert(tText("Failed to submit claim. Please try again.", "கோரிக்கையைச் சமர்ப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."));
     } finally {
       setIsSubmittingBonus(false);
     }
@@ -354,9 +354,6 @@ function AstrologyChatPage() {
 
     return () => clearInterval(interval);
   }, [chatUnlocked, unlockedAt, currentUser]);
-
-
-  // const isLocked moved above to avoid usage before declaration
 
   // Load and Subscribe to Chat Messages
   useEffect(() => {
@@ -585,23 +582,6 @@ function AstrologyChatPage() {
 
   if (!currentUser) return null; // Handled by AuthGuard
 
-  /*
-  html, body { 
-    margin: 0; 
-    background-color: #1b102e; 
-    background-image: linear-gradient(135deg, #1B102E 0%, #2D1B4E 50%, #5B0F0F 100%); 
-    background-attachment: fixed; 
-    color: #f3f4f6; 
-    font-family: var(--font-inter), system-ui, -apple-system, sans-serif; 
-    min-height: 100vh; 
-    overflow-x: hidden; 
-    overflow-y: auto; 
-    transition: background-color 0.4s ease, color 0.4s ease; 
-  }
-  */
-
-
-
   return (
     <main className="relative min-h-screen -mt-20 w-full text-slate-100 overflow-hidden flex flex-col">
       <CosmicBackground />
@@ -613,7 +593,7 @@ function AstrologyChatPage() {
           className="flex items-center gap-2 py-2 px-4 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 text-slate-300 hover:text-white text-xs font-bold uppercase tracking-widest transition-all active:scale-95 duration-300"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Home</span>
+          <span>{tText("Back to Home", "முகப்புக்கு திரும்பு")}</span>
         </Link>
       </header>
 
@@ -642,19 +622,19 @@ function AstrologyChatPage() {
               </h3>
               <span className="text-[10px] flex items-center gap-1 font-medium tracking-wider">
                 {astrologerStatus === 'online' && (
-                  <><span className="text-emerald-400 animate-pulse">●</span> <span className="text-emerald-400">Online</span></>
+                  <><span className="text-emerald-400 animate-pulse">●</span> <span className="text-emerald-400">{tText("Online", "நேரலையில்")}</span></>
                 )}
                 {astrologerStatus === 'busy' && (
-                  <><span className="text-amber-400 animate-pulse">●</span> <span className="text-amber-400">Busy • Talking to someone</span></>
+                  <><span className="text-amber-400 animate-pulse">●</span> <span className="text-amber-400">{tText("Busy • Talking to someone", "வேலையில் உள்ளார்")}</span></>
                 )}
                 {astrologerStatus === 'offline' && (
                   <>
                     <span className="text-slate-500">●</span> 
                     <span className="text-slate-400">
-                      Offline
+                      {tText("Offline", "ஆஃப்லைனில்")}
                       {offlineUntil && offlineRemainingText && (
                         <span className="text-slate-500 ml-1">
-                          • Available in {offlineRemainingText}
+                          • {tText("Available in", "கிடைக்கும் நேரம்:")} {offlineRemainingText}
                         </span>
                       )}
                     </span>
@@ -665,13 +645,13 @@ function AstrologyChatPage() {
           </div>
 
           <div className="hidden md:flex items-center justify-between px-8 py-4 border-b border-white/5 text-xs text-indigo-200/60 bg-white/2 backdrop-blur-sm shrink-0">
-            <span>Tethered session for {currentUser.username}</span>
+            <span>{tText("Tethered session for", "ஆலோசனை அமர்வு:")} {currentUser.username}</span>
             <div className="flex items-center gap-2 text-emerald-400/80">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span>Channel Est. {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              <span>{tText("Channel Est.", "இணைப்பு நேரம்:")} {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
               <a href={`tel:${currentUser?.mobile || ''}`} className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 bg-white rounded-[20px] px-6 py-2">
                 <Phone className="w-4 h-4" />
-                Call
+                {tText("Call", "அழைக்க")}
               </a>
             </div>
           </div>
@@ -681,7 +661,11 @@ function AstrologyChatPage() {
             <div className={`border-b px-4 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 shrink-0 font-mono text-[10px] sm:text-xs ${isBonusSession ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'}`}>
               <span className="flex items-center gap-1.5">
                 <span className={`w-2 h-2 rounded-full animate-ping shrink-0 ${isBonusSession ? 'bg-amber-400' : 'bg-emerald-400'}`} />
-                <span className="leading-tight">{isBonusSession ? 'Review bonus free extension active. Remaining time:' : 'Paid consultation session active. Remaining time:'}</span>
+                <span className="leading-tight">
+                  {isBonusSession 
+                    ? tText('Review bonus free extension active. Remaining time:', 'இலவச கூடுதல் நேரம் செயலில் உள்ளது. மீதமுள்ள நேரம்:') 
+                    : tText('Paid consultation session active. Remaining time:', 'கட்டண ஆலோசனை நேரம் செயலில் உள்ளது. மீதமுள்ள நேரம்:')}
+                </span>
               </span>
               <span className={`font-bold px-2 py-0.5 rounded border self-start sm:self-auto ${isBonusSession ? 'text-amber-400 bg-amber-950/40 border-amber-500/25' : 'text-emerald-400 bg-emerald-950/40 border-emerald-500/25'}`}>
                 {Math.floor(timeRemaining / 60)}m {timeRemaining % 60}s
@@ -699,19 +683,27 @@ function AstrologyChatPage() {
                 {/* 1. Header */}
                 <div className="flex items-center justify-center gap-2 text-sm font-bold text-red-400 uppercase tracking-wider mt-1">
                   <Lock className="w-4 h-4 animate-pulse" />
-                  <span>Celestial Session Sealed</span>
+                  <span>{tText("Chat Session Completed", "அரட்டை நேரம் முடிவடைந்தது")}</span>
                 </div>
 
                 {/* 2. Description */}
                 <p className="text-xs text-slate-300 max-w-2xl leading-relaxed mx-auto w-full">
                   {(!unlockedAt || unlockedAt.startsWith('1970-01-01'))
-                    ? "Know about your Future please scan the QR or click this button to pay directly via Payment Apps (GPay, PhonePe, Paytm...). Chat input will automatically restore once approved."
-                    : "Your session has expired. Please make the payment to continue and chat input will automatically restore once approved."}
+                    ? tText(
+                        "Know about your future! Please scan the QR or click the button to pay directly via Payment Apps (GPay, PhonePe, Paytm...). Chat input will automatically restore once approved.",
+                        "உங்கள் எதிர்காலம் பற்றி அறிய QR குறியீட்டை ஸ்கேன் செய்தோ அல்லது பொத்தானை அழுத்தியோ GPay, PhonePe மூலம் கட்டணம் செலுத்தவும். ஒப்புதலுக்குப் பின் அரட்டை மீண்டும் தொடங்கும்."
+                      )
+                    : tText(
+                        "Your session has expired. Please make the payment to continue and chat input will automatically restore once approved.",
+                        "உங்கள் அரட்டை நேரம் முடிந்தது. தொடர கட்டணம் செலுத்துங்கள்; உடனடியாக அரட்டை மீண்டும் திறக்கப்படும்."
+                      )}
                 </p>
 
                 {/* 3. Fee */}
                 <div className="flex items-center justify-center gap-3">
-                  <span className="text-sm text-slate-400 font-bold">FEE: <span className="text-amber-400 font-serif text-lg font-black">{pricingPlans?.quick?.price || "₹99"}</span></span>
+                  <span className="text-sm text-slate-400 font-bold">
+                    {tText("FEE:", "கட்டணம்:")} <span className="text-amber-400 font-serif text-lg font-black">{pricingPlans?.quick?.price || "₹99"}</span>
+                  </span>
                 </div>
 
                 {/* 4. QR Code & Pay Button */}
@@ -723,11 +715,11 @@ function AstrologyChatPage() {
                     href={`upi://pay?pa=kkarthikeyaastro@indianbank&pn=Astrologer&am=${(pricingPlans?.quick?.price || "99").replace(/[^0-9.]/g, '')}&cu=INR`}
                     className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-[0_0_15px_rgba(16,185,129,0.3)] flex flex-col items-center justify-center text-center gap-1 active:scale-95"
                   >
-                    <span>Pay</span>
+                    <span>{tText("Pay", "கட்டணம் செலுத்துக")}</span>
                   </a>
                   <div className="flex items-center gap-1.5 text-[9px] text-amber-300 font-mono tracking-widest uppercase animate-pulse mt-1">
                     <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                    Awaiting Approval...
+                    {tText("Awaiting Approval...", "ஒப்புதலுக்காக காத்திருக்கிறது...")}
                   </div>
                 </div>
 
@@ -739,10 +731,13 @@ function AstrologyChatPage() {
                     <div className="w-full p-4 rounded-2xl border border-amber-500/20 bg-amber-950/20 text-center mt-2 shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
                       <div className="text-xs text-amber-300 font-black flex items-center justify-center gap-2 uppercase tracking-widest mb-1.5">
                         <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
-                        Claim 2 Minutes Free Chat!
+                        {tText("Claim 2 Minutes Free Chat!", "2 நிமிட இலவச கூடுதல் அரட்டை பெறுக!")}
                       </div>
                       <p className="text-[10px] text-slate-300 leading-relaxed mb-4 px-2">
-                        Submit a review and rating on our Google Business Profile to unlock a one-time 2-minute free extension instantly.
+                        {tText(
+                          "Submit a review and rating on our Google Business Profile to unlock a one-time 2-minute free extension instantly.",
+                          "கூகிள் பிசினஸ் பக்கத்தில் மதிப்புரை வழங்கி உடனடி 2 நிமிட இலவச நீட்டிப்பைப் பெறுங்கள்."
+                        )}
                       </p>
 
                       <div className="flex justify-center w-full">
@@ -753,13 +748,15 @@ function AstrologyChatPage() {
                               disabled={isSubmittingBonus}
                               className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider transition-colors duration-200 shadow-glow"
                             >
-                              {isSubmittingBonus ? 'Unlocking...' : 'Yes, I submitted review'}
+                              {isSubmittingBonus 
+                                ? tText('Unlocking...', 'திறக்கப்படுகிறது...') 
+                                : tText('Yes, I submitted review', 'ஆம், மதிப்புரை சமர்ப்பித்தேன்')}
                             </button>
                             <button
                               onClick={() => setShowConfirmBonus(false)}
                               className="px-3 py-2 rounded-xl border border-white/10 hover:bg-white/5 text-slate-300 text-[10px] font-bold uppercase transition-colors duration-200"
                             >
-                              Cancel
+                              {tText("Cancel", "ரத்து செய்")}
                             </button>
                           </div>
                         ) : (
@@ -767,7 +764,7 @@ function AstrologyChatPage() {
                             onClick={handleWriteReviewAndPrompt}
                             className="w-full sm:w-auto py-2.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-1.5 shadow-glow"
                           >
-                            Write Google Review & Claim Bonus
+                            {tText("Write Google Review & Claim Bonus", "கூகிள் மதிப்புரை வழங்கி போனஸ் பெறுக")}
                           </button>
                         )}
                       </div>
@@ -778,13 +775,15 @@ function AstrologyChatPage() {
                   {showRatingModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50">
                       <div className="bg-slate-900/90 rounded-3xl p-8 w-[90%] max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 text-center">
-                        <h3 className="text-xl font-bold text-white mb-2 font-serif">Thank you!</h3>
-                        <p className="text-xs text-slate-300 mb-6 uppercase tracking-wider">Your rating has been recorded.</p>
+                        <h3 className="text-xl font-bold text-white mb-2 font-serif">{tText("Thank you!", "நன்றி!")}</h3>
+                        <p className="text-xs text-slate-300 mb-6 uppercase tracking-wider">
+                          {tText("Your rating has been recorded.", "உங்கள் மதிப்பீடு பதிவு செய்யப்பட்டது.")}
+                        </p>
                         <button
                           onClick={() => setShowRatingModal(false)}
                           className="w-full py-3 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition shadow-glow uppercase tracking-wider text-xs"
                         >
-                          Close
+                          {tText("Close", "மூடுக")}
                         </button>
                       </div>
                     </div>

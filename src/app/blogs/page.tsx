@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Calendar, ArrowRight, BookOpen } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import CosmicBackground from '@/components/CosmicBackground';
 import Image from 'next/image';
 
@@ -20,6 +21,7 @@ interface Blog {
 
 export default function BlogsPage() {
   const { isOfflineMode } = useApp();
+  const { tText } = useLanguage();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +60,7 @@ export default function BlogsPage() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-950/20 border border-amber-500/20 text-amber-300 text-xs font-bold uppercase tracking-widest mb-6"
           >
             <BookOpen className="w-4 h-4" />
-            Cosmic Insights
+            {tText("Cosmic Insights", "ஜோதிடப் பார்வைகள்")}
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -66,7 +68,7 @@ export default function BlogsPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-serif text-white mb-6"
           >
-            Astrological Journal & Wisdom
+            {tText("Astrological Journal & Wisdom", "ஜோதிடக் கட்டுரைகள் & ஆன்மீக ஞானம்")}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -74,7 +76,10 @@ export default function BlogsPage() {
             transition={{ delay: 0.2 }}
             className="text-slate-300 text-lg"
           >
-            Explore our collection of deep celestial insights, transit updates, and spiritual remedies to guide your path.
+            {tText(
+              "Explore our collection of astrology guides, planetary updates, and simple remedies to help you in life.",
+              "உங்கள் வாழ்விற்கு வழிகாட்டும் எளிய பரிகாரங்கள், கிரக மாற்றங்கள் மற்றும் ஜோதிடக் குறிப்புகள்."
+            )}
           </motion.p>
         </div>
 
@@ -85,8 +90,12 @@ export default function BlogsPage() {
         ) : blogs.length === 0 ? (
           <div className="text-center py-20 border border-white/5 rounded-3xl bg-transparent backdrop-blur-md shadow-inner">
             <BookOpen className="w-12 h-12 text-slate-500 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-white">No Articles Yet</h3>
-            <p className="text-slate-400 mt-2">Check back soon for cosmic insights and updates.</p>
+            <h3 className="text-xl font-bold text-white">
+              {tText("No Articles Yet", "கட்டுரைகள் எதுவும் இல்லை")}
+            </h3>
+            <p className="text-slate-400 mt-2">
+              {tText("Check back soon for cosmic insights and updates.", "விரைவில் புதிய ஜோதிடக் கட்டுரைகள் பதிவேற்றப்படும்.")}
+            </p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -129,7 +138,7 @@ export default function BlogsPage() {
                     href={`/blogs/${blog.slug}`}
                     className="inline-flex items-center gap-2 text-sm font-bold text-amber-400 hover:text-amber-300 transition-colors mt-auto"
                   >
-                    Read Full Article <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                    {tText("Read Full Article", "முழுக் கட்டுரையைப் படிக்க")} <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </motion.article>

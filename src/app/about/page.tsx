@@ -9,8 +9,10 @@ import {
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import Image from 'next/image';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function AboutPage() {
+  const { t, tText } = useLanguage();
   // Form States
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -24,27 +26,27 @@ export default function AboutPage() {
   const [activeCert, setActiveCert] = useState<string | null>(null);
 
   const experiences = [
-    "Vedic Astrology Consultation",
-    "Horoscope Analysis & Chart Rectification",
-    "Muhurtham Guidance for critical life events",
-    "Kadikara Prasannam (Horary Astrology)",
-    "Convenient Online & Phone Consultations globally"
+    tText("Vedic Astrology Consultation", "பாரம்பரிய வேத ஜோதிட ஆலோசனை"),
+    tText("Horoscope Analysis & Chart Rectification", "துல்லிய ஜாதக கணிப்பு & கால திருத்தம்"),
+    tText("Muhurtham Guidance for critical life events", "வாழ்வின் முக்கிய நிகழ்வுகளுக்கான சுப முகூர்த்தம்"),
+    tText("Kadikara Prasannam (Horary Astrology)", "கடிகாரப் பிரசன்னம் (உடனடி கேள்விக்கான தீர்வு)"),
+    tText("Convenient Online & Phone Consultations globally", "உலகெங்கிலும் உள்ள தமிழர்களுக்கு தொலைபேசி & ஆன்லைன் ஆலோசனை")
   ];
 
   const specializations = [
-    { title: "Horoscope Reading", category: "Core analysis of Lagnam, planetary placements & Dasha periods" },
-    { title: "Marriage Matching", category: "Scientific 10-Koota analysis & Manglik / Dosha checks" },
-    { title: "Kadikara Prasannam", category: "Instant clock-based horary prediction for immediate decisions" },
-    { title: "Career & Business Guidance", category: "Optimal periods for career growth, job change & investments" },
-    { title: "Financial Guidance", category: "Wealth potential, financial hurdles & remedial suggestions" },
-    { title: "Muhurtham Consultations", category: "Auspicious timings for Vehicle Purchase, House Warming, C-Section, Property Registration" }
+    { title: tText("Horoscope Reading", "ஜாதக கணிப்பு & பலன்கள்"), category: tText("Core analysis of Lagnam, planetary placements & Dasha periods", "லக்னம், நவகிரக நிலைகள் மற்றும் தசா புக்தி பலன்கள் விரிவான ஆய்வு") },
+    { title: tText("Marriage Matching", "திருமணப் பொருத்தம்"), category: tText("Scientific 10-Koota analysis & Manglik / Dosha checks", "10 விதமான பொருத்தங்கள், செவ்வாய் & ராகு கேது தோஷ ஆய்வு") },
+    { title: tText("Kadikara Prasannam", "கடிகாரப் பிரசன்னம்"), category: tText("Instant time-based astrological prediction for urgent questions and decisions", "அவசர கேள்விகள் மற்றும் முடிவுகளுக்கு உடனடி தீர்வு") },
+    { title: tText("Career & Business Guidance", "தொழில் & வியாபார வழிகாட்டல்"), category: tText("Optimal periods for career growth, job change & investments", "தொழில் வளர்ச்சி, வேலை மாற்றம் மற்றும் முதலீடுகளுக்கான உகந்த காலங்கள்") },
+    { title: tText("Financial Guidance", "பொருளாதாரம் & நிதி வழிகாட்டல்"), category: tText("Wealth potential, financial hurdles & remedial suggestions", "தன ஸ்தான பலம், கடன் தடைகள் மற்றும் நிதி பெருக்கத்திற்கான பரிகாரங்கள்") },
+    { title: tText("Muhurtham Consultations", "சுப முகூர்த்த ஆலோசனை"), category: tText("Auspicious timings for Vehicle Purchase, House Warming, C-Section, Property Registration", "வாகனம் வாங்குதல், புதுமனை புகுவிழா, குழந்தை பிறப்பு, சொத்து பதிவு சுப நேரங்கள்") }
   ];
 
   const achievements = [
-    { value: "Founder", title: "Kkarthikeya Astrological Centre", desc: "Established a hub for authentic Vedic guidance" },
-    { value: "5000+", title: "Happy Clients Guided", desc: "Gained trust and provided clarity to seekers worldwide" },
-    { value: "500+", title: "Marriage Matches Done", desc: "Evaluated compatibility to secure blessed unions" },
-    { value: "Specialist", title: "Muhurtham & Auspicious Timing", desc: "Expert in calculating optimal astronomical moments" }
+    { value: tText("Founder", "நிறுவனர்"), title: tText("Kkarthikeya Astrological Centre", "கார்த்திகேயா ஜோதிட மையம்"), desc: tText("Established a hub for authentic Vedic guidance", "பாரம்பரிய வேத ஜோதிடத்திற்கான மையம்") },
+    { value: "5000+", title: tText("Happy Clients Guided", "வழிகாட்டப்பட்ட வாடிக்கையாளர்கள்"), desc: tText("Gained trust and provided clear guidance to clients worldwide", "உலகெங்கிலும் உள்ள வாடிக்கையாளர்களுக்கு தெளிவான வழிகாட்டல்") },
+    { value: "500+", title: tText("Marriage Matches Done", "திருமணப் பொருத்தங்கள்"), desc: tText("Evaluated compatibility to secure blessed unions", "இனிய இல்லற வாழ்விற்கான சிறந்த பொருத்தங்கள்") },
+    { value: tText("Specialist", "நிபுணர்"), title: tText("Muhurtham & Auspicious Timing", "சுப முகூர்த்த நிபுணர்"), desc: tText("Expert in calculating auspicious dates and times for important life events", "வாழ்வின் முக்கிய சுப நிகழ்வுகளுக்கு உகந்த நேரக் கணிப்பு") }
   ];
 
   const certificates = [
@@ -368,7 +370,7 @@ export default function AboutPage() {
 
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-amber-500/20 bg-amber-950/20 text-amber-300 text-[9px] uppercase tracking-widest font-black">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Office Coordinates
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Visit Our Office
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white font-serif leading-[1.15] mt-3">
             Contact Our Centre
@@ -439,7 +441,7 @@ export default function AboutPage() {
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">Centre Coordinates</span>
+                    <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">Office Address</span>
                     <span className="font-bold text-xs text-slate-100 leading-normal">
                       5/121A, GST Rd, near Sri Nidhi mahal, Viniyambakkam, Singaperumal Koil, Tamil Nadu 603204
                     </span>
@@ -488,17 +490,17 @@ export default function AboutPage() {
                   >
                     <div className="border-b border-white/5 pb-4">
                       <h3 className="text-lg font-bold font-serif text-white uppercase tracking-widest">
-                        Cosmic Inquiry Form
+                        {tText("Consultation Inquiry Form", "தகவல் கோரிக்கை படிவம்")}
                       </h3>
                       <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">
-                        Project your details directly into our ground support terminal. We reply in 24 hours.
+                        {tText("Send your message to our centre. We will get back to you within 24 hours.", "உங்கள் கேள்விகளை அனுப்புங்கள். 24 மணி நேரத்திற்குள் பதிலளிக்கப்படும்.")}
                       </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="space-y-1.5">
                         <label className="text-[10px] uppercase tracking-widest font-black text-slate-400">
-                          Member Name
+                          {tText("Full Name", "முழு பெயர்")}
                         </label>
                         <input
                           type="text"
@@ -513,7 +515,7 @@ export default function AboutPage() {
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-[10px] uppercase tracking-widest font-black text-slate-400">
-                            Email Address
+                            {tText("Email Address", "மின்னஞ்சல் முகவரி")}
                           </label>
                           <input
                             type="email"
@@ -526,7 +528,7 @@ export default function AboutPage() {
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] uppercase tracking-widest font-black text-slate-400">
-                            Phone Number
+                            {tText("Phone Number", "தொலைபேசி எண்")}
                           </label>
                           <input
                             type="tel"
@@ -541,7 +543,7 @@ export default function AboutPage() {
 
                       <div className="space-y-1.5">
                         <label className="text-[10px] uppercase tracking-widest font-black text-amber-300">
-                          Subject of Transmission
+                          {tText("Subject of Consultation", "ஆலோசனையின் தலைப்பு")}
                         </label>
                         <select
                           value={subject}
@@ -557,7 +559,7 @@ export default function AboutPage() {
 
                       <div className="space-y-1.5">
                         <label className="text-[10px] uppercase tracking-widest font-black text-slate-400">
-                          Detailed Query (Include DOB/TOB/POB if possible)
+                          {tText("Detailed Query (Include DOB/TOB/POB if possible)", "கேள்வி விவரங்கள் (பிறந்த தேதி, நேரம், ஊர் குறிப்பிடவும்)")}
                         </label>
                         <textarea
                           rows={4}
@@ -577,12 +579,12 @@ export default function AboutPage() {
                         {isSubmitting ? (
                           <>
                             <Orbit className="w-4 h-4 animate-spin" />
-                            Projecting Transmission...
+                            {tText("Sending Message...", "அனுப்பப்படுகிறது...")}
                           </>
                         ) : (
                           <>
                             <Send className="w-3.5 h-3.5" />
-                            Transmit Message
+                            {tText("Send Message", "செய்தி அனுப்புக")}
                           </>
                         )}
                       </button>
@@ -604,19 +606,19 @@ export default function AboutPage() {
                         Transmission Successful!
                       </h3>
                       <span className="text-[9px] uppercase tracking-widest text-emerald-400 font-extrabold bg-emerald-500/10 border border-emerald-500/20 py-0.5 px-3 rounded-full">
-                        Stellar Signal Secured
+                        Message Sent Successfully
                       </span>
                     </div>
 
                     <p className="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto">
-                      Namaste. Your message was successfully projected into our ground support terminal. Astrologer Kkarthikeya will review your details and align his response within 1 planetary cycle.
+                      Namaste. Your message has been successfully received. Astrologer Kkarthikeya will review your details and get back to you within 24 hours.
                     </p>
 
                     <button
                       onClick={() => setIsSent(false)}
                       className="py-2.5 px-6 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-[9px] uppercase tracking-widest font-black text-slate-300 hover:text-white transition-all active:scale-95"
                     >
-                      Send Another Transmission
+                      Send Another Message
                     </button>
                   </motion.div>
                 )}

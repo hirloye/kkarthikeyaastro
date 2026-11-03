@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { Calendar, ArrowLeft, Share2 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import CosmicBackground from '@/components/CosmicBackground';
 import Image from 'next/image';
 
@@ -25,6 +26,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
   const { slug } = use(params);
   
   const { isOfflineMode } = useApp();
+  const { tText } = useLanguage();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -86,7 +88,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           href="/blogs"
           className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-amber-400 transition-colors mb-10"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to all articles
+          <ArrowLeft className="w-4 h-4" /> {tText("Back to all articles", "அனைத்துக் கட்டுரைகளுக்கும் திரும்பு")}
         </Link>
 
         <header className="mb-12">
@@ -151,16 +153,16 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
 
         <div className="mt-16 pt-8 border-t border-white/10 flex items-center justify-between">
           <div className="text-slate-400 font-medium">
-            Written by <strong className="text-white">Kkarthikeya Admin</strong>
+            {tText("Written by", "எழுதியவர்:")} <strong className="text-white">Kkarthikeya Admin</strong>
           </div>
           <button 
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
-              alert("Link copied to clipboard!");
+              alert(tText("Link copied to clipboard!", "இணைப்பு நகலெடுக்கப்பட்டது!"));
             }}
             className="flex items-center gap-2 px-4 py-2 bg-slate-900/40 backdrop-blur-md border border-white/10 hover:border-amber-500/50 hover:text-amber-400 text-slate-300 rounded-full text-sm font-bold transition-all shadow-sm active:scale-95"
           >
-            <Share2 className="w-4 h-4" /> Share Article
+            <Share2 className="w-4 h-4" /> {tText("Share Article", "பகிர்")}
           </button>
         </div>
 

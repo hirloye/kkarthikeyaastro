@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel, Inter } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/context/LanguageContext";
 import { AppProvider } from "@/context/AppContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -48,6 +49,9 @@ export const metadata: Metadata = {
     description: "Personalized traditional Vedic astrology guidance, horoscope analysis, and auspicious Muhurtham scheduling in Chennai.",
     images: ["/assets/astrologer.png?v=2"],
     type: "website",
+  },
+  other: {
+    google: "notranslate",
   }
 };
 
@@ -101,9 +105,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${cinzel.variable} h-full antialiased`}
+      className={`${inter.variable} ${cinzel.variable} h-full antialiased notranslate`}
+      translate="no"
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-amber-500/20 selection:text-amber-200">
+      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-amber-500/20 selection:text-amber-200 notranslate" translate="no">
         {/* Schema Markup for Local SEO */}
         <script
           type="application/ld+json"
@@ -113,26 +118,28 @@ export default function RootLayout({
         {/* Preconnect to Supabase for faster API requests */}
         <link rel="preconnect" href="https://cjdttgljmnlitcqvrbgt.supabase.co" crossOrigin="anonymous" />
 
-        <AppProvider>
-          {/* Global Scroll Animation Observer */}
-          <GlobalScrollObserver />
-          
-          {/* Global Floating Header */}
-          <Header />
-          
-          {/* Main App Container with appropriate top padding for fixed header */}
-          <main className="flex-1 w-full flex flex-col pt-20">
-            {children}
-          </main>
-          
-          {/* Global Footer */}
-          <Footer />
+        <LanguageProvider>
+          <AppProvider>
+            {/* Global Scroll Animation Observer */}
+            <GlobalScrollObserver />
+            
+            {/* Global Floating Header */}
+            <Header />
+            
+            {/* Main App Container with appropriate top padding for fixed header */}
+            <main className="flex-1 w-full flex flex-col pt-20">
+              {children}
+            </main>
+            
+            {/* Global Footer */}
+            <Footer />
 
-          {/* Floating Action Elements */}
-          <FloatingActions />
-          
-          <Toaster position="top-center" toastOptions={{ style: { background: '#1e293b', color: '#fff' } }} />
-        </AppProvider>
+            {/* Floating Action Elements */}
+            <FloatingActions />
+            
+            <Toaster position="top-center" toastOptions={{ style: { background: '#1e293b', color: '#fff' } }} />
+          </AppProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

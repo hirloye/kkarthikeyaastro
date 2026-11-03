@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Compass, Loader2 } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface ChartProps {
   dob?: string;
@@ -47,6 +48,7 @@ const FALLBACK_PLANETS = [
 ];
 
 export default function SouthIndianChart({ dob, tob, title = "Rasi Chart" }: ChartProps) {
+  const { tText } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [planets, setPlanets] = useState<any[]>([]);
 
@@ -102,7 +104,9 @@ export default function SouthIndianChart({ dob, tob, title = "Rasi Chart" }: Cha
     return (
       <div className="w-full aspect-square max-w-sm mx-auto bg-slate-900/50 rounded-2xl border border-white/10 flex flex-col items-center justify-center p-6 text-indigo-300">
         <Loader2 className="w-8 h-8 animate-spin mb-3 text-amber-500" />
-        <span className="text-xs uppercase tracking-widest font-bold">Calculating alignments...</span>
+        <span className="text-xs uppercase tracking-widest font-bold">
+          {tText("Calculating alignments...", "கிரக நிலைகள் கணிக்கப்படுகிறது...")}
+        </span>
       </div>
     );
   }
@@ -136,7 +140,9 @@ export default function SouthIndianChart({ dob, tob, title = "Rasi Chart" }: Cha
                   {idx === 5 && (
                     <div className="col-span-2 row-span-2 w-full h-full flex flex-col items-center justify-center opacity-30 select-none -mr-[200%] -mb-[200%] z-0 pointer-events-none">
                       <Compass className="w-16 h-16 text-amber-500" />
-                      <span className="text-[8px] font-bold uppercase tracking-widest mt-1 text-slate-400">South Indian</span>
+                      <span className="text-[8px] font-bold uppercase tracking-widest mt-1 text-slate-400">
+                        {tText("South Indian", "தென்னிந்திய முறை")}
+                      </span>
                     </div>
                   )}
                 </div>

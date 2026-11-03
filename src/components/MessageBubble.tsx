@@ -8,6 +8,7 @@ import { Message } from '@/types';
 import { cn } from '@/lib/utils';
 import SouthIndianChart from './SouthIndianChart';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface MessageBubbleProps {
   message: Message;
@@ -17,6 +18,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.sender === 'user';
   const [isPlaying, setIsPlaying] = useState(false);
   const { currentUser } = useApp();
+  const { tText } = useLanguage();
 
   // Render content based on message type
   const renderContent = () => {
@@ -76,7 +78,9 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
                 className="rounded-xl object-cover w-full h-48 md:h-64 transition-all duration-700 group-hover/img:scale-[1.02]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <span className="text-xs font-medium text-white drop-shadow-md tracking-wide">View Natal Configuration</span>
+                <span className="text-xs font-medium text-white drop-shadow-md tracking-wide">
+                  {tText("View Birth Chart", "ஜாதகக் கட்டத்தைப் பார்க்க")}
+                </span>
               </div>
             </div>
           </div>

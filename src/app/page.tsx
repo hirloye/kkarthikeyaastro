@@ -9,8 +9,10 @@ import {
   PhoneCall, CheckCircle2
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function HomePage() {
+  const { t, language, tText } = useLanguage();
   const [reviewsData, setReviewsData] = useState<{
     rating: number;
     totalReviews: number;
@@ -64,69 +66,88 @@ export default function HomePage() {
     fetchReviews();
   }, []);
 
-
-
   const pricingPlans = [
     {
       id: "bronze",
-      title: "BRONZE",
-      subtitle: "CONSULTATION",
+      title: tText("BRONZE", "வெண்கலம்"),
+      subtitle: tText("CONSULTATION", "ஆலோசனை"),
       price: dynamicPrices.bronze,
-      duration: "15 Minutes Consultation",
+      duration: tText("15 Minutes Consultation", "15 நிமிட ஆலோசனை"),
       colorClass: "border-amber-700/50 bg-gradient-to-b from-amber-950/20 to-slate-900/40 text-amber-300",
       btnClass: "bg-gradient-to-r from-amber-700 to-amber-800 text-white hover:from-amber-600 hover:to-amber-700 shadow-[0_4px_15px_rgba(180,83,9,0.3)]",
-      benefits: [
-        "Phone / Chat Support",
-        "Basic Horoscope Analysis",
-        "Simple Remedies Included",
-        "1 Key Life Focus Query"
+      benefits: language === 'ta' ? [
+        "தொலைபேசி / அரட்டை உதவி",
+        "அடிப்படை ஜாதக ஆய்வு",
+        "எளிய பரிகார வழிகாட்டல்",
+        "1 முக்கிய வாழ்க்கை கேள்விக்கான தீர்வு"
+      ] : [
+        tText("Phone / Chat Support", "தொலைபேசி / அரட்டை ஆதரவு"),
+        tText("Basic Horoscope Analysis", "அடிப்படை ஜாதக கணிப்பு"),
+        tText("Simple Remedies Included", "எளிய பரிகார வழிகாட்டல்"),
+        tText("1 Key Life Focus Query", "1 முக்கிய கேள்விக்கான தீர்வு")
       ]
     },
     {
       id: "silver",
-      title: "SILVER",
-      subtitle: "CONSULTATION",
+      title: tText("SILVER", "வெள்ளி"),
+      subtitle: tText("CONSULTATION", "ஆலோசனை"),
       price: dynamicPrices.silver,
-      duration: "30 Minutes Consultation",
+      duration: tText("30 Minutes Consultation", "30 நிமிட விரிவான ஆலோசனை"),
       popular: true,
       colorClass: "border-slate-400/50 bg-gradient-to-b from-slate-800/20 to-slate-900/40 text-slate-200 shadow-[0_0_30px_rgba(148,163,184,0.1)]",
       btnClass: "bg-gradient-to-r from-slate-600 to-slate-700 text-white hover:from-slate-500 hover:to-slate-600 shadow-[0_4px_15px_rgba(71,85,105,0.3)]",
-      benefits: [
-        "Detailed Horoscope Reading",
-        "Career / Marriage / Finance Focus",
-        "Personalized Vedic Remedies",
-        "Priority Response Window"
+      benefits: language === 'ta' ? [
+        "முழுமையான ஜாதகப் பலன்கள்",
+        "தொழில் / திருமணம் / நிதி குறித்த ஆலோசனை",
+        "பிரத்யேக வேத பரிகாரங்கள்",
+        "முன்னுரிமை உடனடி பதில்"
+      ] : [
+        tText("Detailed Horoscope Reading", "முழுமையான ஜாதக ஆய்வு"),
+        tText("Career / Marriage / Finance Focus", "தொழில் / திருமணம் / நிதி ஆலோசனை"),
+        tText("Personalized Vedic Remedies", "தனிப்பயனாக்கப்பட்ட வேத பரிகாரங்கள்"),
+        tText("Priority Response Window", "முன்னுரிமை நேர ஒதுக்கீடு")
       ]
     },
     {
       id: "gold",
-      title: "GOLD",
-      subtitle: "CONSULTATION",
+      title: tText("GOLD", "தங்கம்"),
+      subtitle: tText("CONSULTATION", "ஆலோசனை"),
       price: dynamicPrices.gold,
-      duration: "45-60 Minutes Deep Analysis",
+      duration: tText("45-60 Minutes Deep Analysis", "45-60 நிமிட ஆழமான ஆய்வு"),
       colorClass: "border-yellow-500/50 bg-gradient-to-b from-yellow-950/20 to-slate-900/40 text-yellow-400 shadow-[0_0_30px_rgba(234,179,8,0.15)]",
       btnClass: "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white hover:from-yellow-400 hover:to-yellow-500 shadow-[0_4px_20px_rgba(234,179,8,0.3)] font-black",
-      benefits: [
-        "Full Detailed Horoscope Study",
-        "Multiple Life Areas Covered",
-        "Advanced Remedies & Predictions",
-        "Priority Booking & Next-day Consultation",
-        "1-Month Follow-Up Support"
+      benefits: language === 'ta' ? [
+        "ஆழ்ந்த முழு ஜாதகக் கணிப்பு",
+        "வாழ்வின் அனைத்து பகுதிகள் ஆய்வு",
+        "மேம்பட்ட பரிகாரங்கள் & கணிப்புகள்",
+        "முன்னுரிமை முன்பதிவு & அடுத்த நாள் ஆலோசனை",
+        "1 மாத தொடர் ஆலோசனை உதவி"
+      ] : [
+        tText("Full Detailed Horoscope Study", "ஆயுள், தசா புக்தி முழு ஜாதக ஆய்வு"),
+        tText("Multiple Life Areas Covered", "வாழ்வின் அனைத்து நிலைகளுக்கும் வழிகாட்டல்"),
+        tText("Advanced Remedies & Predictions", "துல்லியமான எதிர்கால கணிப்பு & பரிகாரம்"),
+        tText("Priority Booking & Next-day Consultation", "அடுத்த நாள் உடனடி ஆலோசனை"),
+        tText("1-Month Follow-Up Support", "1 மாத தொடர் வழிகாட்டல்")
       ]
     },
     {
       id: "marriage",
-      title: "MARRIAGE",
-      subtitle: "MATCHING",
+      title: tText("MARRIAGE", "திருமணம்"),
+      subtitle: tText("MATCHING", "பொருத்தம்"),
       price: dynamicPrices.marriage,
-      duration: "Kundli Matching",
+      duration: tText("Kundli Matching", "ஜாதகப் பொருத்தம்"),
       colorClass: "border-rose-500/50 bg-gradient-to-b from-rose-950/20 to-slate-900/40 text-rose-300",
       btnClass: "bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-400 hover:to-rose-500 shadow-[0_4px_15px_rgba(244,63,94,0.3)]",
-      benefits: [
-        "Detailed Compatibility Analysis",
-        "10-Koota Scorecard Check",
-        "Manglik & Dosh Check",
-        "Remedies & Guidance Included"
+      benefits: language === 'ta' ? [
+        "விரிவான திருமணப் பொருத்தம்",
+        "10 விதமான பொருத்தங்கள் ஆய்வு",
+        "செவ்வாய் & தோஷ பரிசீலனை",
+        "பரிகாரங்கள் & நல்வழிகாட்டல்"
+      ] : [
+        tText("Detailed Compatibility Analysis", "விரிவான திருமணப் பொருத்த ஆய்வு"),
+        tText("10-Koota Scorecard Check", "10 விதமான பொருத்தங்கள் சரிபார்த்தல்"),
+        tText("Manglik & Dosh Check", "செவ்வாய் தோஷம் & நாக தோஷ ஆய்வு"),
+        tText("Remedies & Guidance Included", "பரிகாரங்கள் & முகூர்த்த ஆலோசனைகள்")
       ]
     }
   ];
@@ -142,23 +163,21 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto grid md:grid-cols-12 gap-8 items-center pt-8">
 
           {/* Copy Side (Left) */}
-          <div
-            className="md:col-span-7 text-left space-y-6 z-10"
-          >
+          <div className="md:col-span-7 text-left space-y-6 z-10">
             <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-amber-500/20 bg-amber-950/30 text-amber-300 text-[10px] uppercase tracking-widest font-bold shadow-inner">
               <Sparkles className="w-3.5 h-3.5 fill-amber-400/20 text-amber-400" />
-              Trusted Vedic Astrology Guidance
+              {t.home.badge}
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6.5xl font-extrabold tracking-tight text-white leading-[1.1] font-serif">
-              Gain Absolute Clarity & <br className="hidden md:block" />
+              {t.home.heroTitle1} <br className="hidden md:block" />
               <span className="bg-gradient-to-r from-amber-400 via-amber-200 to-white bg-clip-text text-transparent">
-                Confidence in Life
+                {t.home.heroTitle2}
               </span>
             </h1>
 
             <p className="text-sm md:text-base text-slate-300/90 leading-relaxed max-w-xl">
-              Welcome to <strong>Kkarthikeya Astrological Centre</strong>. I provide personalized Vedic astrology guidance to help people make confident decisions in life through professional horoscope analysis and auspicious Muhurtham consultations.
+              {t.home.heroDesc}
             </p>
 
             {/* CTAs */}
@@ -168,7 +187,7 @@ export default function HomePage() {
                 prefetch={false}
                 className="py-3 px-7 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black tracking-widest uppercase shadow-[0_10px_30px_rgba(245,158,11,0.2)] active:scale-95 transition-all duration-300 text-center flex items-center justify-center gap-1"
               >
-                Book Consultation
+                {t.common.bookConsultation}
                 <ChevronRight className="w-4 h-4" />
               </Link>
               <Link
@@ -176,7 +195,7 @@ export default function HomePage() {
                 prefetch={false}
                 className="py-3 px-7 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white text-xs font-bold tracking-widest uppercase hover:bg-white/10 transition-all duration-300 text-center"
               >
-                Explore Services
+                {t.common.exploreServices}
               </Link>
             </div>
 
@@ -188,10 +207,10 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="text-[10px] text-slate-300 tracking-wide font-medium">
-                <span className="font-bold text-white">4.9⭐ rating</span> on Google Business (5000+ happy clients)
+                {t.home.ratingBadge}
               </div>
             </div>
-            </div>
+          </div>
 
           {/* Portrait Photo Container (Right) */}
           <motion.div
@@ -205,8 +224,8 @@ export default function HomePage() {
               <div className="absolute w-48 h-48 bg-amber-500/30 blur-[50px] rounded-full pointer-events-none" />
 
               {/* Golden Zodiac Wheel SVG */}
-              <svg 
-                viewBox="0 0 400 400" 
+              <svg
+                viewBox="0 0 400 400"
                 className="w-full h-full z-10 select-none"
               >
                 <defs>
@@ -226,12 +245,12 @@ export default function HomePage() {
                     <stop offset="100%" stopColor="#d97706" />
                   </radialGradient>
                   <filter id="insetShadow">
-                    <feOffset dx="0" dy="2"/>
-                    <feGaussianBlur stdDeviation="3" result="offset-blur"/>
-                    <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
-                    <feFlood floodColor="black" floodOpacity="0.3" result="color"/>
-                    <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
-                    <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+                    <feOffset dx="0" dy="2" />
+                    <feGaussianBlur stdDeviation="3" result="offset-blur" />
+                    <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
+                    <feFlood floodColor="black" floodOpacity="0.3" result="color" />
+                    <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+                    <feComposite operator="over" in="shadow" in2="SourceGraphic" />
                   </filter>
                   <filter id="dropShadow">
                     <feDropShadow dx="2" dy="4" stdDeviation="4" floodColor="#000" floodOpacity="0.3" />
@@ -240,64 +259,62 @@ export default function HomePage() {
 
                 {/* 1. Base Mild Gold/Amber Rim */}
                 <circle cx="200" cy="200" r="195" fill="url(#redRim)" stroke="#b45309" strokeWidth="2" filter="url(#dropShadow)" />
-                
+
                 {/* 2. Outer Golden Zodiac Ring */}
                 <circle cx="200" cy="200" r="180" fill="url(#goldPlate)" filter="url(#insetShadow)" />
-                
+
                 <g className="animate-[spin_60s_linear_infinite] origin-center">
-                  {/* Decorative curvy separators matching the reference image */}
                   {[...Array(12)].map((_, i) => (
-                    <path 
-                      key={i} 
-                      d="M 200 20 C 220 50, 180 80, 200 110" 
-                      transform={`rotate(${i * 30} 200 200)`} 
+                    <path
+                      key={i}
+                      d="M 200 20 C 220 50, 180 80, 200 110"
+                      transform={`rotate(${i * 30} 200 200)`}
                       fill="none"
-                      stroke="#d97706" 
-                      strokeWidth="3" 
+                      stroke="#d97706"
+                      strokeWidth="3"
                       strokeLinecap="round"
                       className="opacity-60"
                     />
                   ))}
-                  
+
                   {/* South Indian Style Vedic Rashi Names & Images */}
                   {[
-                    { name: 'MESHA', img: '/assets/zodiac/aries.png' },
-                    { name: 'VRISHA', img: '/assets/zodiac/taurus.png' },
-                    { name: 'MITHUNA', img: '/assets/zodiac/gemini.png' },
-                    { name: 'KARKA', img: '/assets/zodiac/cancer.png' },
-                    { name: 'SIMHA', img: '/assets/zodiac/leo.png' },
-                    { name: 'KANYA', img: '/assets/zodiac/virgo.png' },
-                    { name: 'TULA', img: '/assets/zodiac/libra.png' },
-                    { name: 'VRISCHIKA', img: '/assets/zodiac/scorpio.png' },
-                    { name: 'DHANUS', img: '/assets/zodiac/sagittarius.png' },
-                    { name: 'MAKARA', img: '/assets/zodiac/capricorn.png' },
-                    { name: 'KUMBHA', img: '/assets/zodiac/aquarius.png' },
-                    { name: 'MEENA', img: '/assets/zodiac/pisces.png' }
+                    { name: 'MESHA', nameTa: 'மேஷம்', img: '/assets/zodiac/aries.png' },
+                    { name: 'VRISHA', nameTa: 'ரிஷபம்', img: '/assets/zodiac/taurus.png' },
+                    { name: 'MITHUNA', nameTa: 'மிதுனம்', img: '/assets/zodiac/gemini.png' },
+                    { name: 'KARKA', nameTa: 'கடகம்', img: '/assets/zodiac/cancer.png' },
+                    { name: 'SIMHA', nameTa: 'சிம்மம்', img: '/assets/zodiac/leo.png' },
+                    { name: 'KANYA', nameTa: 'கன்னி', img: '/assets/zodiac/virgo.png' },
+                    { name: 'TULA', nameTa: 'துலாம்', img: '/assets/zodiac/libra.png' },
+                    { name: 'VRISCHIKA', nameTa: 'விருச்சிகம்', img: '/assets/zodiac/scorpio.png' },
+                    { name: 'DHANUS', nameTa: 'தனுசு', img: '/assets/zodiac/sagittarius.png' },
+                    { name: 'MAKARA', nameTa: 'மகரம்', img: '/assets/zodiac/capricorn.png' },
+                    { name: 'KUMBHA', nameTa: 'கும்பம்', img: '/assets/zodiac/aquarius.png' },
+                    { name: 'MEENA', nameTa: 'மீனம்', img: '/assets/zodiac/pisces.png' }
                   ].map((sign, i) => {
                     const angle = (i * 30 - 75) * (Math.PI / 180);
                     const radius = 145;
                     const x = 200 + radius * Math.cos(angle);
                     const y = 200 + radius * Math.sin(angle);
-                    // Tangential rotation so images point outwards and text is readable along the curve
                     const groupRotation = i * 30 + 15; 
                     return (
                       <g key={i} transform={`rotate(${groupRotation} ${x} ${y})`}>
-                        <image 
-                          href={sign.img} 
-                          x={x - 16} 
-                          y={y - 24} 
-                          width="32" 
+                        <image
+                          href={sign.img}
+                          x={x - 16}
+                          y={y - 24}
+                          width="32"
                           height="32"
-                          className="drop-shadow-md" 
+                          className="drop-shadow-md"
                         />
-                        <text 
-                          x={x} 
-                          y={y + 14} 
-                          className="text-[9px] font-black fill-black/80 tracking-widest" 
-                          textAnchor="middle" 
+                        <text
+                          x={x}
+                          y={y + 14}
+                          className="text-[9px] font-black fill-black/80 tracking-widest"
+                          textAnchor="middle"
                           dominantBaseline="central"
                         >
-                          {sign.name}
+                          {language === 'ta' ? sign.nameTa : sign.name}
                         </text>
                       </g>
                     );
@@ -307,12 +324,10 @@ export default function HomePage() {
                 {/* 3. Middle Planetary Ring */}
                 <circle cx="200" cy="200" r="110" fill="url(#redRim)" stroke="#b45309" strokeWidth="1" filter="url(#insetShadow)" />
                 <circle cx="200" cy="200" r="104" fill="url(#innerGold)" filter="url(#insetShadow)" />
-                
+
                 <g className="animate-[spin_40s_linear_infinite_reverse] origin-center">
-                  {/* Concentric detail circles */}
                   <circle cx="200" cy="200" r="85" fill="none" stroke="#d97706" strokeWidth="1" strokeDasharray="4 4" />
                   
-                  {/* Black dots and planetary symbols */}
                   {['☉', '☽', '♂', '☿', '♃', '♀', '♄', '☊'].map((planet, i) => {
                     const angle = (i * 45 - 90) * (Math.PI / 180);
                     const radius = 75;
@@ -321,12 +336,12 @@ export default function HomePage() {
                     return (
                       <g key={i}>
                         <circle cx={200 + 94 * Math.cos(angle)} cy={200 + 94 * Math.sin(angle)} r="5" fill="#d97706" />
-                        <text 
-                          x={x} 
-                          y={y} 
-                          className="text-[24px] font-bold fill-black/70" 
-                          textAnchor="middle" 
-                          dominantBaseline="central" 
+                        <text
+                          x={x}
+                          y={y}
+                          className="text-[24px] font-bold fill-black/70"
+                          textAnchor="middle"
+                          dominantBaseline="central"
                           transform={`rotate(${-i * 45} ${x} ${y})`}
                         >
                           {planet}
@@ -339,15 +354,14 @@ export default function HomePage() {
                 {/* 4. Center Sun/Mandala Area */}
                 <circle cx="200" cy="200" r="48" fill="url(#redRim)" stroke="#b45309" strokeWidth="1" />
                 <circle cx="200" cy="200" r="42" fill="url(#goldPlate)" filter="url(#insetShadow)" />
-                
+
                 <g className="animate-[spin_20s_linear_infinite] origin-center">
-                  {/* Inner star pattern matching reference */}
                   {[...Array(8)].map((_, i) => (
-                    <path 
-                      key={i} 
-                      d="M 200 158 L 208 180 L 200 186 L 192 180 Z" 
+                    <path
+                      key={i}
+                      d="M 200 158 L 208 180 L 200 186 L 192 180 Z"
                       fill="#b45309"
-                      transform={`rotate(${i * 45} 200 200)`} 
+                      transform={`rotate(${i * 45} 200 200)`}
                     />
                   ))}
                   <circle cx="200" cy="200" r="14" fill="#92400e" />
@@ -355,7 +369,7 @@ export default function HomePage() {
                 </g>
               </svg>
 
-              {/* Center Lucide Sun overlay to satisfy 'use lucide-react' requirement */}
+              {/* Center Lucide Sun overlay */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
                 <div className="relative flex items-center justify-center w-full h-full animate-[spin_20s_linear_infinite]">
                   <Sun className="w-8 h-8 text-amber-500 fill-amber-500/20 mix-blend-overlay" />
@@ -371,10 +385,10 @@ export default function HomePage() {
       <section className="py-12 px-6 max-w-6xl mx-auto relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: "Happy Users Guided", val: "5000+", desc: "Individual horoscope alignments solved", icon: Award },
-            { label: "Marriage Compatibility", val: "500+", desc: "Harmonious couples matched successfully", icon: Orbit },
-            { label: "Auspicious Muhurthams", val: "1000+", desc: "Optimal start times calculated", icon: Compass },
-            { label: "Consultation Formats", val: "Online/Phone", desc: "Detailed sessions across the globe", icon: MessageSquare }
+            { label: t.home.statsUsers, val: "5000+", desc: t.home.statsUsersDesc, icon: Award },
+            { label: t.home.statsMarriage, val: "500+", desc: t.home.statsMarriageDesc, icon: Orbit },
+            { label: t.home.statsMuhurtham, val: "1000+", desc: t.home.statsMuhurthamDesc, icon: Compass },
+            { label: t.home.statsFormats, val: tText("Online / Phone", "நேரடி / ஆன்லைன்"), desc: t.home.statsFormatsDesc, icon: MessageSquare }
           ].map((stat, idx) => (
             <div
               key={idx}
@@ -382,7 +396,7 @@ export default function HomePage() {
             >
               <div className="flex items-center justify-between mb-4">
                 <stat.icon className="w-5 h-5 text-amber-400" />
-                <span className="text-[8px] text-indigo-400 font-black tracking-widest uppercase">Verified</span>
+                <span className="text-[8px] text-indigo-400 font-black tracking-widest uppercase">{t.common.verified}</span>
               </div>
               <div>
                 <div className="text-lg md:text-2xl font-black text-white font-serif tracking-tight leading-tight break-words">{stat.val}</div>
@@ -394,16 +408,14 @@ export default function HomePage() {
         </div>
       </section>
 
-
-
       {/* ✨ Services Highlights */}
       <section className="py-20 bg-slate-950/20 border-y border-white/5">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
-            <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-3">Celestial Catalog</div>
-            <h2 className="text-3xl md:text-4.5xl font-bold text-white font-serif">Choose the Plan That Suits You Best</h2>
+            <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-3">{t.home.plansHeading}</div>
+            <h2 className="text-3xl md:text-4.5xl font-bold text-white font-serif">{t.home.plansTitle}</h2>
             <p className="text-slate-400 text-xs md:text-sm mt-3 max-w-xl mx-auto">
-              Detailed, accurate calculations backed by authentic Vedic principles.
+              {t.home.plansSubtitle}
             </p>
           </div>
 
@@ -418,14 +430,14 @@ export default function HomePage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="text-sm font-extrabold tracking-widest text-white uppercase">
-                    Quick Chat Consultation
+                    {t.home.quickChatTitle}
                   </h3>
                   <span className="text-[8px] py-0.5 px-2 rounded bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 uppercase tracking-widest font-black">
-                    Fast Response
+                    {t.home.quickChatBadge}
                   </span>
                 </div>
                 <div className="text-xs text-slate-400 mt-0.5">
-                  5-10 Minutes Chat • Text-Based Guidance • Quick Remedy Suggestions
+                  {t.home.quickChatDesc}
                 </div>
               </div>
             </div>
@@ -440,7 +452,7 @@ export default function HomePage() {
                 prefetch={false}
                 className="py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black uppercase tracking-wider shadow-glow active:scale-95 transition-all border border-indigo-400/20"
               >
-                Chat Now
+                {t.home.quickChatBtn}
               </Link>
             </div>
           </div>
@@ -454,7 +466,7 @@ export default function HomePage() {
               >
                 {plan.popular && (
                   <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600 border border-amber-400/20 text-white text-[8px] font-black tracking-widest uppercase py-1 px-4.5 rounded-full shadow-[0_4px_15px_rgba(245,158,11,0.4)]">
-                    MOST POPULAR
+                    {tText("MOST POPULAR", "முக்கிய திட்டம்")}
                   </span>
                 )}
 
@@ -482,7 +494,7 @@ export default function HomePage() {
                     prefetch={false}
                     className={`w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center block transition-all active:scale-95 text-white ${plan.btnClass}`}
                   >
-                    Book Now
+                    {t.common.bookNow}
                   </Link>
                 </div>
               </div>
@@ -495,7 +507,7 @@ export default function HomePage() {
               prefetch={false}
               className="inline-flex items-center gap-2 py-3 px-8 rounded-full border border-amber-500/25 bg-amber-950/15 hover:bg-amber-950/30 text-amber-300 text-xs font-bold uppercase tracking-widest transition-all duration-300"
             >
-              Compare Consultation Pricing
+              {t.home.comparePricing}
             </Link>
           </div>
         </div>
@@ -504,9 +516,9 @@ export default function HomePage() {
       {/* 💬 Verified Testimonials Grid */}
       <section className="py-20 max-w-6xl mx-auto px-6">
         <div className="text-center mb-10">
-          <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-3">User Feedback</div>
-          <h2 className="text-3xl md:text-4.5xl font-bold text-white font-serif">What Clients Say</h2>
-          <p className="text-slate-400 text-xs md:text-sm mt-3">Verified live reviews from our Google Business Profile.</p>
+          <div className="text-xs font-bold tracking-widest uppercase text-amber-400 mb-3">{t.home.reviewsHeading}</div>
+          <h2 className="text-3xl md:text-4.5xl font-bold text-white font-serif">{t.home.reviewsTitle}</h2>
+          <p className="text-slate-400 text-xs md:text-sm mt-3">{t.home.reviewsSubtitle}</p>
         </div>
 
         {/* 🌟 Dynamic Rating Header */}
@@ -520,7 +532,7 @@ export default function HomePage() {
             </div>
             <div className="w-[1px] h-6 bg-white/10" />
             <span className="text-xs text-slate-300 font-extrabold uppercase tracking-widest">
-              {reviewsData?.totalReviews || '142'} Google Reviews
+              {reviewsData?.totalReviews || '142'} {t.home.googleReviews}
             </span>
           </div>
 
@@ -531,7 +543,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-4.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-black uppercase tracking-wider hover:bg-amber-500/20 hover:scale-105 active:scale-95 transition-all duration-300"
             >
-              Write A Review
+              {t.home.writeReview}
             </a>
           </div>
         </div>

@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Sparkles, Sunrise, Sunset, Compass, Moon, 
+import {
+  Sparkles, Sunrise, Sunset, Compass, Moon,
   ShieldCheck, AlertTriangle, ChevronRight, RefreshCw
 } from 'lucide-react';
 import CosmicBackground from '@/components/CosmicBackground';
 import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface PanchangamDetail {
   dayName: string;
@@ -142,6 +143,7 @@ const getSunSign = (date: Date): string => {
 };
 
 export default function PanchangamPage() {
+  const { t, language, tText } = useLanguage();
   const [weekDays, setWeekDays] = useState<any[]>([]);
   const [selectedDayKey, setSelectedDayKey] = useState('');
   const [activePanchangam, setActivePanchangam] = useState<PanchangamDetail | null>(null);
@@ -297,7 +299,7 @@ export default function PanchangamPage() {
           const gulika = `${formatMinToTime(sunriseMin + (gOct - 1) * octantLength)} - ${formatMinToTime(sunriseMin + gOct * octantLength)}`;
 
           // Abhijit (Solar noon +/- 24 mins)
-          const abhijit = dayIdx === 3 
+          const abhijit = dayIdx === 3
             ? "None (Chaturthi Dosha)" // Wednesday Abhijit is traditionally avoided due to Rahu/Dosha
             : `${formatMinToTime(solarNoonMin - 24)} - ${formatMinToTime(solarNoonMin + 24)}`;
 
@@ -308,14 +310,14 @@ export default function PanchangamPage() {
           const illumination = results.moon_illumination ?? 75;
           const phaseText = results.moon_phase || "";
           const isShukla = phaseText.toLowerCase().includes("waxing") || phaseText.toLowerCase().includes("first") || phaseText.toLowerCase().includes("new") || phaseText === "";
-          
+
           const tithiIndex = Math.min(15, Math.max(1, Math.round((illumination / 100) * 15)));
           const tithiNames = [
             "Prathama", "Dwitiya", "Tritiya", "Chaturthi", "Panchami", "Shashti",
             "Saptami", "Ashtami", "Navami", "Dashami", "Ekadashi", "Dwadashi",
             "Trayodashi", "Chaturdashi"
           ];
-          
+
           let tithi = "";
           if (tithiIndex === 15) {
             tithi = isShukla ? "Purnima (Full Moon)" : "Amavasya (New Moon)";
@@ -396,13 +398,13 @@ export default function PanchangamPage() {
         {/* 🌌 Title section */}
         <section className="pt-10 pb-4 px-6 max-w-6xl mx-auto relative z-10 text-center space-y-4">
           <div className="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full border border-indigo-500/20 bg-indigo-950/20 text-indigo-300 text-[9px] uppercase tracking-widest font-black">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> Vedic Astrology Calendar
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> {t.panchangam.badge}
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white font-serif leading-[1.15]">
-            Daily Panchangam (தமிழ் பஞ்சாங்கம்)
+            {t.panchangam.title}
           </h1>
           <p className="text-xs md:text-sm text-indigo-300 font-bold uppercase tracking-widest">
-            Calculated Vedic planetary coordinates and Muhurtham timings for Chennai Grid
+            {t.panchangam.subtitle}
           </p>
           <div className="w-12 h-1 bg-gradient-to-r from-amber-500 to-indigo-500 mx-auto rounded-full mt-3" />
         </section>
@@ -411,19 +413,19 @@ export default function PanchangamPage() {
 
         {/* 🔮 Dashboard layout */}
         <section className="py-6 px-6 max-w-6xl mx-auto relative z-10 grid lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left Side: Four Pillars of Time */}
           <div className="lg:col-span-7 space-y-6">
-            
+
             {/* Calendar Pillars Card */}
             <div className="rounded-[2.5rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-6 md:p-8 shadow-antigravity space-y-6">
-              
+
               {activePanchangam ? (
                 <>
                   <div className="border-b border-white/5 pb-4 flex justify-between items-center">
                     <div>
                       <h2 className="text-xl font-bold font-serif text-white uppercase tracking-widest">
-                        Planetary Pillars
+                        {tText("Planetary Pillars (பஞ்ச அங்கங்கள்)", "பஞ்ச அங்கங்கள் (ஐந்து கூறுகள்)")}
                       </h2>
                       <span className="text-[9px] uppercase tracking-widest text-indigo-300 font-bold block mt-0.5">
                         {activePanchangam.dayName} — {activePanchangam.dateStr}
@@ -448,7 +450,7 @@ export default function PanchangamPage() {
                     <>
                       {/* 4 Pillars Grid */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        
+
                         {/* Tithi */}
                         <div className="p-4 rounded-2xl bg-white/2 border border-white/5 space-y-2">
                           <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block">1. Tithi (திதி)</span>
@@ -478,7 +480,7 @@ export default function PanchangamPage() {
                       {/* Daily Guidance */}
                       <div className="p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl space-y-1.5 text-xs">
                         <span className="text-[8px] uppercase tracking-widest text-indigo-300 font-extrabold flex items-center gap-1">
-                          <Compass className="w-3.5 h-3.5 text-indigo-400" /> Astrologer Muhurtham Counsel
+                          <Compass className="w-3.5 h-3.5 text-indigo-400" /> {t.panchangam.muhurthamCounsel}
                         </span>
                         <p className="text-[11px] text-slate-300 leading-relaxed font-serif">
                           {activePanchangam.guidance}
@@ -490,16 +492,16 @@ export default function PanchangamPage() {
               ) : (
                 <div className="text-center py-12">
                   <RefreshCw className="w-8 h-8 animate-spin mx-auto text-indigo-400 mb-2" />
-                  <span className="text-slate-500 text-xs uppercase tracking-widest font-black">Syncing Celestial coordinates...</span>
+                  <span className="text-slate-500 text-xs uppercase tracking-widest font-black">Loading Daily Panchangam...</span>
                 </div>
               )}
 
             </div>
 
-            {/* Astronomical Coordinates */}
+            {/* Daily Sun & Moon Timings */}
             {activePanchangam && !loading && (
               <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-5 shadow-antigravity grid grid-cols-2 sm:grid-cols-4 gap-4">
-                
+
                 <div className="flex items-center gap-2">
                   <Sunrise className="w-5 h-5 text-amber-500" />
                   <div>
@@ -539,28 +541,28 @@ export default function PanchangamPage() {
 
           {/* Right Side: Auspicious & Inauspicious Hours */}
           <div className="lg:col-span-5 space-y-6">
-            
+
             {activePanchangam && !loading ? (
               <>
                 {/* Shubha Kaal (Auspicious Hours) */}
                 <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-5 shadow-antigravity space-y-4">
                   <h3 className="text-xs font-black tracking-widest text-emerald-400 font-serif uppercase flex items-center gap-1.5 border-b border-white/5 pb-2.5">
-                    <ShieldCheck className="w-4.5 h-4.5" /> Shubha Kaal (சுப முகூர்த்தம்)
+                    <ShieldCheck className="w-4.5 h-4.5" /> {t.panchangam.auspiciousSection}
                   </h3>
 
                   <div className="space-y-3 text-xs">
                     <div className="flex justify-between items-center p-2.5 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
                       <div>
-                        <span className="font-bold text-slate-200">Abhijit Muhurtham (அபிஜித் முகூர்த்தம்)</span>
-                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">Best for all initiatives</span>
+                        <span className="font-bold text-slate-200">{t.panchangam.abhijit}</span>
+                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">{tText("Best for all initiatives", "அனைத்து சுப காரியங்களுக்கும் உகந்தது")}</span>
                       </div>
                       <span className="font-mono text-emerald-300 font-bold text-[11px]">{activePanchangam.abhijit}</span>
                     </div>
 
                     <div className="flex justify-between items-center p-2.5 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
                       <div>
-                        <span className="font-bold text-slate-200">Brahma Muhurtham (பிரம்ம முகூர்த்தம்)</span>
-                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">Best for meditation & study</span>
+                        <span className="font-bold text-slate-200">{t.panchangam.brahma}</span>
+                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">{tText("Best for meditation & study", "தியானம் மற்றும் கல்விக்கு உகந்தது")}</span>
                       </div>
                       <span className="font-mono text-emerald-300 font-bold text-[11px]">{activePanchangam.brahma}</span>
                     </div>
@@ -570,30 +572,30 @@ export default function PanchangamPage() {
                 {/* Ashubha Kaal (Inauspicious Hours) */}
                 <div className="rounded-[2rem] border border-white/10 bg-slate-900/35 backdrop-blur-2xl p-5 shadow-antigravity space-y-4">
                   <h3 className="text-xs font-black tracking-widest text-rose-400 font-serif uppercase flex items-center gap-1.5 border-b border-white/5 pb-2.5">
-                    <AlertTriangle className="w-4.5 h-4.5" /> Ashubha Kaal (ராகு/எமகண்டம்)
+                    <AlertTriangle className="w-4.5 h-4.5" /> {t.panchangam.inauspiciousSection}
                   </h3>
 
                   <div className="space-y-3 text-xs">
                     <div className="flex justify-between items-center p-2.5 rounded-xl bg-rose-500/5 border border-rose-500/10">
                       <div>
-                        <span className="font-bold text-slate-200">Rahu Kaalam</span>
-                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">Avoid financial transactions</span>
+                        <span className="font-bold text-slate-200">{t.panchangam.rahuKaal}</span>
+                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">{tText("Avoid financial transactions", "முக்கிய பண பரிவர்த்தனைகளை தவிர்க்கவும்")}</span>
                       </div>
                       <span className="font-mono text-rose-300 font-bold text-[11px]">{activePanchangam.rahukaal}</span>
                     </div>
 
                     <div className="flex justify-between items-center p-2.5 rounded-xl bg-rose-500/5 border border-rose-500/10">
                       <div>
-                        <span className="font-bold text-slate-200">Yama Gandam</span>
-                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">Avoid starting travel</span>
+                        <span className="font-bold text-slate-200">{t.panchangam.yamaganda}</span>
+                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">{tText("Avoid starting travel", "பிரயாணம் தொடங்குவதை தவிர்க்கவும்")}</span>
                       </div>
                       <span className="font-mono text-rose-300 font-bold text-[11px]">{activePanchangam.yamaganda}</span>
                     </div>
 
                     <div className="flex justify-between items-center p-2.5 rounded-xl bg-rose-500/5 border border-rose-500/10">
                       <div>
-                        <span className="font-bold text-slate-200">Gulika Kaalam</span>
-                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">Avoid buying property</span>
+                        <span className="font-bold text-slate-200">{t.panchangam.gulika}</span>
+                        <span className="text-[8px] uppercase tracking-widest text-slate-500 block">{tText("Avoid buying property", "சொத்து வாங்குவதை தவிர்க்கவும்")}</span>
                       </div>
                       <span className="font-mono text-rose-300 font-bold text-[11px]">{activePanchangam.gulika}</span>
                     </div>
@@ -609,11 +611,11 @@ export default function PanchangamPage() {
 
             {/* Book Consultation Muhurtham */}
             <div className="pt-2">
-              <Link 
+              <Link
                 href="/booking?plan=muhurtham"
                 className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-1.5 shadow-glow"
               >
-                Get Custom Muhurtham Calculations <ChevronRight className="w-4 h-4" />
+                {t.panchangam.bookMuhurthamBtn} <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
 

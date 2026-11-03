@@ -5,9 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Phone, Mail, Compass, Star, Sparkles } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Footer() {
   const pathname = usePathname();
+  const { t, tText } = useLanguage();
 
   // Hide footer on admin or active chat screens
   if (pathname?.startsWith('/admin') || pathname?.startsWith('/chat')) {
@@ -34,15 +36,15 @@ export default function Footer() {
             />
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-widest bg-gradient-to-r from-amber-200 to-white bg-clip-text text-transparent font-serif uppercase">
-                Kkarthikeya
+                {t.nav.centreName}
               </span>
               <span className="text-[8px] uppercase tracking-widest text-indigo-400 font-bold -mt-0.5">
-                Astrological Centre
+                {t.nav.centreSubtitle}
               </span>
             </div>
           </div>
           <p className="text-slate-400 text-xs leading-relaxed">
-            Personalized Vedic astrology guidance to help you make confident life decisions through scientific horoscope analysis and precise Muhurtham calculations.
+            {t.footer.description}
           </p>
           <div className="flex items-center gap-1 text-amber-400 text-xs font-semibold">
             <Star className="w-3.5 h-3.5 fill-current" />
@@ -50,50 +52,50 @@ export default function Footer() {
             <Star className="w-3.5 h-3.5 fill-current" />
             <Star className="w-3.5 h-3.5 fill-current" />
             <Star className="w-3.5 h-3.5 fill-current" />
-            <span className="text-slate-300 ml-1 text-[11px]">(5000+ Happy Users)</span>
+            <span className="text-slate-300 ml-1 text-[11px]">({t.common.happyClients})</span>
           </div>
         </div>
 
         {/* Quick Sitemap */}
         <div className="space-y-3.5">
           <h4 className="text-[10px] uppercase font-bold tracking-widest text-amber-400 flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5" /> Site Index
+            <Compass className="w-3.5 h-3.5" /> {t.footer.sitemap}
           </h4>
           <ul className="text-xs space-y-2 text-slate-400 font-medium">
-            <li><Link href="/" prefetch={false} className="hover:text-amber-300 transition-colors">Home Portal</Link></li>
-            <li><Link href="/about" prefetch={false} className="hover:text-amber-300 transition-colors">About Astrologer</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-amber-300 transition-colors">Services</Link></li>
-            <li><Link href="/horoscope" prefetch={false} className="hover:text-amber-300 transition-colors">Daily Horoscope</Link></li>
-            <li><Link href="/panchangam" prefetch={false} className="hover:text-amber-300 transition-colors">Daily Panchangam</Link></li>
-            <li><Link href="/booking" prefetch={false} className="hover:text-amber-300 transition-colors">Booking</Link></li>
-            <li><Link href="/about#contact" prefetch={false} className="hover:text-amber-300 transition-colors">Contact</Link></li>
+            <li><Link href="/" prefetch={false} className="hover:text-amber-300 transition-colors">{t.nav.home}</Link></li>
+            <li><Link href="/about" prefetch={false} className="hover:text-amber-300 transition-colors">{t.nav.about}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-amber-300 transition-colors">{t.nav.services}</Link></li>
+            <li><Link href="/horoscope" prefetch={false} className="hover:text-amber-300 transition-colors">{t.nav.horoscope}</Link></li>
+            <li><Link href="/panchangam" prefetch={false} className="hover:text-amber-300 transition-colors">{t.nav.panchangam}</Link></li>
+            <li><Link href="/birth-chart" prefetch={false} className="hover:text-amber-300 transition-colors">{t.nav.birthChart}</Link></li>
+            <li><Link href="/booking" prefetch={false} className="hover:text-amber-300 transition-colors">{t.nav.booking}</Link></li>
+            <li><Link href="/about#contact" prefetch={false} className="hover:text-amber-300 transition-colors">{tText("Contact", "தொடர்பு")}</Link></li>
           </ul>
         </div>
 
         {/* Core Specialities */}
         <div className="space-y-3.5">
           <h4 className="text-[10px] uppercase font-bold tracking-widest text-indigo-400 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" /> Specialized Services
+            <Sparkles className="w-3.5 h-3.5" /> {t.footer.specializedServices}
           </h4>
           <ul className="text-xs space-y-2 text-slate-400">
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">Horoscope Analysis</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">Marriage Compatibility (10 Koota)</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">Kadikara Prasannam (Horary)</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">House Warming & Grihapravesham</Link></li>
-            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">C-Section & Child Birth Horas</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Horoscope Analysis", "ஜாதக கணிப்பு & பலன்கள்")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Marriage Compatibility (10 Koota)", "திருமணப் பொருத்தம் (10 பொருத்தம்)")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Kadikara Prasannam (Horary)", "கடிகாரப் பிரசன்னம்")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("House Warming & Grihapravesham", "கிரகப்பிரவேசம் & புதுமனை புகுவிழா")}</Link></li>
+            <li><Link href="/services" prefetch={false} className="hover:text-indigo-300 transition-colors">{tText("Child Birth & Auspicious Timing", "குழந்தை பிறப்பு சுப முகூர்த்தம்")}</Link></li>
           </ul>
         </div>
 
         {/* Local SEO & Contact Info */}
         <div className="space-y-3.5">
           <h4 className="text-[10px] uppercase font-bold tracking-widest text-slate-300">
-            Location Coordinates
+            {t.footer.location}
           </h4>
           <div className="text-xs space-y-3 text-slate-400">
             <p className="leading-relaxed">
-              <strong>Kkarthikeya Astrological Centre</strong><br />
-              Astrologer in Chennai & Tamilnadu.<br />
-              Online Consultations globally.
+              <strong>{t.nav.centreName} {t.nav.centreSubtitle}</strong><br />
+              {t.footer.locationDesc}
             </p>
             <div className="space-y-1">
               <a href="tel:+917845369302" className="flex items-center gap-2 hover:text-white transition-colors">
@@ -112,7 +114,7 @@ export default function Footer() {
       {/* Social Bar & Copyright */}
       <div className="max-w-6xl mx-auto border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-widest text-slate-500 font-semibold">
         <div>
-          © 2026 Kkarthikeya Astrological Centre. Locked in Cosmic Alignment.
+          {tText("© 2026 Kkarthikeya Astrological Centre. All Rights Reserved.", "© 2026 கார்த்திகேயா ஜோதிட மையம். அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.")}
         </div>
 
         {/* Social Icons matching Instagram, FB */}
@@ -124,7 +126,7 @@ export default function Footer() {
             Facebook
           </a>
           <a href="/admin" className="hover:text-white transition-colors border border-white/10 rounded-full px-2.5 py-1 bg-white/2">
-            Admin Core
+            {t.footer.adminCore}
           </a>
         </div>
       </div>

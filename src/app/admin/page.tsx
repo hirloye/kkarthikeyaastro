@@ -972,7 +972,7 @@ export default function AdminDashboard() {
         setChatMessages((prev) => [...prev, {
           id: `mock-user-${Date.now()}`,
           sender: 'user',
-          content: "Thank you for clarifying my coordinates, guruji. I shall follow the remedies.",
+          content: "Thank you for clarifying my horoscope, guruji. I will follow your guidance.",
           created_at: new Date().toISOString()
         }]);
       }, 2000);
@@ -1008,7 +1008,7 @@ export default function AdminDashboard() {
         <CosmicBackground />
         <div className="flex flex-col items-center gap-3 relative z-10">
           <Sparkles className="w-8 h-8 text-amber-400 animate-spin" />
-          <span className="text-xs tracking-widest uppercase text-slate-400">Verifying Celestial Clearance...</span>
+          <span className="text-xs tracking-widest uppercase text-slate-400">Verifying Admin Access...</span>
         </div>
       </main>
     );
@@ -1234,7 +1234,7 @@ export default function AdminDashboard() {
                 Sound Alerts
               </h3>
               <p className="text-[10px] text-indigo-200/50 uppercase tracking-wider leading-relaxed">
-                Celestial sound chimes when events occur.
+                Sound chimes when new messages or events occur.
               </p>
             </div>
             <div className="flex items-center gap-2 md:mt-2">

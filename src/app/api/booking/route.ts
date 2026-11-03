@@ -138,7 +138,7 @@ export async function POST(request: Request) {
             </tr>
           </table>
 
-          <h3 style="color: #3730a3; margin-top: 20px; border-bottom: 1px solid #eee; padding-bottom: 4px;">2. Birth Specifications (Natal Chart)</h3>
+          <h3 style="color: #3730a3; margin-top: 20px; border-bottom: 1px solid #eee; padding-bottom: 4px;">2. Birth Details</h3>
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
               <td style="padding: 6px 0; font-weight: bold; width: 150px;">Date of Birth:</td>
@@ -199,12 +199,12 @@ export async function POST(request: Request) {
         `🔮 *Plan:* ${planTitle} (₹${planPrice})\n` +
         `🗓️ *Date:* ${selectedDate}\n` +
         `⏰ *Slot:* ${selectedSlot}\n\n` +
-        `📜 *Birth Particulars (Natal Chart):*\n` +
+        `📜 *Birth Details:*\n` +
         `• *Gender:* ${gender || 'N/A'}\n` +
         `• *DOB:* ${formattedDob}\n` +
         `• *TOB:* ${formattedTob}\n` +
         `• *POB:* ${pob}\n\n` +
-        `✨ _Please verify astrological coordinates before consultation._`;
+        `✨ _Please verify birth details before consultation._`;
 
       const response = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
         method: 'POST',

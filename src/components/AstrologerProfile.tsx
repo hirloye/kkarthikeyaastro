@@ -5,8 +5,11 @@ import { motion } from 'framer-motion';
 import { Sparkles, Moon, Star, ShieldCheck, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function AstrologerProfile({ className, status = 'online' }: { className?: string, status?: 'online' | 'offline' | 'busy' }) {
+  const { tText } = useLanguage();
+
   return (
     <aside className={cn("flex flex-col gap-5 w-full md:w-80", className)}>
       {/* Main Astrologer Card */}
@@ -29,7 +32,7 @@ export default function AstrologerProfile({ className, status = 'online' }: { cl
             <div className="absolute inset-2 rounded-full border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-1 overflow-hidden backdrop-blur-md">
               <Image 
                 src="/assets/astrologer.png"
-                alt="Astrologer Nova"
+                alt="Astrologer Kkarthikeya"
                 width={128}
                 height={128}
                 priority
@@ -58,21 +61,30 @@ export default function AstrologerProfile({ className, status = 'online' }: { cl
           </div>
 
           <h2 className="text-xl font-semibold flex items-center gap-2 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-            Astrologer Nova
+            {tText("Astrologer Kkarthikeya", "ஜோதிடர் கார்த்திகேயா")}
             <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
           </h2>
-          <p className="text-xs text-indigo-300 tracking-wider uppercase mt-1">Master Psychic & Vedic Guide</p>
+          <p className="text-xs text-indigo-300 tracking-wider uppercase mt-1">
+            {tText("Master Vedic Guide & Prasannam Expert", "வேத ஜோதிடர் & பிரசன்ன வல்லுநர்")}
+          </p>
           
           <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-medium">
-            <ShieldCheck className="w-3.5 h-3.5" /> Verified Expert
+            <ShieldCheck className="w-3.5 h-3.5" /> {tText("Verified Expert", "அங்கீகரிக்கப்பட்ட நிபுணர்")}
           </div>
         </div>
 
         {/* Expertise Pills */}
         <div className="mt-6 space-y-3">
-          <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest">Celestial Arts</p>
+          <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest">
+            {tText("Areas of Expertise", "சிறப்புத் துறைகள்")}
+          </p>
           <div className="flex flex-wrap gap-2">
-            {["Natal Charts", "Tarot", "Synastry", "Soul Path"].map((badge) => (
+            {[
+              tText("Birth Chart Reading", "ஜாதகக் கணிப்பு"),
+              tText("Marriage Matching", "திருமணப் பொருத்தம்"),
+              tText("Life Guidance", "வாழ்க்கை வழிகாட்டல்"),
+              tText("Career & Finance", "தொழில் & பொருளாதாரம்")
+            ].map((badge) => (
               <span 
                 key={badge}
                 className="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-200 backdrop-blur-sm transition-all hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-200 cursor-default"
@@ -97,14 +109,18 @@ export default function AstrologerProfile({ className, status = 'online' }: { cl
               <Users className="w-5 h-5" />
             </div>
             <div className="text-lg font-semibold text-white">14.2k</div>
-            <div className="text-[10px] uppercase text-slate-500 tracking-widest">Readings</div>
+            <div className="text-[10px] uppercase text-slate-500 tracking-widest">
+              {tText("Readings", "கணிப்புகள்")}
+            </div>
           </div>
           <div className="flex flex-col items-center">
             <div className="p-2 rounded-xl bg-white/5 mb-2 border border-white/5 text-amber-300">
               <Star className="w-5 h-5 fill-amber-300/20" />
             </div>
             <div className="text-lg font-semibold text-white">4.98</div>
-            <div className="text-[10px] uppercase text-slate-500 tracking-widest">Rating</div>
+            <div className="text-[10px] uppercase text-slate-500 tracking-widest">
+              {tText("Rating", "மதிப்பீடு")}
+            </div>
           </div>
         </div>
         
@@ -112,9 +128,9 @@ export default function AstrologerProfile({ className, status = 'online' }: { cl
         <div className="mt-4 flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-indigo-950/30 border border-indigo-500/10 text-indigo-200 text-xs">
           <div className="flex items-center gap-2">
             <Moon className="w-4 h-4 text-indigo-300" />
-            <span>Waxing Gibbous</span>
+            <span>{tText("Auspicious Waxing Moon", "வளர்பிறை சுப காலம்")}</span>
           </div>
-          <span className="opacity-60">84% illuminated</span>
+          <span className="opacity-60">{tText("Auspicious Tithi Phase", "சுப திதி நேரம்")}</span>
         </div>
       </motion.div>
     </aside>

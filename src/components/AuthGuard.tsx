@@ -22,7 +22,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       sessionStorage.setItem('astro_redirect_after_login', pathname || '/');
       const timer = setTimeout(() => {
         router.push('/login');
-      }, 1000); // Small delay to let them see the "Celestial Seal" or loading animation
+      }, 1000); // Small delay to let them see the Sign In message or loading animation
       return () => clearTimeout(timer);
     } else {
       setTimeout(() => {
@@ -43,13 +43,13 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
           <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-6 shadow-glow">
             <Lock className="w-6 h-6 animate-pulse" />
           </div>
-          <h2 className="text-xl font-bold text-white tracking-wide">Celestial Gate Sealed</h2>
+          <h2 className="text-xl font-bold text-white tracking-wide">Sign In Required</h2>
           <p className="text-xs text-indigo-200/70 mt-3 leading-relaxed">
-            Please cross the gateway threshold to align your charts. Redirecting to the Login portal...
+            Please sign in to access your consultations and birth chart. Redirecting to login...
           </p>
           <div className="mt-8 flex items-center justify-center gap-2 text-[10px] text-amber-300 font-mono tracking-widest uppercase">
             <Orbit className="w-4 h-4 animate-spin text-amber-500" />
-            Connecting Session
+            Redirecting to Login...
           </div>
         </motion.div>
       </main>

@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Paperclip, Mic, Send, X, CheckCircle2 } from 'lucide-react';
-
+import { useLanguage } from '@/context/LanguageContext';
 
 interface InputCapsuleProps {
   onSendMessageAction: (text: string) => void;
@@ -12,6 +12,7 @@ interface InputCapsuleProps {
 }
 
 export default function InputCapsule({ onSendMessageAction, onSendAudioAction, onUploadClickAction }: InputCapsuleProps) {
+  const { tText } = useLanguage();
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [recordDuration, setRecordDuration] = useState(0);
@@ -87,7 +88,7 @@ export default function InputCapsule({ onSendMessageAction, onSendAudioAction, o
                   e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about your celestial configuration..."
+                placeholder={tText("Ask a question about your horoscope, career, marriage...", "உங்கள் ஜாதகம், தொழில், திருமணம் குறித்த கேள்வியைக் கேளுங்கள்...")}
                 rows={1}
                 className="flex-1 bg-transparent text-slate-100 placeholder:text-slate-500 text-sm px-4 py-3 outline-none focus:ring-0 placeholder-indigo-300/30 resize-none overflow-y-auto scrollbar-thin min-h-[44px]"
                 style={{ height: 'auto' }}
@@ -132,7 +133,7 @@ export default function InputCapsule({ onSendMessageAction, onSendAudioAction, o
                 className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium text-red-400 hover:bg-red-500/10 transition-colors"
               >
                 <X className="w-4 h-4" />
-                Cancel
+                {tText("Cancel", "ரத்து செய்")}
               </button>
 
               {/* Pulse & Timer Visualization */}
@@ -169,7 +170,7 @@ export default function InputCapsule({ onSendMessageAction, onSendAudioAction, o
                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-indigo-50 text-xs font-semibold shadow-glow border border-indigo-400/20 animate-pulse-glow transition-all duration-300 active:scale-95"
               >
                 <CheckCircle2 className="w-4 h-4" />
-                Stop & Send
+                {tText("Stop & Send", "அனுப்புக")}
               </button>
             </motion.div>
           )}
